@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Playwright;
 
+use Generator;
 use Pest\Browser\Support\Selector;
 
 /**
@@ -26,20 +27,9 @@ final class Locator
      */
     public function isVisible(): bool
     {
-        $response = Client::instance()->execute(
-            $this->frameGuid,
-            'isVisible',
-            ['selector' => $this->selector, 'strict' => true]
-        );
+        $response = $this->sendMessage('isVisible');
 
-        /** @var array{result: array{value: bool|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return false;
+        return $this->processBooleanResponse($response);
     }
 
     /**
@@ -47,20 +37,9 @@ final class Locator
      */
     public function isChecked(): bool
     {
-        $response = Client::instance()->execute(
-            $this->frameGuid,
-            'isChecked',
-            ['selector' => $this->selector, 'strict' => true]
-        );
+        $response = $this->sendMessage('isChecked');
 
-        /** @var array{result: array{value: bool|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return false;
+        return $this->processBooleanResponse($response);
     }
 
     /**
@@ -68,20 +47,9 @@ final class Locator
      */
     public function isEnabled(): bool
     {
-        $response = Client::instance()->execute(
-            $this->frameGuid,
-            'isEnabled',
-            ['selector' => $this->selector, 'strict' => true]
-        );
+        $response = $this->sendMessage('isEnabled');
 
-        /** @var array{result: array{value: bool|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return false;
+        return $this->processBooleanResponse($response);
     }
 
     /**
@@ -105,20 +73,9 @@ final class Locator
      */
     public function isEditable(): bool
     {
-        $response = Client::instance()->execute(
-            $this->frameGuid,
-            'isEditable',
-            ['selector' => $this->selector, 'strict' => true]
-        );
+        $response = $this->sendMessage('isEditable');
 
-        /** @var array{result: array{value: bool|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return false;
+        return $this->processBooleanResponse($response);
     }
 
     /**
@@ -126,15 +83,8 @@ final class Locator
      */
     public function check(): void
     {
-        $response = Client::instance()->execute(
-            $this->frameGuid,
-            'check',
-            ['selector' => $this->selector, 'strict' => true]
-        );
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
+        $response = $this->sendMessage('check');
+        $this->processVoidResponse($response);
     }
 
     /**
@@ -142,15 +92,8 @@ final class Locator
      */
     public function uncheck(): void
     {
-        $response = Client::instance()->execute(
-            $this->frameGuid,
-            'uncheck',
-            ['selector' => $this->selector, 'strict' => true]
-        );
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
+        $response = $this->sendMessage('uncheck');
+        $this->processVoidResponse($response);
     }
 
     /**
@@ -160,12 +103,8 @@ final class Locator
      */
     public function click(?array $options = null): void
     {
-        $params = array_merge(['selector' => $this->selector, 'strict' => true], $options ?? []);
-        $response = Client::instance()->execute($this->frameGuid, 'click', $params);
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
+        $response = $this->sendMessage('click', $options ?? []);
+        $this->processVoidResponse($response);
     }
 
     /**
@@ -175,12 +114,8 @@ final class Locator
      */
     public function dblclick(?array $options = null): void
     {
-        $params = array_merge(['selector' => $this->selector, 'strict' => true], $options ?? []);
-        $response = Client::instance()->execute($this->frameGuid, 'dblclick', $params);
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
+        $response = $this->sendMessage('dblclick', $options ?? []);
+        $this->processVoidResponse($response);
     }
 
     /**
@@ -190,12 +125,9 @@ final class Locator
      */
     public function fill(string $value, ?array $options = null): void
     {
-        $params = array_merge(['selector' => $this->selector, 'value' => $value, 'strict' => true], $options ?? []);
-        $response = Client::instance()->execute($this->frameGuid, 'fill', $params);
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
+        $params = array_merge(['value' => $value], $options ?? []);
+        $response = $this->sendMessage('fill', $params);
+        $this->processVoidResponse($response);
     }
 
     /**
@@ -205,12 +137,9 @@ final class Locator
      */
     public function type(string $text, ?array $options = null): void
     {
-        $params = array_merge(['selector' => $this->selector, 'text' => $text, 'strict' => true], $options ?? []);
-        $response = Client::instance()->execute($this->frameGuid, 'type', $params);
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
+        $params = array_merge(['text' => $text], $options ?? []);
+        $response = $this->sendMessage('type', $params);
+        $this->processVoidResponse($response);
     }
 
     /**
@@ -218,15 +147,8 @@ final class Locator
      */
     public function clear(): void
     {
-        $response = Client::instance()->execute(
-            $this->frameGuid,
-            'fill',
-            ['selector' => $this->selector, 'value' => '', 'strict' => true]
-        );
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
+        $response = $this->sendMessage('fill', ['value' => '']);
+        $this->processVoidResponse($response);
     }
 
     /**
@@ -234,15 +156,8 @@ final class Locator
      */
     public function focus(): void
     {
-        $response = Client::instance()->execute(
-            $this->frameGuid,
-            'focus',
-            ['selector' => $this->selector, 'strict' => true]
-        );
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
+        $response = $this->sendMessage('focus');
+        $this->processVoidResponse($response);
     }
 
     /**
@@ -252,12 +167,8 @@ final class Locator
      */
     public function hover(?array $options = null): void
     {
-        $params = array_merge(['selector' => $this->selector, 'strict' => true], $options ?? []);
-        $response = Client::instance()->execute($this->frameGuid, 'hover', $params);
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
+        $response = $this->sendMessage('hover', $options ?? []);
+        $this->processVoidResponse($response);
     }
 
     /**
@@ -267,12 +178,9 @@ final class Locator
      */
     public function press(string $key, ?array $options = null): void
     {
-        $params = array_merge(['selector' => $this->selector, 'key' => $key, 'strict' => true], $options ?? []);
-        $response = Client::instance()->execute($this->frameGuid, 'press', $params);
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
+        $params = array_merge(['key' => $key], $options ?? []);
+        $response = $this->sendMessage('press', $params);
+        $this->processVoidResponse($response);
     }
 
     /**
@@ -284,12 +192,9 @@ final class Locator
     public function selectOption($values, ?array $options = null): void
     {
         $values = is_array($values) ? $values : [$values];
-        $params = array_merge(['selector' => $this->selector, 'values' => $values, 'strict' => true], $options ?? []);
-        $response = Client::instance()->execute($this->frameGuid, 'selectOption', $params);
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
+        $params = array_merge(['values' => $values], $options ?? []);
+        $response = $this->sendMessage('selectOption', $params);
+        $this->processVoidResponse($response);
     }
 
     /**
@@ -297,20 +202,9 @@ final class Locator
      */
     public function textContent(): ?string
     {
-        $response = Client::instance()->execute(
-            $this->frameGuid,
-            'textContent',
-            ['selector' => $this->selector, 'strict' => true]
-        );
+        $response = $this->sendMessage('textContent');
 
-        /** @var array{result: array{value: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return null;
+        return $this->processResultResponse($response);
     }
 
     /**
@@ -318,20 +212,9 @@ final class Locator
      */
     public function innerText(): string
     {
-        $response = Client::instance()->execute(
-            $this->frameGuid,
-            'innerText',
-            ['selector' => $this->selector, 'strict' => true]
-        );
+        $response = $this->sendMessage('innerText');
 
-        /** @var array{result: array{value: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'] ?? '';
-            }
-        }
-
-        return '';
+        return $this->processStringResponse($response);
     }
 
     /**
@@ -339,20 +222,9 @@ final class Locator
      */
     public function innerHTML(): string
     {
-        $response = Client::instance()->execute(
-            $this->frameGuid,
-            'innerHTML',
-            ['selector' => $this->selector, 'strict' => true]
-        );
+        $response = $this->sendMessage('innerHTML');
 
-        /** @var array{result: array{value: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'] ?? '';
-            }
-        }
-
-        return '';
+        return $this->processStringResponse($response);
     }
 
     /**
@@ -360,20 +232,9 @@ final class Locator
      */
     public function inputValue(): string
     {
-        $response = Client::instance()->execute(
-            $this->frameGuid,
-            'inputValue',
-            ['selector' => $this->selector, 'strict' => true]
-        );
+        $response = $this->sendMessage('inputValue');
 
-        /** @var array{result: array{value: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'] ?? '';
-            }
-        }
-
-        return '';
+        return $this->processStringResponse($response);
     }
 
     /**
@@ -381,20 +242,9 @@ final class Locator
      */
     public function getAttribute(string $name): ?string
     {
-        $response = Client::instance()->execute(
-            $this->frameGuid,
-            'getAttribute',
-            ['selector' => $this->selector, 'name' => $name, 'strict' => true]
-        );
+        $response = $this->sendMessage('getAttribute', ['name' => $name]);
 
-        /** @var array{result: array{value: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return null;
+        return $this->processResultResponse($response);
     }
 
     /**
@@ -404,12 +254,8 @@ final class Locator
      */
     public function waitFor(?array $options = null): void
     {
-        $params = array_merge(['selector' => $this->selector, 'strict' => true], $options ?? []);
-        $response = Client::instance()->execute($this->frameGuid, 'waitForSelector', $params);
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
+        $response = $this->sendMessage('waitForSelector', $options ?? []);
+        $this->processVoidResponse($response);
     }
 
     /**
@@ -569,12 +415,72 @@ final class Locator
      */
     public function elementHandle(): ?Element
     {
-        $response = Client::instance()->execute(
-            $this->frameGuid,
-            'querySelector',
-            ['selector' => $this->selector, 'strict' => true]
-        );
+        $response = $this->sendMessage('querySelector');
 
+        return $this->processElementResponse($response);
+    }
+
+    /**
+     * Send a message to the server via the channel
+     */
+    private function sendMessage(string $method, array $params = []): Generator
+    {
+        $defaultParams = ['selector' => $this->selector, 'strict' => true];
+        $finalParams = array_merge($defaultParams, $params);
+
+        return Client::instance()->execute($this->frameGuid, $method, $finalParams);
+    }
+
+    /**
+     * Process response and extract result value
+     */
+    private function processResultResponse(Generator $response): mixed
+    {
+        /** @var array{result: array{value: mixed}} $message */
+        foreach ($response as $message) {
+            if (isset($message['result']['value'])) {
+                return $message['result']['value'];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Process response and extract string result
+     */
+    private function processStringResponse(Generator $response): string
+    {
+        $result = $this->processResultResponse($response);
+
+        return $result ?? '';
+    }
+
+    /**
+     * Process response and extract boolean result
+     */
+    private function processBooleanResponse(Generator $response): bool
+    {
+        $result = $this->processResultResponse($response);
+
+        return $result ?? false;
+    }
+
+    /**
+     * Process response consuming all messages
+     */
+    private function processVoidResponse(Generator $response): void
+    {
+        foreach ($response as $message) {
+            // Consume all messages to clear the response
+        }
+    }
+
+    /**
+     * Process response for Element creation
+     */
+    private function processElementResponse(Generator $response): ?Element
+    {
         /** @var array{method: string|null, params: array{type: string|null, guid: string}} $message */
         foreach ($response as $message) {
             if (
