@@ -21,71 +21,24 @@ final class Element
     }
 
     /**
-     * Check if element is visible.
+     * Send a message to the element through the Client.
+     *
+     * @param  array<string, mixed>  $params
      */
-    public function isVisible(): bool
+    private function sendMessage(string $method, array $params = []): \Generator
     {
-        $response = Client::instance()->execute($this->guid, 'isVisible');
-
-        /** @var array{result: array{value: bool|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return false;
+        return Client::instance()->execute($this->guid, $method, $params);
     }
 
     /**
-     * Check if element is checked.
+     * Process response and return result value.
+     *
+     * @param  \Generator  $response
+     * @return mixed
      */
-    public function isChecked(): bool
+    private function processResultResponse(\Generator $response): mixed
     {
-        $response = Client::instance()->execute($this->guid, 'isChecked');
-
-        /** @var array{result: array{value: bool|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Check element.
-     */
-    public function check(): void
-    {
-        $response = Client::instance()->execute($this->guid, 'check');
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
-    }
-
-    /**
-     * Uncheck element.
-     */
-    public function uncheck(): void
-    {
-        $response = Client::instance()->execute($this->guid, 'uncheck');
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
-    }
-
-    /**
-     * Get the Attribute of the element.
-     */
-    public function getAttribute(string $attribute): ?string
-    {
-        $response = Client::instance()->execute($this->guid, 'getAttribute', ['name' => $attribute]);
-
-        /** @var array{result: array{value: string|null}} $message */
+        /** @var array{result: array{value: mixed}} $message */
         foreach ($response as $message) {
             if (isset($message['result']['value'])) {
                 return $message['result']['value'];
@@ -96,379 +49,66 @@ final class Element
     }
 
     /**
-     * Click on the element.
-     *
-     * @param  array<string, mixed>|null  $options
+     * Process response and return string value.
      */
-    public function click(?array $options = null): void
+    private function processStringResponse(\Generator $response): string
     {
-        $params = $options ?? [];
-        $response = Client::instance()->execute($this->guid, 'click', $params);
+        $result = $this->processResultResponse($response);
+        return (string) ($result ?? '');
+    }
 
+    /**
+     * Process response and return nullable string value.
+     */
+    private function processNullableStringResponse(\Generator $response): ?string
+    {
+        return $this->processResultResponse($response);
+    }
+
+    /**
+     * Process response and return boolean value.
+     */
+    private function processBooleanResponse(\Generator $response): bool
+    {
+        $result = $this->processResultResponse($response);
+        return (bool) ($result ?? false);
+    }
+
+    /**
+     * Process response and return array value.
+     *
+     * @return array<mixed>
+     */
+    private function processArrayResponse(\Generator $response): array
+    {
+        $result = $this->processResultResponse($response);
+        return (array) ($result ?? []);
+    }
+
+    /**
+     * Process response for void methods (consume all messages).
+     */
+    private function processVoidResponse(\Generator $response): void
+    {
         foreach ($response as $message) {
             // read all messages to clear the response
         }
     }
 
     /**
-     * Double click on the element.
-     *
-     * @param  array<string, mixed>|null  $options
+     * Process response to return Element instance from result value.
      */
-    public function dblclick(?array $options = null): void
+    private function processElementResponse(\Generator $response): ?self
     {
-        $params = $options ?? [];
-        $response = Client::instance()->execute($this->guid, 'dblclick', $params);
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
+        $result = $this->processResultResponse($response);
+        return $result !== null ? new self($result) : null;
     }
 
     /**
-     * Fill the element with text.
-     *
-     * @param  array<string, mixed>|null  $options
+     * Process response to handle element creation messages.
      */
-    public function fill(string $value, ?array $options = null): void
+    private function processElementCreationResponse(\Generator $response): ?self
     {
-        $params = array_merge(['value' => $value], $options ?? []);
-        $response = Client::instance()->execute($this->guid, 'fill', $params);
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
-    }
-
-    /**
-     * Type text into the element.
-     *
-     * @param  array<string, mixed>|null  $options
-     */
-    public function type(string $text, ?array $options = null): void
-    {
-        $params = array_merge(['text' => $text], $options ?? []);
-        $response = Client::instance()->execute($this->guid, 'type', $params);
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
-    }
-
-    /**
-     * Press a key on the element.
-     *
-     * @param  array<string, mixed>|null  $options
-     */
-    public function press(string $key, ?array $options = null): void
-    {
-        $params = array_merge(['key' => $key], $options ?? []);
-        $response = Client::instance()->execute($this->guid, 'press', $params);
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
-    }
-
-    /**
-     * Focus the element.
-     */
-    public function focus(): void
-    {
-        $response = Client::instance()->execute($this->guid, 'focus');
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
-    }
-
-    /**
-     * Hover over the element.
-     *
-     * @param  array<string, mixed>|null  $options
-     */
-    public function hover(?array $options = null): void
-    {
-        $params = $options ?? [];
-        $response = Client::instance()->execute($this->guid, 'hover', $params);
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
-    }
-
-    /**
-     * Select text in the element.
-     *
-     * @param  array<string, mixed>|null  $options
-     */
-    public function selectText(?array $options = null): void
-    {
-        $params = $options ?? [];
-        $response = Client::instance()->execute($this->guid, 'selectText', $params);
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
-    }
-
-    /**
-     * Select options in a select element.
-     *
-     * @param  string|array<string>|array<int, string>  $values
-     * @param  array<string, mixed>|null  $options
-     * @return array<string>
-     */
-    public function selectOption(string|array $values, ?array $options = null): array
-    {
-        $params = array_merge(['values' => $values], $options ?? []);
-        $response = Client::instance()->execute($this->guid, 'selectOption', $params);
-
-        /** @var array{result: array{value: array<string>}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return [];
-    }
-
-    /**
-     * Get the text content of the element.
-     */
-    public function textContent(): ?string
-    {
-        $response = Client::instance()->execute($this->guid, 'textContent');
-
-        /** @var array{result: array{value: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Get the inner text of the element.
-     */
-    public function innerText(): string
-    {
-        $response = Client::instance()->execute($this->guid, 'innerText');
-
-        /** @var array{result: array{value: string}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return '';
-    }
-
-    /**
-     * Get the inner HTML of the element.
-     */
-    public function innerHTML(): string
-    {
-        $response = Client::instance()->execute($this->guid, 'innerHTML');
-
-        /** @var array{result: array{value: string}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return '';
-    }
-
-    /**
-     * Get the input value of the element.
-     *
-     * @param  array<string, mixed>|null  $options
-     */
-    public function inputValue(?array $options = null): string
-    {
-        $params = $options ?? [];
-        $response = Client::instance()->execute($this->guid, 'inputValue', $params);
-
-        /** @var array{result: array{value: string}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return '';
-    }
-
-    /**
-     * Check if element is enabled.
-     */
-    public function isEnabled(): bool
-    {
-        $response = Client::instance()->execute($this->guid, 'isEnabled');
-
-        /** @var array{result: array{value: bool|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Check if element is disabled.
-     */
-    public function isDisabled(): bool
-    {
-        $response = Client::instance()->execute($this->guid, 'isDisabled');
-
-        /** @var array{result: array{value: bool|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Check if element is editable.
-     */
-    public function isEditable(): bool
-    {
-        $response = Client::instance()->execute($this->guid, 'isEditable');
-
-        /** @var array{result: array{value: bool|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Check if element is hidden.
-     */
-    public function isHidden(): bool
-    {
-        $response = Client::instance()->execute($this->guid, 'isHidden');
-
-        /** @var array{result: array{value: bool|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Get the bounding box of the element.
-     *
-     * @return array{x: float, y: float, width: float, height: float}|null
-     */
-    public function boundingBox(): ?array
-    {
-        $response = Client::instance()->execute($this->guid, 'boundingBox');
-
-        /** @var array{result: array{value: array{x: float, y: float, width: float, height: float}|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Take a screenshot of the element.
-     *
-     * @param  array<string, mixed>|null  $options
-     */
-    public function screenshot(?array $options = null): string
-    {
-        $params = $options ?? [];
-        $response = Client::instance()->execute($this->guid, 'screenshot', $params);
-
-        /** @var array{result: array{value: string}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return '';
-    }
-
-    /**
-     * Scroll element into view if needed.
-     *
-     * @param  array<string, mixed>|null  $options
-     */
-    public function scrollIntoViewIfNeeded(?array $options = null): void
-    {
-        $params = $options ?? [];
-        $response = Client::instance()->execute($this->guid, 'scrollIntoViewIfNeeded', $params);
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
-    }
-
-    /**
-     * Wait for element to reach a specific state.
-     *
-     * @param  array<string, mixed>|null  $options
-     */
-    public function waitForElementState(string $state, ?array $options = null): void
-    {
-        $params = array_merge(['state' => $state], $options ?? []);
-        $response = Client::instance()->execute($this->guid, 'waitForElementState', $params);
-
-        foreach ($response as $message) {
-            // read all messages to clear the response
-        }
-    }
-
-    /**
-     * Wait for a selector to appear relative to this element.
-     *
-     * @param  array<string, mixed>|null  $options
-     */
-    public function waitForSelector(string $selector, ?array $options = null): ?self
-    {
-        $params = array_merge(['selector' => $selector], $options ?? []);
-        $response = Client::instance()->execute($this->guid, 'waitForSelector', $params);
-
-        /** @var array{result: array{value: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value']) && $message['result']['value'] !== null) {
-                return new self($message['result']['value']);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Query for a single element relative to this element.
-     */
-    public function querySelector(string $selector): ?self
-    {
-        $response = Client::instance()->execute($this->guid, 'querySelector', ['selector' => $selector]);
-
         /** @var array{method: string|null, params: array{type: string|null, guid: string}} $message */
         foreach ($response as $message) {
             if (
@@ -483,14 +123,12 @@ final class Element
     }
 
     /**
-     * Query for multiple elements relative to this element.
+     * Process response to handle multiple element creation messages.
      *
      * @return array<self>
      */
-    public function querySelectorAll(string $selector): array
+    private function processMultipleElementCreationResponse(\Generator $response): array
     {
-        $response = Client::instance()->execute($this->guid, 'querySelectorAll', ['selector' => $selector]);
-
         /** @var array{method: string|null, params: array{type: string|null, guid: string}} $message */
         foreach ($response as $message) {
             if (
@@ -505,21 +143,282 @@ final class Element
     }
 
     /**
+     * Check if element is visible.
+     */
+    public function isVisible(): bool
+    {
+        return $this->processBooleanResponse($this->sendMessage('isVisible'));
+    }
+
+    /**
+     * Check if element is checked.
+     */
+    public function isChecked(): bool
+    {
+        return $this->processBooleanResponse($this->sendMessage('isChecked'));
+    }
+
+    /**
+     * Check element.
+     */
+    public function check(): void
+    {
+        $this->processVoidResponse($this->sendMessage('check'));
+    }
+
+    /**
+     * Uncheck element.
+     */
+    public function uncheck(): void
+    {
+        $this->processVoidResponse($this->sendMessage('uncheck'));
+    }
+
+    /**
+     * Get the Attribute of the element.
+     */
+    public function getAttribute(string $attribute): ?string
+    {
+        return $this->processNullableStringResponse($this->sendMessage('getAttribute', ['name' => $attribute]));
+    }
+
+    /**
+     * Click on the element.
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function click(?array $options = null): void
+    {
+        $this->processVoidResponse($this->sendMessage('click', $options ?? []));
+    }
+
+    /**
+     * Double click on the element.
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function dblclick(?array $options = null): void
+    {
+        $this->processVoidResponse($this->sendMessage('dblclick', $options ?? []));
+    }
+
+    /**
+     * Fill the element with text.
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function fill(string $value, ?array $options = null): void
+    {
+        $params = array_merge(['value' => $value], $options ?? []);
+        $this->processVoidResponse($this->sendMessage('fill', $params));
+    }
+
+    /**
+     * Type text into the element.
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function type(string $text, ?array $options = null): void
+    {
+        $params = array_merge(['text' => $text], $options ?? []);
+        $this->processVoidResponse($this->sendMessage('type', $params));
+    }
+
+    /**
+     * Press a key on the element.
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function press(string $key, ?array $options = null): void
+    {
+        $params = array_merge(['key' => $key], $options ?? []);
+        $this->processVoidResponse($this->sendMessage('press', $params));
+    }
+
+    /**
+     * Focus the element.
+     */
+    public function focus(): void
+    {
+        $this->processVoidResponse($this->sendMessage('focus'));
+    }
+
+    /**
+     * Hover over the element.
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function hover(?array $options = null): void
+    {
+        $this->processVoidResponse($this->sendMessage('hover', $options ?? []));
+    }
+
+    /**
+     * Select text in the element.
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function selectText(?array $options = null): void
+    {
+        $this->processVoidResponse($this->sendMessage('selectText', $options ?? []));
+    }
+
+    /**
+     * Select options in a select element.
+     *
+     * @param  string|array<string>|array<int, string>  $values
+     * @param  array<string, mixed>|null  $options
+     * @return array<string>
+     */
+    public function selectOption(string|array $values, ?array $options = null): array
+    {
+        $params = array_merge(['values' => $values], $options ?? []);
+        return $this->processArrayResponse($this->sendMessage('selectOption', $params));
+    }
+
+    /**
+     * Get the text content of the element.
+     */
+    public function textContent(): ?string
+    {
+        return $this->processNullableStringResponse($this->sendMessage('textContent'));
+    }
+
+    /**
+     * Get the inner text of the element.
+     */
+    public function innerText(): string
+    {
+        return $this->processStringResponse($this->sendMessage('innerText'));
+    }
+
+    /**
+     * Get the inner HTML of the element.
+     */
+    public function innerHTML(): string
+    {
+        return $this->processStringResponse($this->sendMessage('innerHTML'));
+    }
+
+    /**
+     * Get the input value of the element.
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function inputValue(?array $options = null): string
+    {
+        return $this->processStringResponse($this->sendMessage('inputValue', $options ?? []));
+    }
+
+    /**
+     * Check if element is enabled.
+     */
+    public function isEnabled(): bool
+    {
+        return $this->processBooleanResponse($this->sendMessage('isEnabled'));
+    }
+
+    /**
+     * Check if element is disabled.
+     */
+    public function isDisabled(): bool
+    {
+        return $this->processBooleanResponse($this->sendMessage('isDisabled'));
+    }
+
+    /**
+     * Check if element is editable.
+     */
+    public function isEditable(): bool
+    {
+        return $this->processBooleanResponse($this->sendMessage('isEditable'));
+    }
+
+    /**
+     * Check if element is hidden.
+     */
+    public function isHidden(): bool
+    {
+        return $this->processBooleanResponse($this->sendMessage('isHidden'));
+    }
+
+    /**
+     * Get the bounding box of the element.
+     *
+     * @return array{x: float, y: float, width: float, height: float}|null
+     */
+    public function boundingBox(): ?array
+    {
+        return $this->processResultResponse($this->sendMessage('boundingBox'));
+    }
+
+    /**
+     * Take a screenshot of the element.
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function screenshot(?array $options = null): string
+    {
+        return $this->processStringResponse($this->sendMessage('screenshot', $options ?? []));
+    }
+
+    /**
+     * Scroll element into view if needed.
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function scrollIntoViewIfNeeded(?array $options = null): void
+    {
+        $this->processVoidResponse($this->sendMessage('scrollIntoViewIfNeeded', $options ?? []));
+    }
+
+    /**
+     * Wait for element to reach a specific state.
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function waitForElementState(string $state, ?array $options = null): void
+    {
+        $params = array_merge(['state' => $state], $options ?? []);
+        $this->processVoidResponse($this->sendMessage('waitForElementState', $params));
+    }
+
+    /**
+     * Wait for a selector to appear relative to this element.
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function waitForSelector(string $selector, ?array $options = null): ?self
+    {
+        $params = array_merge(['selector' => $selector], $options ?? []);
+        return $this->processElementResponse($this->sendMessage('waitForSelector', $params));
+    }
+
+    /**
+     * Query for a single element relative to this element.
+     */
+    public function querySelector(string $selector): ?self
+    {
+        return $this->processElementCreationResponse($this->sendMessage('querySelector', ['selector' => $selector]));
+    }
+
+    /**
+     * Query for multiple elements relative to this element.
+     *
+     * @return array<self>
+     */
+    public function querySelectorAll(string $selector): array
+    {
+        return $this->processMultipleElementCreationResponse($this->sendMessage('querySelectorAll', ['selector' => $selector]));
+    }
+
+    /**
      * Get the content frame for iframe elements.
      */
     public function contentFrame(): ?object
     {
-        $response = Client::instance()->execute($this->guid, 'contentFrame');
-
-        /** @var array{result: array{value: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value']) && $message['result']['value'] !== null) {
-                // Return frame object - this would need Frame class implementation
-                return (object) ['guid' => $message['result']['value']];
-            }
-        }
-
-        return null;
+        $result = $this->processResultResponse($this->sendMessage('contentFrame'));
+        return $result !== null ? (object) ['guid' => $result] : null;
     }
 
     /**
@@ -527,17 +426,8 @@ final class Element
      */
     public function ownerFrame(): ?object
     {
-        $response = Client::instance()->execute($this->guid, 'ownerFrame');
-
-        /** @var array{result: array{value: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value']) && $message['result']['value'] !== null) {
-                // Return frame object - this would need Frame class implementation
-                return (object) ['guid' => $message['result']['value']];
-            }
-        }
-
-        return null;
+        $result = $this->processResultResponse($this->sendMessage('ownerFrame'));
+        return $result !== null ? (object) ['guid' => $result] : null;
     }
 
     /**
