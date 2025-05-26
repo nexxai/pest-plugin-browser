@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Playwright;
 
+use Generator;
 use Pest\Browser\Support\Selector;
 
 /**
@@ -30,18 +31,8 @@ final class Frame
             return $this;
         }
 
-        $response = Client::instance()->execute(
-            $this->guid,
-            'goto',
-            ['url' => $url, 'waitUntil' => 'load']
-        );
-
-        /** @var array{method: string|null, params: array{url: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['method']) && $message['method'] === 'navigated') {
-                $this->url = $message['params']['url'] ?? '';
-            }
-        }
+        $response = $this->sendMessage('goto', ['url' => $url, 'waitUntil' => 'load']);
+        $this->processNavigationResponse($response);
 
         return $this;
     }
@@ -51,19 +42,9 @@ final class Frame
      */
     public function title(): string
     {
-        $response = Client::instance()->execute(
-            $this->guid,
-            'title'
-        );
+        $response = $this->sendMessage('title');
 
-        /** @var array{result: array{value: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return '';
+        return $this->processStringResponse($response);
     }
 
     /**
@@ -71,20 +52,9 @@ final class Frame
      */
     public function getAttribute(string $selector, string $attribute): ?string
     {
-        $response = Client::instance()->execute(
-            $this->guid,
-            'getAttribute',
-            ['selector' => $selector, 'name' => $attribute],
-        );
+        $response = $this->sendMessage('getAttribute', ['selector' => $selector, 'name' => $attribute]);
 
-        /** @var array{result: array{value: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return null;
+        return $this->processResultResponse($response);
     }
 
     /**
@@ -170,18 +140,8 @@ final class Frame
      */
     public function click(string $selector): self
     {
-        $response = Client::instance()->execute(
-            $this->guid,
-            'click',
-            ['selector' => $selector]
-        );
-
-        /** @var array{method: string|null, params: array{url: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['method']) && $message['method'] === 'navigated') {
-                $this->url = $message['params']['url'] ?? '';
-            }
-        }
+        $response = $this->sendMessage('click', ['selector' => $selector]);
+        $this->processNavigationResponse($response);
 
         return $this;
     }
@@ -191,18 +151,8 @@ final class Frame
      */
     public function doubleClick(string $selector): self
     {
-        $response = Client::instance()->execute(
-            $this->guid,
-            'dblclick',
-            ['selector' => $selector]
-        );
-
-        /** @var array{method: string|null, params: array{url: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['method']) && $message['method'] === 'navigated') {
-                $this->url = $message['params']['url'] ?? '';
-            }
-        }
+        $response = $this->sendMessage('dblclick', ['selector' => $selector]);
+        $this->processNavigationResponse($response);
 
         return $this;
     }
@@ -212,19 +162,9 @@ final class Frame
      */
     public function content(): string
     {
-        $response = Client::instance()->execute(
-            $this->guid,
-            'content'
-        );
+        $response = $this->sendMessage('content');
 
-        /** @var array{result: array{value: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return '';
+        return $this->processStringResponse($response);
     }
 
     /**
@@ -232,20 +172,9 @@ final class Frame
      */
     public function isEnabled(string $selector): bool
     {
-        $response = Client::instance()->execute(
-            $this->guid,
-            'isEnabled',
-            ['selector' => $selector]
-        );
+        $response = $this->sendMessage('isEnabled', ['selector' => $selector]);
 
-        /** @var array{result: array{value: bool|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return false;
+        return $this->processBooleanResponse($response);
     }
 
     /**
@@ -253,20 +182,9 @@ final class Frame
      */
     public function isVisible(string $selector): bool
     {
-        $response = Client::instance()->execute(
-            $this->guid,
-            'isVisible',
-            ['selector' => $selector]
-        );
+        $response = $this->sendMessage('isVisible', ['selector' => $selector]);
 
-        /** @var array{result: array{value: bool|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return false;
+        return $this->processBooleanResponse($response);
     }
 
     /**
@@ -282,18 +200,8 @@ final class Frame
      */
     public function fill(string $selector, string $value): self
     {
-        $response = Client::instance()->execute(
-            $this->guid,
-            'fill',
-            ['selector' => $selector, 'value' => $value]
-        );
-
-        /** @var array{method: string|null, params: array{url: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['method']) && $message['method'] === 'navigated') {
-                $this->url = $message['params']['url'] ?? '';
-            }
-        }
+        $response = $this->sendMessage('fill', ['selector' => $selector, 'value' => $value]);
+        $this->processNavigationResponse($response);
 
         return $this;
     }
@@ -303,20 +211,9 @@ final class Frame
      */
     public function innerText(string $selector): string
     {
-        $response = Client::instance()->execute(
-            $this->guid,
-            'innerText',
-            ['selector' => $selector]
-        );
+        $response = $this->sendMessage('innerText', ['selector' => $selector]);
 
-        /** @var array{result: array{value: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return '';
+        return $this->processStringResponse($response);
     }
 
     /**
@@ -324,20 +221,9 @@ final class Frame
      */
     public function textContent(string $selector): ?string
     {
-        $response = Client::instance()->execute(
-            $this->guid,
-            'textContent',
-            ['selector' => $selector]
-        );
+        $response = $this->sendMessage('textContent', ['selector' => $selector]);
 
-        /** @var array{result: array{value: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return null;
+        return $this->processResultResponse($response);
     }
 
     /**
@@ -345,20 +231,9 @@ final class Frame
      */
     public function inputValue(string $selector): string
     {
-        $response = Client::instance()->execute(
-            $this->guid,
-            'inputValue',
-            ['selector' => $selector]
-        );
+        $response = $this->sendMessage('inputValue', ['selector' => $selector]);
 
-        /** @var array{result: array{value: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return '';
+        return $this->processStringResponse($response);
     }
 
     /**
@@ -366,20 +241,9 @@ final class Frame
      */
     public function isChecked(string $selector): bool
     {
-        $response = Client::instance()->execute(
-            $this->guid,
-            'isChecked',
-            ['selector' => $selector]
-        );
+        $response = $this->sendMessage('isChecked', ['selector' => $selector]);
 
-        /** @var array{result: array{value: bool|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return false;
+        return $this->processBooleanResponse($response);
     }
 
     /**
@@ -387,18 +251,8 @@ final class Frame
      */
     public function check(string $selector): self
     {
-        $response = Client::instance()->execute(
-            $this->guid,
-            'check',
-            ['selector' => $selector]
-        );
-
-        /** @var array{method: string|null, params: array{url: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['method']) && $message['method'] === 'navigated') {
-                $this->url = $message['params']['url'] ?? '';
-            }
-        }
+        $response = $this->sendMessage('check', ['selector' => $selector]);
+        $this->processNavigationResponse($response);
 
         return $this;
     }
@@ -408,18 +262,8 @@ final class Frame
      */
     public function uncheck(string $selector): self
     {
-        $response = Client::instance()->execute(
-            $this->guid,
-            'uncheck',
-            ['selector' => $selector]
-        );
-
-        /** @var array{method: string|null, params: array{url: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['method']) && $message['method'] === 'navigated') {
-                $this->url = $message['params']['url'] ?? '';
-            }
-        }
+        $response = $this->sendMessage('uncheck', ['selector' => $selector]);
+        $this->processNavigationResponse($response);
 
         return $this;
     }
@@ -429,11 +273,8 @@ final class Frame
      */
     public function hover(string $selector): self
     {
-        Client::instance()->execute(
-            $this->guid,
-            'hover',
-            ['selector' => $selector]
-        );
+        $response = $this->sendMessage('hover', ['selector' => $selector]);
+        $this->processVoidResponse($response);
 
         return $this;
     }
@@ -443,11 +284,8 @@ final class Frame
      */
     public function focus(string $selector): self
     {
-        Client::instance()->execute(
-            $this->guid,
-            'focus',
-            ['selector' => $selector]
-        );
+        $response = $this->sendMessage('focus', ['selector' => $selector]);
+        $this->processVoidResponse($response);
 
         return $this;
     }
@@ -457,11 +295,8 @@ final class Frame
      */
     public function press(string $selector, string $key): self
     {
-        Client::instance()->execute(
-            $this->guid,
-            'press',
-            ['selector' => $selector, 'key' => $key]
-        );
+        $response = $this->sendMessage('press', ['selector' => $selector, 'key' => $key]);
+        $this->processVoidResponse($response);
 
         return $this;
     }
@@ -471,11 +306,8 @@ final class Frame
      */
     public function type(string $selector, string $text): self
     {
-        Client::instance()->execute(
-            $this->guid,
-            'type',
-            ['selector' => $selector, 'text' => $text]
-        );
+        $response = $this->sendMessage('type', ['selector' => $selector, 'text' => $text]);
+        $this->processVoidResponse($response);
 
         return $this;
     }
@@ -513,11 +345,8 @@ final class Frame
      */
     public function dragAndDrop(string $source, string $target): self
     {
-        Client::instance()->execute(
-            $this->guid,
-            'dragAndDrop',
-            ['source' => $source, 'target' => $target]
-        );
+        $response = $this->sendMessage('dragAndDrop', ['source' => $source, 'target' => $target]);
+        $this->processVoidResponse($response);
 
         return $this;
     }
@@ -527,12 +356,75 @@ final class Frame
      */
     public function setContent(string $html): self
     {
-        Client::instance()->execute(
-            $this->guid,
-            'setContent',
-            ['html' => $html]
-        );
+        $response = $this->sendMessage('setContent', ['html' => $html]);
+        $this->processVoidResponse($response);
 
         return $this;
+    }
+
+    /**
+     * Send a message to the server via the channel
+     */
+    private function sendMessage(string $method, array $params = []): Generator
+    {
+        return Client::instance()->execute($this->guid, $method, $params);
+    }
+
+    /**
+     * Process navigation response messages
+     */
+    private function processNavigationResponse(Generator $response): void
+    {
+        /** @var array{method: string|null, params: array{url: string|null}} $message */
+        foreach ($response as $message) {
+            if (isset($message['method']) && $message['method'] === 'navigated') {
+                $this->url = $message['params']['url'] ?? '';
+            }
+        }
+    }
+
+    /**
+     * Process response and extract result value
+     */
+    private function processResultResponse(Generator $response): mixed
+    {
+        /** @var array{result: array{value: mixed}} $message */
+        foreach ($response as $message) {
+            if (isset($message['result']['value'])) {
+                return $message['result']['value'];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Process response and extract string result
+     */
+    private function processStringResponse(Generator $response): string
+    {
+        $result = $this->processResultResponse($response);
+
+        return $result ?? '';
+    }
+
+    /**
+     * Process response and extract boolean result
+     */
+    private function processBooleanResponse(Generator $response): bool
+    {
+        $result = $this->processResultResponse($response);
+
+        return $result ?? false;
+    }
+
+    /**
+     * Process response consuming all messages
+     */
+    private function processVoidResponse(Generator $response): void
+    {
+        foreach ($response as $message) {
+            // Consume all messages to clear the response
+        }
     }
 }
