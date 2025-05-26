@@ -37,65 +37,31 @@ final class Page
         $this->frame->goto($url);
 
         return $this;
-    }
-
-    /**
+    }    /**
      * Navigates to the next page in the history.
      */
     public function forward(): self
     {
-        $response = Client::instance()->execute(
-            $this->guid,
-            'goForward',
-        );
-
-        /** @var array{method: string|null, params: array{url: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['method']) && $message['method'] === 'navigated') {
-                $this->frame->url = $message['params']['url'] ?? '';
-            }
-        }
+        $response = $this->sendMessage('goForward');
+        $this->processNavigationResponse($response);
 
         return $this;
-    }
-
-    /**
+    }    /**
      * Navigates to the previous page in the history.
      */
     public function back(): self
     {
-        $response = Client::instance()->execute(
-            $this->guid,
-            'goBack',
-        );
-
-        /** @var array{method: string|null, params: array{url: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['method']) && $message['method'] === 'navigated') {
-                $this->frame->url = $message['params']['url'] ?? '';
-            }
-        }
+        $response = $this->sendMessage('goBack');
+        $this->processNavigationResponse($response);
 
         return $this;
-    }
-
-    /**
+    }    /**
      * Reloads the current page.
      */
     public function reload(): self
     {
-        $response = Client::instance()->execute(
-            $this->guid,
-            'reload',
-            ['waitUntil' => 'load']
-        );
-
-        /** @var array{method: string|null, params: array{url: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['method']) && $message['method'] === 'navigated') {
-                $this->frame->url = $message['params']['url'] ?? '';
-            }
-        }
+        $response = $this->sendMessage('reload', ['waitUntil' => 'load']);
+        $this->processNavigationResponse($response);
 
         return $this;
     }
@@ -383,5 +349,26 @@ final class Page
         $this->frame->waitForURL($url);
 
         return $this;
+    }
+
+    /**
+     * Send a message to the server via the channel
+     */
+    private function sendMessage(string $method, array $params = []): \Generator
+    {
+        return Client::instance()->execute($this->guid, $method, $params);
+    }
+
+    /**
+     * Process navigation response messages
+     */
+    private function processNavigationResponse(\Generator $response): void
+    {
+        /** @var array{method: string|null, params: array{url: string|null}} $message */
+        foreach ($response as $message) {
+            if (isset($message['method']) && $message['method'] === 'navigated') {
+                $this->frame->url = $message['params']['url'] ?? '';
+            }
+        }
     }
 }
