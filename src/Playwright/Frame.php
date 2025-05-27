@@ -54,7 +54,7 @@ final class Frame
     {
         $response = $this->sendMessage('getAttribute', ['selector' => $selector, 'name' => $attribute]);
 
-        return $this->processResultResponse($response);
+        return $this->processNullableStringResponse($response);
     }
 
     /**
@@ -223,7 +223,7 @@ final class Frame
     {
         $response = $this->sendMessage('textContent', ['selector' => $selector]);
 
-        return $this->processResultResponse($response);
+        return $this->processNullableStringResponse($response);
     }
 
     /**
@@ -364,6 +364,8 @@ final class Frame
 
     /**
      * Send a message to the server via the channel
+     *
+     * @param  array<string, mixed>  $params
      */
     private function sendMessage(string $method, array $params = []): Generator
     {
@@ -405,7 +407,29 @@ final class Frame
     {
         $result = $this->processResultResponse($response);
 
-        return $result ?? '';
+        if (! is_string($result) && ! is_numeric($result)) {
+            return '';
+        }
+
+        return (string) $result;
+    }
+
+    /**
+     * Process response and extract nullable string result
+     */
+    private function processNullableStringResponse(Generator $response): ?string
+    {
+        $result = $this->processResultResponse($response);
+
+        if ($result === null) {
+            return null;
+        }
+
+        if (! is_string($result) && ! is_numeric($result)) {
+            return null;
+        }
+
+        return (string) $result;
     }
 
     /**
@@ -415,7 +439,11 @@ final class Frame
     {
         $result = $this->processResultResponse($response);
 
-        return $result ?? false;
+        if (! is_bool($result)) {
+            return false;
+        }
+
+        return $result;
     }
 
     /**

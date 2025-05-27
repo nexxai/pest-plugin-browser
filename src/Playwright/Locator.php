@@ -204,7 +204,7 @@ final class Locator
     {
         $response = $this->sendMessage('textContent');
 
-        return $this->processResultResponse($response);
+        return $this->processNullableStringResponse($response);
     }
 
     /**
@@ -244,7 +244,7 @@ final class Locator
     {
         $response = $this->sendMessage('getAttribute', ['name' => $name]);
 
-        return $this->processResultResponse($response);
+        return $this->processNullableStringResponse($response);
     }
 
     /**
@@ -389,9 +389,11 @@ final class Locator
             );
 
             $found = false;
+            /** @var array<string, mixed> $message */
             foreach ($response as $message) {
                 if (
-                    isset($message['method']) && $message['method'] === '__create__'
+                    $message['method'] === '__create__'
+                    && isset($message['params']) && is_array($message['params'])
                     && isset($message['params']['type']) && $message['params']['type'] === 'ElementHandle'
                 ) {
                     $found = true;
@@ -422,6 +424,8 @@ final class Locator
 
     /**
      * Send a message to the server via the channel
+     *
+     * @param  array<string, mixed>  $params
      */
     private function sendMessage(string $method, array $params = []): Generator
     {
@@ -453,7 +457,29 @@ final class Locator
     {
         $result = $this->processResultResponse($response);
 
-        return $result ?? '';
+        if (! is_string($result) && ! is_numeric($result)) {
+            return '';
+        }
+
+        return (string) $result;
+    }
+
+    /**
+     * Process response and extract nullable string result
+     */
+    private function processNullableStringResponse(Generator $response): ?string
+    {
+        $result = $this->processResultResponse($response);
+
+        if ($result === null) {
+            return null;
+        }
+
+        if (! is_string($result) && ! is_numeric($result)) {
+            return null;
+        }
+
+        return (string) $result;
     }
 
     /**
@@ -463,7 +489,11 @@ final class Locator
     {
         $result = $this->processResultResponse($response);
 
-        return $result ?? false;
+        if (! is_bool($result)) {
+            return false;
+        }
+
+        return $result;
     }
 
     /**
@@ -484,8 +514,8 @@ final class Locator
         /** @var array{method: string|null, params: array{type: string|null, guid: string}} $message */
         foreach ($response as $message) {
             if (
-                isset($message['method']) && $message['method'] === '__create__'
-                && isset($message['params']['type']) && $message['params']['type'] === 'ElementHandle'
+                $message['method'] === '__create__'
+                && $message['params']['type'] === 'ElementHandle'
             ) {
                 return new Element($message['params']['guid']);
             }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Playwright;
 
+use Generator;
 use Pest\Browser\Support\Screenshot;
 
 /**
@@ -37,7 +38,9 @@ final class Page
         $this->frame->goto($url);
 
         return $this;
-    }    /**
+    }
+
+    /**
      * Navigates to the next page in the history.
      */
     public function forward(): self
@@ -46,7 +49,9 @@ final class Page
         $this->processNavigationResponse($response);
 
         return $this;
-    }    /**
+    }
+
+    /**
      * Navigates to the previous page in the history.
      */
     public function back(): self
@@ -55,7 +60,9 @@ final class Page
         $this->processNavigationResponse($response);
 
         return $this;
-    }    /**
+    }
+
+    /**
      * Reloads the current page.
      */
     public function reload(): self
@@ -353,8 +360,10 @@ final class Page
 
     /**
      * Send a message to the server via the channel
+     *
+     * @param  array<string, mixed>  $params
      */
-    private function sendMessage(string $method, array $params = []): \Generator
+    private function sendMessage(string $method, array $params = []): Generator
     {
         return Client::instance()->execute($this->guid, $method, $params);
     }
@@ -362,7 +371,7 @@ final class Page
     /**
      * Process navigation response messages
      */
-    private function processNavigationResponse(\Generator $response): void
+    private function processNavigationResponse(Generator $response): void
     {
         /** @var array{method: string|null, params: array{url: string|null}} $message */
         foreach ($response as $message) {
