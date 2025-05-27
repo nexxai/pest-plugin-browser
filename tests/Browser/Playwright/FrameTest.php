@@ -525,3 +525,159 @@ describe('Integration Tests', function (): void {
         });
     });
 });
+
+describe('Hover Functionality', function (): void {
+    beforeEach(function (): void {
+        $this->page = $this->page(playgroundUrl('/test/frame-tests'));
+    });
+
+    describe('Basic hover interactions', function (): void {
+        it('hovers over elements and triggers hover state changes', function (): void {
+            // Wait for page to load completely
+            $this->page->waitForSelector('#hover-target');
+
+            // Verify initial state before hover
+            expect($this->page->textContent('#hover-display'))->toBe('No element hovered yet');
+
+            // Perform hover action
+            $this->page->hover('#hover-target');
+
+            // Verify hover state changed
+            expect($this->page->textContent('#hover-display'))->toBe('Last hovered: hover-target');
+
+            // Verify the element is still visible after hover
+            expect($this->page->isVisible('#hover-target'))->toBeTrue();
+        });
+
+        it('hovers over basic elements', function (): void {
+            $this->page->waitForSelector('#hover-target');
+
+            // Perform hover action on the actual hover-target element
+            $this->page->hover('#hover-target');
+
+            // Verify element is still visible after hover
+            expect($this->page->isVisible('#hover-target'))->toBeTrue();
+        });
+
+        it('hovers over disabled elements with force parameter', function (): void {
+            $this->page->waitForSelector('#disabled-button');
+
+            // Hover with force on disabled element
+            $this->page->hover('#disabled-button', force: true);
+
+            // Verify element is still disabled after hover
+            expect($this->page->isEnabled('#disabled-button'))->toBeFalse();
+        });
+
+        it('hovers over simple elements', function (): void {
+            $this->page->waitForSelector('#enabled-button');
+
+            // Hover over enabled button
+            $this->page->hover('#enabled-button');
+
+            // Verify button is still enabled after hover
+            expect($this->page->isEnabled('#enabled-button'))->toBeTrue();
+        });
+
+        it('hovers over form elements', function (): void {
+            $this->page->waitForSelector('#test-input');
+
+            // Hover over input element
+            $this->page->hover('#test-input');
+
+            // Verify input is still enabled after hover
+            expect($this->page->isEnabled('#test-input'))->toBeTrue();
+        });
+
+        it('hovers with modifier keys on basic elements', function (): void {
+            $this->page->waitForSelector('#enabled-button');
+
+            // Hover with shift modifier
+            $this->page->hover('#enabled-button', modifiers: ['Shift']);
+
+            // Verify element is still functional after hover with modifiers
+            expect($this->page->isEnabled('#enabled-button'))->toBeTrue();
+        });
+
+        it('hovers with timeout parameter on form elements', function (): void {
+            $this->page->waitForSelector('#test-input');
+
+            // Hover with timeout on a form element
+            $this->page->hover('#test-input', timeout: 5000);
+
+            // Verify element is still functional after hover with timeout
+            expect($this->page->isEnabled('#test-input'))->toBeTrue();
+        });
+
+        it('verifies elements remain interactive after hover', function (): void {
+            $this->page->waitForSelector('#test-content');
+
+            // Check if element exists and is visible
+            expect($this->page->isVisible('#test-content'))->toBeTrue();
+
+            // Hover over element
+            $this->page->hover('#test-content');
+
+            // Verify the element is still visible and interactive after hover
+            expect($this->page->isVisible('#test-content'))->toBeTrue();
+        });
+
+        it('hovers over buttons and verifies they remain functional', function (): void {
+            $this->page->waitForSelector('#enabled-button');
+
+            // Verify button is enabled before hover
+            expect($this->page->isEnabled('#enabled-button'))->toBeTrue();
+
+            // Hover over button
+            $this->page->hover('#enabled-button');
+
+            // Verify button is still enabled after hover
+            expect($this->page->isEnabled('#enabled-button'))->toBeTrue();
+
+            // Verify button can still be clicked after hover
+            $this->page->click('#enabled-button');
+        });
+    });
+
+    describe('Advanced hover functionality', function (): void {
+        it('hovers with position parameter', function (): void {
+            $this->page->waitForSelector('#hover-target');
+
+            // Hover at specific position
+            $this->page->hover('#hover-target', position: ['x' => 10, 'y' => 10]);
+
+            // Verify hover worked
+            expect($this->page->textContent('#hover-display'))->toBe('Last hovered: hover-target');
+        });
+
+        it('hovers with strict parameter', function (): void {
+            $this->page->waitForSelector('#hover-target');
+
+            // Hover with strict mode
+            $this->page->hover('#hover-target', strict: true);
+
+            // Verify hover worked
+            expect($this->page->isVisible('#hover-target'))->toBeTrue();
+        });
+
+        it('hovers with trial parameter', function (): void {
+            $this->page->waitForSelector('#hover-target');
+
+            // Hover with trial mode (performs action without side effects)
+            $this->page->hover('#hover-target', trial: true);
+
+            // In trial mode, the action is performed but without side effects
+            expect($this->page->isVisible('#hover-target'))->toBeTrue();
+        });
+
+        it('hovers with noWaitAfter parameter', function (): void {
+            $this->page->waitForSelector('#hover-target');
+
+            // Hover without waiting after the action
+            $this->page->hover('#hover-target', noWaitAfter: true);
+
+            // Verify element is still functional
+            expect($this->page->isVisible('#hover-target'))->toBeTrue();
+        });
+    });
+});

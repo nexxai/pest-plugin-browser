@@ -271,9 +271,41 @@ final class Frame
     /**
      * Hovers over the element matching the specified selector.
      */
-    public function hover(string $selector): self
-    {
-        $response = $this->sendMessage('hover', ['selector' => $selector]);
+    public function hover(
+        string $selector,
+        ?bool $force = null,
+        ?array $modifiers = null,
+        ?bool $noWaitAfter = null,
+        ?array $position = null,
+        ?bool $strict = null,
+        ?int $timeout = null,
+        ?bool $trial = null
+    ): self {
+        $params = ['selector' => $selector];
+
+        if ($force !== null) {
+            $params['force'] = $force;
+        }
+        if ($modifiers !== null) {
+            $params['modifiers'] = $modifiers;
+        }
+        if ($noWaitAfter !== null) {
+            $params['noWaitAfter'] = $noWaitAfter;
+        }
+        if ($position !== null) {
+            $params['position'] = $position;
+        }
+        if ($strict !== null) {
+            $params['strict'] = $strict;
+        }
+        if ($timeout !== null) {
+            $params['timeout'] = $timeout;
+        }
+        if ($trial !== null) {
+            $params['trial'] = $trial;
+        }
+
+        $response = $this->sendMessage('hover', $params);
         $this->processVoidResponse($response);
 
         return $this;
@@ -338,6 +370,19 @@ final class Frame
         );
 
         return $this;
+    }
+
+    /**
+     * Waits for the selector to satisfy state option.
+     *
+     * @param array<string, mixed>|null $options Additional options like state, strict, timeout
+     */
+    public function waitForSelector(string $selector, ?array $options = null): ?Element
+    {
+        $params = array_merge(['selector' => $selector], $options ?? []);
+        $response = $this->sendMessage('waitForSelector', $params);
+
+        return $this->processElementCreationResponse($response);
     }
 
     /**
@@ -454,5 +499,23 @@ final class Frame
         foreach ($response as $message) {
             // Consume all messages to clear the response
         }
+    }
+
+    /**
+     * Process response to handle element creation messages.
+     */
+    private function processElementCreationResponse(Generator $response): ?Element
+    {
+        foreach ($response as $message) {
+            if (
+                isset($message['method']) && $message['method'] === '__create__'
+                && isset($message['params']['type']) && $message['params']['type'] === 'ElementHandle'
+                && isset($message['params']['guid'])
+            ) {
+                return new Element($message['params']['guid']);
+            }
+        }
+
+        return null;
     }
 }

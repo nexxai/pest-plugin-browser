@@ -291,9 +291,17 @@ final class Page
     /**
      * Hovers over the element matching the specified selector.
      */
-    public function hover(string $selector): self
-    {
-        $this->frame->hover($selector);
+    public function hover(
+        string $selector,
+        ?bool $force = null,
+        ?array $modifiers = null,
+        ?bool $noWaitAfter = null,
+        ?array $position = null,
+        ?bool $strict = null,
+        ?int $timeout = null,
+        ?bool $trial = null
+    ): self {
+        $this->frame->hover($selector, $force, $modifiers, $noWaitAfter, $position, $strict, $timeout, $trial);
 
         return $this;
     }
@@ -346,9 +354,7 @@ final class Page
         $this->frame->waitForLoadState($state);
 
         return $this;
-    }
-
-    /**
+    }    /**
      * Waits for the frame to navigate to the given URL.
      */
     public function waitForURL(string $url): self
@@ -356,6 +362,16 @@ final class Page
         $this->frame->waitForURL($url);
 
         return $this;
+    }
+
+    /**
+     * Waits for the selector to satisfy state option.
+     *
+     * @param array<string, mixed>|null $options Additional options like state, strict, timeout
+     */
+    public function waitForSelector(string $selector, ?array $options = null): ?Element
+    {
+        return $this->frame->waitForSelector($selector, $options);
     }
 
     /**

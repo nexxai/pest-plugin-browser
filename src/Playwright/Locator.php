@@ -392,7 +392,8 @@ final class Locator
             /** @var array<string, mixed> $message */
             foreach ($response as $message) {
                 if (
-                    $message['method'] === '__create__'
+                    isset($message['method'], $message['params']['type'])
+                    && $message['method'] === '__create__'
                     && isset($message['params']) && is_array($message['params'])
                     && isset($message['params']['type']) && $message['params']['type'] === 'ElementHandle'
                 ) {
@@ -508,13 +509,13 @@ final class Locator
 
     /**
      * Process response for Element creation
-     */
-    private function processElementResponse(Generator $response): ?Element
+     */    private function processElementResponse(Generator $response): ?Element
     {
         /** @var array{method: string|null, params: array{type: string|null, guid: string}} $message */
         foreach ($response as $message) {
             if (
-                $message['method'] === '__create__'
+                isset($message['method'], $message['params']['type'], $message['params']['guid'])
+                && $message['method'] === '__create__'
                 && $message['params']['type'] === 'ElementHandle'
             ) {
                 return new Element($message['params']['guid']);

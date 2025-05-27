@@ -501,7 +501,8 @@ final class Element
         /** @var array{method: string|null, params: array{type: string|null, guid: string}} $message */
         foreach ($response as $message) {
             if (
-                $message['method'] === '__create__'
+                isset($message['method'], $message['params']['type'], $message['params']['guid'])
+                && $message['method'] === '__create__'
                 && $message['params']['type'] === 'ElementHandle'
             ) {
                 return new self($message['params']['guid']);
@@ -523,7 +524,8 @@ final class Element
         /** @var array{method: string|null, params: array{type: string|null, guid: string}} $message */
         foreach ($response as $message) {
             if (
-                $message['method'] === '__create__'
+                isset($message['method'], $message['params']['type'], $message['params']['guid'])
+                && $message['method'] === '__create__'
                 && $message['params']['type'] === 'ElementHandle'
             ) {
                 $elements[] = new self($message['params']['guid']);
