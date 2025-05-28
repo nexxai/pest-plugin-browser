@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Pest\Browser\Playwright\Element;
 use Pest\Browser\Playwright\Locator;
 
 describe('Element Selectors', function (): void {

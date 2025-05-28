@@ -375,7 +375,7 @@ final class Frame
     /**
      * Waits for the selector to satisfy state option.
      *
-     * @param array<string, mixed>|null $options Additional options like state, strict, timeout
+     * @param  array<string, mixed>|null  $options  Additional options like state, strict, timeout
      */
     public function waitForSelector(string $selector, ?array $options = null): ?Element
     {

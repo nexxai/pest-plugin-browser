@@ -509,7 +509,8 @@ final class Locator
 
     /**
      * Process response for Element creation
-     */    private function processElementResponse(Generator $response): ?Element
+     */
+    private function processElementResponse(Generator $response): ?Element
     {
         /** @var array{method: string|null, params: array{type: string|null, guid: string}} $message */
         foreach ($response as $message) {
