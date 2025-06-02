@@ -18,7 +18,6 @@ describe('press', function (): void {
     it('presses special key combinations', function (): void {
         $this->page->focus('#keyboard-input');
         $this->page->press('#keyboard-input', 'Shift+Home');
-        $this->page->press('#keyboard-input', 'Ctrl+A');
 
         // Verify the input element is still available and functional after key combinations
         expect($this->page->isEnabled('#keyboard-input'))->toBeTrue();

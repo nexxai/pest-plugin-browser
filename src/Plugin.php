@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pest\Browser;
 
-use Pest\Browser\Playwright\Server;
 use Pest\Contracts\Plugins\Terminable;
 
 /**
@@ -18,7 +17,5 @@ final readonly class Plugin implements Terminable
     public function terminate(): void
     {
         ServerManager::instance()->terminate();
-
-        Server::instance()->stop();
     }
 }

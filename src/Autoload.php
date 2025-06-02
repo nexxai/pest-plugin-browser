@@ -7,24 +7,9 @@ namespace Pest\Browser;
 use Pest\Browser\Playwright\Client;
 use Pest\Browser\Playwright\Page;
 use Pest\Browser\Playwright\Playwright;
-use Pest\Browser\Playwright\Server;
 use Pest\Plugin;
 
 Plugin::uses(Browser::class);
-
-if (! function_exists('\Pest\Browser\visit')) {
-    /**
-     * Visits the given URL, and starts a new browser test.
-     */
-    function visit(string $url): PendingTest
-    {
-        Server::instance()->start();
-        ServerManager::instance()->resolve()->start();
-        Client::instance()->connectTo(Server::instance()->url('?browser=chromium'));
-
-        return (new PendingTest)->visit($url);
-    }
-}
 
 if (! function_exists('\Pest\Browser\page')) {
     /**
@@ -32,9 +17,12 @@ if (! function_exists('\Pest\Browser\page')) {
      */
     function page(?string $url = null): Page
     {
-        Server::instance()->start();
-        ServerManager::instance()->resolve()->start();
-        Client::instance()->connectTo(Server::instance()->url('?browser=chromium'));
+        ServerManager::instance()->playwright()->start();
+        ServerManager::instance()->http()->start();
+
+        Client::instance()->connectTo(
+            ServerManager::instance()->playwright()->url().'?browser=chromium',
+        );
 
         $browser = Playwright::chromium()->launch();
         $page = $browser->newPage();

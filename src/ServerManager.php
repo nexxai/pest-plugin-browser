@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Pest\Browser;
 
 use Pest\Browser\Exceptions\ServerNotFoundException;
-use Pest\Browser\Servers\AbstractServer;
-use Pest\Browser\Servers\ArtisanServer;
+use Pest\Browser\Support\Process;
 
 /**
  * @internal
@@ -14,14 +13,24 @@ use Pest\Browser\Servers\ArtisanServer;
 final class ServerManager
 {
     /**
+     * The default host for the server.
+     */
+    private const string DEFAULT_HOST = '127.0.0.1';
+
+    /**
      * The singleton instance of the server manager.
      */
     private static ?ServerManager $instance = null;
 
     /**
-     * The server instance already in use by this process.
+     * The HTTP server process.
      */
-    private ?AbstractServer $server = null;
+    private ?Process $http = null;
+
+    /**
+     * The Playwright server process.
+     */
+    private ?Process $playwright = null;
 
     /**
      * Gets the singleton instance of the server manager.
@@ -32,37 +41,56 @@ final class ServerManager
     }
 
     /**
-     * Returns the server instance based on the environment.
+     * Returns the "http" instance based on the environment.
      *
      * @throws ServerNotFoundException
      */
-    public function resolve(): AbstractServer
+    public function http(): Process
     {
-        if ($this->server instanceof AbstractServer) {
-            return $this->server;
+        if ($this->http instanceof Process) {
+            return $this->http;
         }
 
-        return $this->server = match (true) {
+        $baseDirectory = match (true) {
             // laravel...
-            function_exists('app_path') => new ArtisanServer(app_path()),
+            function_exists('app_path') => app_path(),
 
             // playground...
-            file_exists(__DIR__.'/../playground/artisan') => new ArtisanServer(__DIR__.'/../playground'),
+            file_exists(__DIR__.'/../playground/artisan') => __DIR__.'/../playground',
 
             // no server found...
             default => throw new ServerNotFoundException('No server found for the current environment.'),
         };
+
+        assert(is_string($baseDirectory));
+
+        return $this->http = Process::create(
+            $baseDirectory,
+            'php artisan serve --host=%s --port=%d',
+            self::DEFAULT_HOST,
+            'Server running on',
+        );
     }
 
     /**
-     * Terminates the server if it started.
+     * Returns the Playwright server process instance.
+     */
+    public function playwright(): Process
+    {
+        return $this->playwright ??= Process::create(
+            __DIR__.'/..',
+            'npx playwright run-server --host %s --port %d',
+            self::DEFAULT_HOST,
+            'Listening on',
+        );
+    }
+
+    /**
+     * Terminates both the HTTP and Playwright servers.
      */
     public function terminate(): void
     {
-        if ($this->server instanceof AbstractServer) {
-            $this->server->terminate();
-
-            $this->server = null;
-        }
+        $this->http?->stop();
+        $this->playwright?->stop();
     }
 }
