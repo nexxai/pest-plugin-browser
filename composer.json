@@ -66,5 +66,12 @@
         "post-install-cmd": [
             "composer install -d playground --ansi"
         ]
+    },
+    "extra": {
+        "pest": {
+            "plugins": [
+                "Pest\\Browser\\Plugin"
+            ]
+        }
     }
 }

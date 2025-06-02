@@ -7,7 +7,7 @@ use Pest\Browser\Playwright\Locator;
 
 describe('Locator', function (): void {
     beforeEach(function (): void {
-        $this->page = $this->page(playgroundUrl('/test/element-tests'));
+        $this->page = $this->page('/test/element-tests');
     });
 
     describe('locator creation', function (): void {

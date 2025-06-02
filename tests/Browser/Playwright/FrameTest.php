@@ -6,7 +6,7 @@ use Pest\Browser\Playwright\Locator;
 
 describe('Element Selectors', function (): void {
     beforeEach(function (): void {
-        $this->page = $this->page(playgroundUrl('/test/selector-tests'));
+        $this->page = $this->page('/test/selector-tests');
     });
 
     describe('getByTestId', function (): void {
@@ -166,7 +166,7 @@ describe('Element Selectors', function (): void {
 
 describe('Content and Element State', function (): void {
     beforeEach(function (): void {
-        $this->page = $this->page(playgroundUrl('/test/frame-tests'));
+        $this->page = $this->page('/test/frame-tests');
     });
 
     describe('content extraction', function (): void {
@@ -257,7 +257,7 @@ describe('Content and Element State', function (): void {
 
 describe('Form Interactions', function (): void {
     beforeEach(function (): void {
-        $this->page = $this->page(playgroundUrl('/test/frame-tests'));
+        $this->page = $this->page('/test/frame-tests');
     });
 
     describe('filling inputs', function (): void {
@@ -335,7 +335,7 @@ describe('Form Interactions', function (): void {
 
 describe('User Interactions', function (): void {
     beforeEach(function (): void {
-        $this->page = $this->page(playgroundUrl('/test/frame-tests'));
+        $this->page = $this->page('/test/frame-tests');
     });
 
     describe('mouse interactions', function (): void {
@@ -416,7 +416,7 @@ describe('User Interactions', function (): void {
 
 describe('Waiting and Navigation', function (): void {
     beforeEach(function (): void {
-        $this->page = $this->page(playgroundUrl('/test/frame-tests'));
+        $this->page = $this->page('/test/frame-tests');
     });
 
     describe('load state waiting', function (): void {
@@ -441,7 +441,7 @@ describe('Waiting and Navigation', function (): void {
 
     describe('URL waiting', function (): void {
         it('waits for URL pattern', function (): void {
-            $currentUrl = playgroundUrl('/test/selector-tests');
+            $currentUrl = '/test/selector-tests';
             $this->page->waitForURL($currentUrl);
 
             expect(true)->toBeTrue();
@@ -451,7 +451,7 @@ describe('Waiting and Navigation', function (): void {
 
 describe('Integration Tests', function (): void {
     beforeEach(function (): void {
-        $this->page = $this->page(playgroundUrl('/test/frame-tests'));
+        $this->page = $this->page('/test/frame-tests');
     });
 
     describe('comprehensive form workflow', function (): void {
@@ -527,7 +527,7 @@ describe('Integration Tests', function (): void {
 
 describe('Hover Functionality', function (): void {
     beforeEach(function (): void {
-        $this->page = $this->page(playgroundUrl('/test/frame-tests'));
+        $this->page = $this->page('/test/frame-tests');
     });
 
     describe('Basic hover interactions', function (): void {

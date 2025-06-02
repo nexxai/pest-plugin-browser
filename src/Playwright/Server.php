@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Playwright;
 
+use Pest\Browser\Support\Port;
 use Symfony\Component\Process\Process;
 
 /**
@@ -13,12 +14,10 @@ final class Server
 {
     private const string DEFAULT_HOST = '127.0.0.1';
 
-    private const int DEFAULT_PORT = 9222;
-
     /**
      * Playwright server process.
      */
-    private Process $process;
+    private ?Process $process = null;
 
     /**
      * Server instance.
@@ -42,8 +41,8 @@ final class Server
     {
         if (! self::$instance instanceof self) {
             self::$instance = new self(
-                (string) ($_ENV['PEST_BROWSER_HOST'] ?? self::DEFAULT_HOST), // @phpstan-ignore-line
-                (int) ($_ENV['PEST_BROWSER_PORT'] ?? self::DEFAULT_PORT), // @phpstan-ignore-line
+                self::DEFAULT_HOST,
+                Port::findAvailable(self::DEFAULT_HOST, 9357, 9800),
             );
         }
 
@@ -81,14 +80,7 @@ final class Server
      */
     public function isRunning(): bool
     {
-        $process = Process::fromShellCommandline("lsof -t -i :{$this->port} 2>/dev/null");
-
-        $process->run();
-        $output = $process->getOutput();
-
-        $pids = array_filter(explode("\n", mb_trim($output)), fn (string $pid): bool => (int) $pid > 0);
-
-        return count($pids) > 0;
+        return $this->process?->isRunning() === true;
     }
 
     /**
@@ -97,9 +89,9 @@ final class Server
     public function stop(): void
     {
         if ($this->isRunning()) {
-            $command = Process::fromShellCommandline("kill -9 $(lsof -t -i :{$this->port})");
-            $command->disableOutput();
-            $command->run();
+            $this->process->stop(5, SIGTERM);
+
+            $this->process = null;
         }
     }
 
@@ -108,6 +100,6 @@ final class Server
      */
     public function url(string $query = ''): string
     {
-        return sprintf('ws://%s:%s/%s', self::DEFAULT_HOST, self::DEFAULT_PORT, $query);
+        return sprintf('ws://%s:%s/%s', self::DEFAULT_HOST, $this->port, $query);
     }
 }

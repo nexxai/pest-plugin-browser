@@ -23,6 +23,7 @@ trait Visit
     public function visit(string $url): self
     {
         $browser = Playwright::chromium()->launch();
+
         $this->page = $browser->newPage();
         $this->page->goto($url);
 

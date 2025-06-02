@@ -8,7 +8,7 @@ describe('Element', function (): void {
     describe('state checking methods', function (): void {
         describe('isVisible', function (): void {
             it('returns true for visible elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByTestId('profile-section');
                 $element = $locator->elementHandle();
 
@@ -17,7 +17,7 @@ describe('Element', function (): void {
             });
 
             it('returns false for hidden elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByTestId('hidden-element');
                 $element = $locator->elementHandle();
 
@@ -28,7 +28,7 @@ describe('Element', function (): void {
 
         describe('isHidden', function (): void {
             it('returns false for visible elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByTestId('profile-section');
                 $element = $locator->elementHandle();
 
@@ -36,7 +36,7 @@ describe('Element', function (): void {
             });
 
             it('returns true for hidden elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByTestId('hidden-element');
                 $element = $locator->elementHandle();
 
@@ -46,7 +46,7 @@ describe('Element', function (): void {
 
         describe('isEnabled', function (): void {
             it('returns true for enabled input elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByLabel('Username');
                 $element = $locator->elementHandle();
 
@@ -54,7 +54,7 @@ describe('Element', function (): void {
             });
 
             it('returns false for disabled input elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByTestId('disabled-input');
                 $element = $locator->elementHandle();
 
@@ -64,7 +64,7 @@ describe('Element', function (): void {
 
         describe('isDisabled', function (): void {
             it('returns false for enabled input elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByLabel('Username');
                 $element = $locator->elementHandle();
 
@@ -72,7 +72,7 @@ describe('Element', function (): void {
             });
 
             it('returns true for disabled input elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByTestId('disabled-input');
                 $element = $locator->elementHandle();
 
@@ -82,7 +82,7 @@ describe('Element', function (): void {
 
         describe('isEditable', function (): void {
             it('returns true for editable input elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByLabel('Username');
                 $element = $locator->elementHandle();
 
@@ -90,7 +90,7 @@ describe('Element', function (): void {
             });
 
             it('returns false for readonly input elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByTestId('readonly-input');
                 $element = $locator->elementHandle();
 
@@ -100,7 +100,7 @@ describe('Element', function (): void {
 
         describe('isChecked', function (): void {
             it('returns false for unchecked checkbox', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByRole('checkbox', ['name' => 'Remember Me']);
                 $element = $locator->elementHandle();
 
@@ -108,7 +108,7 @@ describe('Element', function (): void {
             });
 
             it('returns true for checked checkbox', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByRole('checkbox', ['name' => 'Remember Me']);
                 $element = $locator->elementHandle();
 
@@ -121,7 +121,7 @@ describe('Element', function (): void {
     describe('interaction methods', function (): void {
         describe('click', function (): void {
             it('can click on buttons', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByRole('button', ['name' => 'Save']);
                 $element = $locator->elementHandle();
 
@@ -133,7 +133,7 @@ describe('Element', function (): void {
             });
 
             it('can click with options', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByRole('button', ['name' => 'Save']);
                 $element = $locator->elementHandle();
 
@@ -144,7 +144,7 @@ describe('Element', function (): void {
 
         describe('dblclick', function (): void {
             it('can double-click on elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByRole('button', ['name' => 'Save']);
                 $element = $locator->elementHandle();
 
@@ -155,7 +155,7 @@ describe('Element', function (): void {
 
         describe('fill', function (): void {
             it('can fill input fields', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByLabel('Username');
                 $element = $locator->elementHandle();
 
@@ -164,7 +164,7 @@ describe('Element', function (): void {
             });
 
             it('can fill with options', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByLabel('Username');
                 $element = $locator->elementHandle();
 
@@ -175,7 +175,7 @@ describe('Element', function (): void {
 
         describe('type', function (): void {
             it('can type into input fields', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByLabel('Password');
                 $element = $locator->elementHandle();
 
@@ -186,7 +186,7 @@ describe('Element', function (): void {
 
         describe('press', function (): void {
             it('can press keys', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByLabel('Username');
                 $element = $locator->elementHandle();
 
@@ -200,7 +200,7 @@ describe('Element', function (): void {
 
         describe('focus', function (): void {
             it('can focus elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByLabel('Username');
                 $element = $locator->elementHandle();
 
@@ -211,7 +211,7 @@ describe('Element', function (): void {
 
         describe('hover', function (): void {
             it('can hover over elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByRole('button', ['name' => 'Save']);
                 $element = $locator->elementHandle();
 
@@ -224,7 +224,7 @@ describe('Element', function (): void {
     describe('form interaction methods', function (): void {
         describe('check and uncheck', function (): void {
             it('can check and uncheck checkboxes', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByRole('checkbox', ['name' => 'Remember Me']);
                 $element = $locator->elementHandle();
 
@@ -240,7 +240,7 @@ describe('Element', function (): void {
 
         describe('selectOption', function (): void {
             it('can select options from select elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByTestId('test-select');
                 $element = $locator->elementHandle();
 
@@ -252,7 +252,7 @@ describe('Element', function (): void {
 
         describe('selectText', function (): void {
             it('can select text in input fields', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByLabel('Username');
                 $element = $locator->elementHandle();
 
@@ -266,7 +266,7 @@ describe('Element', function (): void {
     describe('property getter methods', function (): void {
         describe('getAttribute', function (): void {
             it('can get element attributes', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByLabel('Username');
                 $element = $locator->elementHandle();
 
@@ -276,7 +276,7 @@ describe('Element', function (): void {
             });
 
             it('returns null for non-existent attributes', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByLabel('Username');
                 $element = $locator->elementHandle();
 
@@ -286,7 +286,7 @@ describe('Element', function (): void {
 
         describe('textContent', function (): void {
             it('can get text content of elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByText('This is a simple paragraph', true);
                 $element = $locator->elementHandle();
 
@@ -294,7 +294,7 @@ describe('Element', function (): void {
             });
 
             it('returns null for elements without text content', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByLabel('Username');
                 $element = $locator->elementHandle();
 
@@ -305,7 +305,7 @@ describe('Element', function (): void {
 
         describe('innerText', function (): void {
             it('can get inner text of elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByText('This is a simple paragraph', true);
                 $element = $locator->elementHandle();
 
@@ -315,7 +315,7 @@ describe('Element', function (): void {
 
         describe('innerHTML', function (): void {
             it('can get inner HTML of elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByTestId('profile-section');
                 $element = $locator->elementHandle();
 
@@ -327,7 +327,7 @@ describe('Element', function (): void {
 
         describe('inputValue', function (): void {
             it('can get input values', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByLabel('Username');
                 $element = $locator->elementHandle();
 
@@ -339,7 +339,7 @@ describe('Element', function (): void {
     describe('element finding methods', function (): void {
         describe('querySelector', function (): void {
             it('can find child elements with CSS selectors', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $containerLocator = $page->getByTestId('profile-section');
                 $container = $containerLocator->elementHandle();
 
@@ -350,7 +350,7 @@ describe('Element', function (): void {
             });
 
             it('returns null when no element matches', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $containerLocator = $page->getByTestId('profile-section');
                 $container = $containerLocator->elementHandle();
 
@@ -362,7 +362,7 @@ describe('Element', function (): void {
 
         describe('querySelectorAll', function (): void {
             it('can find multiple child elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $containerLocator = $page->getByTestId('user-profile');
                 $container = $containerLocator->elementHandle();
 
@@ -377,7 +377,7 @@ describe('Element', function (): void {
             });
 
             it('returns empty array when no elements match', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $containerLocator = $page->getByTestId('profile-section');
                 $container = $containerLocator->elementHandle();
 
@@ -390,7 +390,7 @@ describe('Element', function (): void {
 
         describe('getByRole', function (): void {
             it('can find elements by role within container', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $containerLocator = $page->getByTestId('user-profile');
                 $container = $containerLocator->elementHandle();
 
@@ -401,7 +401,7 @@ describe('Element', function (): void {
             });
 
             it('returns null for non-existent role', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $containerLocator = $page->getByTestId('profile-section');
                 $container = $containerLocator->elementHandle();
 
@@ -413,7 +413,7 @@ describe('Element', function (): void {
 
         describe('getByTestId', function (): void {
             it('can find elements by test ID within container', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $containerLocator = $page->getByTestId('user-profile');
                 $container = $containerLocator->elementHandle();
 
@@ -424,7 +424,7 @@ describe('Element', function (): void {
             });
 
             it('returns null for non-existent test ID', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $containerLocator = $page->getByTestId('profile-section');
                 $container = $containerLocator->elementHandle();
 
@@ -436,7 +436,7 @@ describe('Element', function (): void {
 
         describe('getByText', function (): void {
             it('can find elements by text content within container', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $containerLocator = $page->getByTestId('user-profile');
                 $container = $containerLocator->elementHandle();
 
@@ -447,7 +447,7 @@ describe('Element', function (): void {
             });
 
             it('returns null for non-existent text', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $containerLocator = $page->getByTestId('profile-section');
                 $container = $containerLocator->elementHandle();
 
@@ -459,7 +459,7 @@ describe('Element', function (): void {
 
         describe('getByLabel', function (): void {
             it('can find elements by label within container', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $containerLocator = $page->locator('body');
                 $container = $containerLocator->elementHandle();
 
@@ -472,7 +472,7 @@ describe('Element', function (): void {
 
         describe('getByPlaceholder', function (): void {
             it('can find elements by placeholder within container', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $containerLocator = $page->locator('body');
                 $container = $containerLocator->elementHandle();
 
@@ -483,7 +483,7 @@ describe('Element', function (): void {
             });
 
             it('supports exact matching', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $containerLocator = $page->locator('body');
                 $container = $containerLocator->elementHandle();
 
@@ -495,7 +495,7 @@ describe('Element', function (): void {
 
         describe('getByAltText', function (): void {
             it('can find elements by alt text within container', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $containerLocator = $page->getByTestId('user-profile');
                 $container = $containerLocator->elementHandle();
 
@@ -506,7 +506,7 @@ describe('Element', function (): void {
             });
 
             it('supports exact matching', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $containerLocator = $page->getByTestId('user-profile');
                 $container = $containerLocator->elementHandle();
 
@@ -518,7 +518,7 @@ describe('Element', function (): void {
 
         describe('getByTitle', function (): void {
             it('can find elements by title within container', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $containerLocator = $page->getByTestId('user-profile');
                 $container = $containerLocator->elementHandle();
 
@@ -529,7 +529,7 @@ describe('Element', function (): void {
             });
 
             it('supports exact matching', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $containerLocator = $page->getByTestId('user-profile');
                 $container = $containerLocator->elementHandle();
 
@@ -543,7 +543,7 @@ describe('Element', function (): void {
     describe('advanced methods', function (): void {
         describe('boundingBox', function (): void {
             it('can get bounding box of visible elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByTestId('profile-section');
                 $element = $locator->elementHandle();
 
@@ -557,7 +557,7 @@ describe('Element', function (): void {
             });
 
             it('returns null for hidden elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByTestId('hidden-element');
                 $element = $locator->elementHandle();
 
@@ -569,7 +569,7 @@ describe('Element', function (): void {
 
         describe('screenshot', function (): void {
             it('can take screenshot of elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByTestId('profile-section');
                 $element = $locator->elementHandle();
 
@@ -583,7 +583,7 @@ describe('Element', function (): void {
 
         describe('scrollIntoViewIfNeeded', function (): void {
             it('can scroll element into view', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByTestId('scroll-target');
                 $element = $locator->elementHandle();
 
@@ -597,7 +597,7 @@ describe('Element', function (): void {
     describe('frame methods', function (): void {
         describe('contentFrame', function (): void {
             it('returns null for non-iframe elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByTestId('profile-section');
                 $element = $locator->elementHandle();
 
@@ -607,7 +607,7 @@ describe('Element', function (): void {
             });
 
             it('returns frame for iframe elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByTestId('test-iframe');
                 $element = $locator->elementHandle();
 
@@ -620,7 +620,7 @@ describe('Element', function (): void {
 
         describe('ownerFrame', function (): void {
             it('returns frame information for elements', function (): void {
-                $page = $this->page()->goto(playgroundUrl('/test/element-tests'));
+                $page = $this->page()->goto('/test/element-tests');
                 $locator = $page->getByTestId('profile-section');
                 $element = $locator->elementHandle();
 
