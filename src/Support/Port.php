@@ -28,7 +28,7 @@ final readonly class Port
     /**
      * Checks if a port is available.
      */
-    private static function isPortAvailable(string $host, int $port): bool
+    public static function isPortAvailable(string $host, int $port): bool
     {
         $ch = curl_init("http://{$host}:{$port}");
 

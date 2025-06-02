@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Pest\Browser;
 
 use Pest\Browser\Exceptions\ServerNotFoundException;
+use Pest\Browser\Support\FakeProcess;
 use Pest\Browser\Support\Process;
+use Pest\Plugins\Parallel;
 
 /**
  * @internal
@@ -75,22 +77,21 @@ final class ServerManager
     /**
      * Returns the Playwright server process instance.
      */
-    public function playwright(): Process
+    public function playwright(): Process|FakeProcess
     {
+        if (Parallel::isWorker()) {
+            return new FakeProcess(
+                self::DEFAULT_HOST,
+                8077,
+            );
+        }
+
         return $this->playwright ??= Process::create(
             __DIR__.'/..',
             'npx playwright run-server --host %s --port %d',
             self::DEFAULT_HOST,
             'Listening on',
+            8077,
         );
-    }
-
-    /**
-     * Terminates both the HTTP and Playwright servers.
-     */
-    public function terminate(): void
-    {
-        $this->http?->stop();
-        $this->playwright?->stop();
     }
 }

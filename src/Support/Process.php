@@ -33,9 +33,15 @@ final class Process
     /**
      * Creates a new process instance with the given parameters.
      */
-    public static function create(string $baseDirectory, string $command, string $host, string $until): self
+    public static function create(string $baseDirectory, string $command, string $host, string $until, ?int $port = null): self
     {
-        $port = Port::findAvailable($host, 8010, 9000);
+        $startPort = 8010;
+
+        if (getenv('TEST_TOKEN') !== false) {
+            $startPort = (((int) getenv('TEST_TOKEN')) * 10) + $startPort;
+        }
+
+        $port = $port !== null && $port !== 0 ? $port : Port::findAvailable($host, $startPort, 9000);
 
         return new self(
             $baseDirectory, $command, $host, $port, $until
@@ -69,7 +75,7 @@ final class Process
      */
     public function stop(): void
     {
-        if ($this->systemProcess instanceof \Symfony\Component\Process\Process && $this->isRunning()) {
+        if ($this->systemProcess instanceof SystemProcess && $this->isRunning()) {
             $this->systemProcess->stop(5, SIGTERM);
         }
 
@@ -84,7 +90,15 @@ final class Process
     public function url(): string
     {
         if (! $this->isRunning()) {
-            throw new RuntimeException('The process has not been started yet or has stopped unexpectedly.');
+            throw new RuntimeException(
+                sprintf('The process with arguments [%s] is not running or has stopped unexpectedly.', json_encode([
+                    'baseDirectory' => $this->baseDirectory,
+                    'command' => $this->command,
+                    'host' => $this->host,
+                    'port' => $this->port,
+                    'until' => $this->until,
+                ]),
+                ));
         }
 
         return sprintf('%s:%d', $this->host, $this->port);

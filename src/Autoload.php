@@ -17,7 +17,6 @@ if (! function_exists('\Pest\Browser\page')) {
      */
     function page(?string $url = null): Page
     {
-        ServerManager::instance()->playwright()->start();
         ServerManager::instance()->http()->start();
 
         Client::instance()->connectTo(
