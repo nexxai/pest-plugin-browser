@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use Pest\Browser\Playwright\Locator;
-
 it('returns false for visible elements', function (): void {
     $page = $this->page()->goto('/test/element-tests');
     $locator = $page->getByTestId('profile-section');

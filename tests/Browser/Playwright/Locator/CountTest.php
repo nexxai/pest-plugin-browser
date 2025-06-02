@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use Pest\Browser\Playwright\Locator;
-
 it('can count matching elements', function (): void {
     $page = $this->page()->goto('/test/element-tests');
     $buttons = $page->locator('button');

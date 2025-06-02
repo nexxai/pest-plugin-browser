@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use Pest\Browser\Playwright\Locator;
-
 it('can click on buttons', function (): void {
     $page = $this->page()->goto('/test/element-tests');
     $button = $page->getByTestId('click-button');

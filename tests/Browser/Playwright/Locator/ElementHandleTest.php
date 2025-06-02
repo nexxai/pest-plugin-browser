@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Pest\Browser\Playwright\Element;
-use Pest\Browser\Playwright\Locator;
 
 it('can get element handle from locator', function (): void {
     $page = $this->page()->goto('/test/element-tests');
