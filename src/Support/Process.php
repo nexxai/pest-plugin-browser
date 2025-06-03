@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Support;
 
+use PHPUnit\Event\Telemetry\System;
 use RuntimeException;
 use Symfony\Component\Process\Process as SystemProcess;
 
@@ -76,7 +77,10 @@ final class Process
     public function stop(): void
     {
         if ($this->systemProcess instanceof SystemProcess && $this->isRunning()) {
-            $this->systemProcess->stop(5, SIGTERM);
+            $this->systemProcess->stop(
+                5,
+                defined('SIGTERM') ? SIGTERM : null,
+            );
         }
 
         $this->systemProcess = null;
