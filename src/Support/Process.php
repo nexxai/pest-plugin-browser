@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Support;
 
-use PHPUnit\Event\Telemetry\System;
 use RuntimeException;
 use Symfony\Component\Process\Process as SystemProcess;
 
