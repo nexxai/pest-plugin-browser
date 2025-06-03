@@ -6,6 +6,7 @@ namespace Pest\Browser\Playwright;
 
 use Generator;
 use Pest\Browser\Support\Selector;
+use RuntimeException;
 
 /**
  * @internal
@@ -365,7 +366,7 @@ final class Locator
     /**
      * Filter this locator to only match elements that also match the given criteria.
      *
-     * @param string|array<string, mixed> $options Selector string or filter options array
+     * @param  string|array<string, mixed>  $options  Selector string or filter options array
      */
     public function filter(string|array $options = []): self
     {
@@ -406,7 +407,8 @@ final class Locator
         }
 
         $filterString = implode('', $filters);
-        return new self($this->frameGuid, $this->selector . $filterString);
+
+        return new self($this->frameGuid, $this->selector.$filterString);
     }
 
     /**
@@ -531,7 +533,7 @@ final class Locator
     public function and(self $locator): self
     {
         // This would require combining selectors in a way that both match
-        return new self($this->frameGuid, $this->selector . ':is(' . $locator->selector . ')');
+        return new self($this->frameGuid, $this->selector.':is('.$locator->selector.')');
     }
 
     /**
@@ -540,7 +542,7 @@ final class Locator
     public function or(self $locator): self
     {
         // This would require combining selectors with OR logic
-        return new self($this->frameGuid, $this->selector . ', ' . $locator->selector);
+        return new self($this->frameGuid, $this->selector.', '.$locator->selector);
     }
 
     /**
@@ -572,7 +574,7 @@ final class Locator
     {
         $element = $this->elementHandle();
         if ($element === null) {
-            throw new \RuntimeException('Element not found');
+            throw new RuntimeException('Element not found');
         }
         $element->selectText();
     }
@@ -584,7 +586,7 @@ final class Locator
     {
         $element = $this->elementHandle();
         if ($element === null) {
-            throw new \RuntimeException('Element not found');
+            throw new RuntimeException('Element not found');
         }
 
         if ($checked) {
@@ -597,14 +599,15 @@ final class Locator
     /**
      * Take a screenshot of the element.
      *
-     * @param array<string, mixed>|null $options
+     * @param  array<string, mixed>|null  $options
      */
     public function screenshot(?array $options = null): string
     {
         $element = $this->elementHandle();
         if ($element === null) {
-            throw new \RuntimeException('Element not found');
+            throw new RuntimeException('Element not found');
         }
+
         return $element->screenshot($options);
     }
 
@@ -615,7 +618,7 @@ final class Locator
     {
         $element = $this->elementHandle();
         if ($element === null) {
-            throw new \RuntimeException('Element not found');
+            throw new RuntimeException('Element not found');
         }
         $element->scrollIntoViewIfNeeded();
     }
@@ -636,7 +639,7 @@ final class Locator
     {
         // This would typically return a FrameLocator, but for simplicity
         // we'll return a regular locator pointing to the frame content
-        return new self($this->frameGuid, $this->selector . ' >> ' . $selector);
+        return new self($this->frameGuid, $this->selector.' >> '.$selector);
     }
 
     /**
@@ -651,22 +654,22 @@ final class Locator
     /**
      * Wait for the locator to match a specific state.
      *
-     * @param array<string, mixed>|null $options
+     * @param  array<string, mixed>|null  $options
      */
     public function waitForState(string $state = 'visible', ?array $options = null): void
     {
         $element = $this->elementHandle();
         if ($element === null) {
-            throw new \RuntimeException('Element not found');
+            throw new RuntimeException('Element not found');
         }
         $element->waitForElementState($state, $options);
     }
 
-
-
     /**
      * Get all Element handles for this locator.
+     *
      * @deprecated Use all() method instead for better type safety
+     *
      * @return Element[]
      */
     public function elementHandles(): array

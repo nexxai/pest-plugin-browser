@@ -58,7 +58,7 @@ it('can combine multiple filter options', function (): void {
     $elements = $page->locator('*');
     $filteredElements = $elements->filter([
         'hasText' => 'Click',
-        'hasNot' => $page->locator('.disabled')
+        'hasNot' => $page->locator('.disabled'),
     ]);
 
     expect($filteredElements)->toBeInstanceOf(Locator::class);
