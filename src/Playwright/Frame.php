@@ -7,6 +7,7 @@ namespace Pest\Browser\Playwright;
 use Generator;
 use Pest\Browser\ServerManager;
 use Pest\Browser\Support\Selector;
+use RuntimeException;
 
 /**
  * @internal
@@ -69,6 +70,29 @@ final class Frame
     public function querySelector(string $selector): ?Element
     {
         return $this->locator($selector)->elementHandle();
+    }
+
+    /**
+     * Finds all elements matching the specified selector.
+     *
+     * @return Element[]
+     */
+    public function querySelectorAll(string $selector): array
+    {
+        $response = $this->sendMessage('querySelectorAll', ['selector' => $selector]);
+        $elements = [];
+
+        foreach ($response as $message) {
+            if (
+                isset($message['method']) && $message['method'] === '__create__'
+                && isset($message['params']['type']) && $message['params']['type'] === 'ElementHandle'
+                && isset($message['params']['guid'])
+            ) {
+                $elements[] = new Element($message['params']['guid']);
+            }
+        }
+
+        return $elements;
     }
 
     /**
@@ -197,6 +221,34 @@ final class Frame
     public function isHidden(string $selector): bool
     {
         return ! $this->isVisible($selector);
+    }
+
+    /**
+     * Returns whether the element is editable.
+     */
+    public function isEditable(string $selector): bool
+    {
+        try {
+            $response = $this->sendMessage('isEditable', ['selector' => $selector]);
+
+            return $this->processBooleanResponse($response);
+        } catch (RuntimeException $e) {
+            // If the element is not a form element or contenteditable, return false
+            if (str_contains($e->getMessage(), 'not an <input>, <textarea>, <select> or [contenteditable]')) {
+                return false;
+            }
+
+            // Re-throw other exceptions
+            throw $e;
+        }
+    }
+
+    /**
+     * Returns whether the element is disabled.
+     */
+    public function isDisabled(string $selector): bool
+    {
+        return ! $this->isEnabled($selector);
     }
 
     /**
@@ -409,6 +461,89 @@ final class Frame
         $this->processVoidResponse($response);
 
         return $this;
+    }
+
+    /**
+     * Selects option(s) in a select element.
+     *
+     * @param  string|array|null  $value
+     * @param  string|array|null  $label
+     * @param  int|array|null  $index
+     */
+    public function selectOption(
+        string $selector,
+        $value = null,
+        $label = null,
+        $index = null,
+        ?bool $force = null,
+        ?bool $noWaitAfter = null,
+        ?bool $strict = null,
+        ?int $timeout = null
+    ): self {
+        $params = ['selector' => $selector];
+
+        // Add the appropriate selection criteria - choose only one
+        if ($value !== null) {
+            $params['value'] = is_array($value) ? $value : [$value];
+        } elseif ($label !== null) {
+            $params['label'] = is_array($label) ? $label : [$label];
+        } elseif ($index !== null) {
+            $params['index'] = is_array($index) ? $index : [$index];
+        }
+
+        // Add optional parameters
+        if ($force !== null) {
+            $params['force'] = $force;
+        }
+        if ($noWaitAfter !== null) {
+            $params['noWaitAfter'] = $noWaitAfter;
+        }
+        if ($strict !== null) {
+            $params['strict'] = $strict;
+        }
+        if ($timeout !== null) {
+            $params['timeout'] = $timeout;
+        }
+
+        $response = $this->sendMessage('selectOption', $params);
+        $this->processNavigationResponse($response);
+
+        return $this;
+    }
+
+    /**
+     * Evaluates a JavaScript expression in the frame context.
+     *
+     * @param  mixed  $arg
+     * @return mixed
+     */
+    public function evaluate(string $pageFunction, $arg = null)
+    {
+        $params = ['expression' => $pageFunction];
+
+        if ($arg !== null) {
+            $params['arg'] = $arg;
+        }
+
+        $response = $this->sendMessage('evaluate', $params);
+
+        return $this->processResultResponse($response);
+    }
+
+    /**
+     * Evaluates a JavaScript expression and returns a JSHandle.
+     */
+    public function evaluateHandle(string $pageFunction, $arg = null): mixed
+    {
+        $params = ['expression' => $pageFunction];
+
+        if ($arg !== null) {
+            $params['arg'] = $arg;
+        }
+
+        $response = $this->sendMessage('evaluateHandle', $params);
+
+        return $this->processResultResponse($response);
     }
 
     /**
