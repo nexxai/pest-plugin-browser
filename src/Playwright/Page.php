@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pest\Browser\Playwright;
 
 use Generator;
+use Pest\Browser\Playwright\Concerns\InteractsWithPlaywright;
 use Pest\Browser\Support\Screenshot;
 
 /**
@@ -12,6 +13,8 @@ use Pest\Browser\Support\Screenshot;
  */
 final class Page
 {
+    use InteractsWithPlaywright;
+
     /**
      * Constructs new page
      */
@@ -421,18 +424,10 @@ final class Page
         return $this->frame->waitForSelector($selector, $options);
     }
 
-    /**
-     * Send a message to the server via the channel
-     *
-     * @param  array<string, mixed>  $params
-     */
-    private function sendMessage(string $method, array $params = []): Generator
-    {
-        return Client::instance()->execute($this->guid, $method, $params);
-    }
+    // Common methods are now provided by the InteractsWithPlaywright trait
 
     /**
-     * Process navigation response messages
+     * Override processNavigationResponse for Page specific behavior
      */
     private function processNavigationResponse(Generator $response): void
     {

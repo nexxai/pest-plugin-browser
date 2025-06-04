@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Playwright;
 
-use Generator;
+use Pest\Browser\Playwright\Concerns\InteractsWithPlaywright;
 use Pest\Browser\ServerManager;
 use Pest\Browser\Support\Selector;
 use RuntimeException;
@@ -14,6 +14,8 @@ use RuntimeException;
  */
 final class Frame
 {
+    use InteractsWithPlaywright;
+
     /**
      * Constructs new frame.
      */
@@ -546,115 +548,5 @@ final class Frame
         return $this->processResultResponse($response);
     }
 
-    /**
-     * Send a message to the server via the channel
-     *
-     * @param  array<string, mixed>  $params
-     */
-    private function sendMessage(string $method, array $params = []): Generator
-    {
-        return Client::instance()->execute($this->guid, $method, $params);
-    }
-
-    /**
-     * Process navigation response messages
-     */
-    private function processNavigationResponse(Generator $response): void
-    {
-        /** @var array{method: string|null, params: array{url: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['method']) && $message['method'] === 'navigated') {
-                $this->url = $message['params']['url'] ?? '';
-            }
-        }
-    }
-
-    /**
-     * Process response and extract result value
-     */
-    private function processResultResponse(Generator $response): mixed
-    {
-        /** @var array{result: array{value: mixed}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['value'])) {
-                return $message['result']['value'];
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Process response and extract string result
-     */
-    private function processStringResponse(Generator $response): string
-    {
-        $result = $this->processResultResponse($response);
-
-        if (! is_string($result) && ! is_numeric($result)) {
-            return '';
-        }
-
-        return (string) $result;
-    }
-
-    /**
-     * Process response and extract nullable string result
-     */
-    private function processNullableStringResponse(Generator $response): ?string
-    {
-        $result = $this->processResultResponse($response);
-
-        if ($result === null) {
-            return null;
-        }
-
-        if (! is_string($result) && ! is_numeric($result)) {
-            return null;
-        }
-
-        return (string) $result;
-    }
-
-    /**
-     * Process response and extract boolean result
-     */
-    private function processBooleanResponse(Generator $response): bool
-    {
-        $result = $this->processResultResponse($response);
-
-        if (! is_bool($result)) {
-            return false;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Process response consuming all messages
-     */
-    private function processVoidResponse(Generator $response): void
-    {
-        foreach ($response as $message) {
-            // Consume all messages to clear the response
-        }
-    }
-
-    /**
-     * Process response to handle element creation messages.
-     */
-    private function processElementCreationResponse(Generator $response): ?Element
-    {
-        foreach ($response as $message) {
-            if (
-                isset($message['method']) && $message['method'] === '__create__'
-                && isset($message['params']['type']) && $message['params']['type'] === 'ElementHandle'
-                && isset($message['params']['guid'])
-            ) {
-                return new Element($message['params']['guid']);
-            }
-        }
-
-        return null;
-    }
+    // These methods are now provided by the InteractsWithPlaywright trait
 }
