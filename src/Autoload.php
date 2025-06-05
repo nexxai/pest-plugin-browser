@@ -14,8 +14,11 @@ Plugin::uses(Browser::class);
 if (! function_exists('\Pest\Browser\page')) {
     /**
      * Visits the given URL, and starts a new browser test.
+     *
+     * @param  string|null  $url  The URL to visit
+     * @param  array<string, mixed>  $options  Options for the page, e.g. ['hasTouch' => true]
      */
-    function page(?string $url = null): Page
+    function page(?string $url = null, array $options = []): Page
     {
         ServerManager::instance()->http()->start();
 
@@ -24,7 +27,7 @@ if (! function_exists('\Pest\Browser\page')) {
         );
 
         $browser = Playwright::chromium()->launch();
-        $page = $browser->newPage();
+        $page = $browser->newContext($options)->newPage();
 
         if ($url !== null) {
             $page->goto($url);

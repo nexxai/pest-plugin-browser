@@ -135,6 +135,16 @@ final class Element
     }
 
     /**
+     * Tap the element (touch screen interaction).
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function tap(?array $options = null): void
+    {
+        $this->processVoidResponse($this->sendMessage('tap', $options ?? []));
+    }
+
+    /**
      * Select text in the element.
      *
      * @param  array<string, mixed>|null  $options
