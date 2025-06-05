@@ -547,6 +547,4 @@ final class Frame
 
         return $this->processResultResponse($response);
     }
-
-    // These methods are now provided by the InteractsWithPlaywright trait
 }

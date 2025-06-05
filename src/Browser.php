@@ -12,14 +12,6 @@ use Pest\Browser\Playwright\Page;
 trait Browser
 {
     /**
-     * Visits the given URL, and starts a new browser test.
-     */
-    public function visit(string $url): PendingTest
-    {
-        return visit($url);
-    }
-
-    /**
      * gets the page instance for given URL.
      */
     public function page(?string $url = null): Page

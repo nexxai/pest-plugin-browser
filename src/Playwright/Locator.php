@@ -702,6 +702,4 @@ final class Locator
 
         return Client::instance()->execute($this->frameGuid, $method, $finalParams);
     }
-
-    // Other methods are now provided by the InteractsWithPlaywright trait
 }

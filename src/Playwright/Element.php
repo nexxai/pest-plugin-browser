@@ -405,6 +405,4 @@ final class Element
     {
         return $this->querySelector(Selector::getByTitleSelector($text, $exact));
     }
-
-    // These methods are now provided by the InteractsWithPlaywright trait
 }

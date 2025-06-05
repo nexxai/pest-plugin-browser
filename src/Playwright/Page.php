@@ -424,8 +424,6 @@ final class Page
         return $this->frame->waitForSelector($selector, $options);
     }
 
-    // Common methods are now provided by the InteractsWithPlaywright trait
-
     /**
      * Override processNavigationResponse for Page specific behavior
      */
