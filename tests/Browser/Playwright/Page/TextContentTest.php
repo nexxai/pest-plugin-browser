@@ -20,4 +20,10 @@ describe('textContent', function (): void {
         expect($text)->toContain('List item 1');
         expect($text)->toContain('List item 2');
     });
+
+    it('gets text content as empty string when no content', function (): void {
+        $text = $this->page->textContent('#empty-id');
+
+        expect($text)->toBe('');
+    });
 });

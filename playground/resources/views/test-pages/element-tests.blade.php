@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,7 +29,10 @@
             display: block;
         }
 
-        input, textarea, select, button {
+        input,
+        textarea,
+        select,
+        button {
             margin: 5px;
             padding: 8px;
         }
@@ -56,7 +60,12 @@
             object-fit: cover;
         }
 
-        .counter-item, .text-item, .inner-text-item, .nth-item, .first-item, .last-item {
+        .counter-item,
+        .text-item,
+        .inner-text-item,
+        .nth-item,
+        .first-item,
+        .last-item {
             padding: 10px;
             margin: 5px 0;
             background: #e9ecef;
@@ -64,6 +73,7 @@
         }
     </style>
 </head>
+
 <body>
     <h1>Element Tests Playground</h1>
 
@@ -73,6 +83,7 @@
         <p>This section has a data-testid attribute and is visible by default.</p>
         <button type="button">Submit</button>
     </div>
+    <div id="empty-id"></div>
 
     <!-- Hidden Element -->
     <div data-testid="hidden-element" class="hidden">
@@ -167,8 +178,8 @@
     <div class="section user-profile" data-testid="user-profile">
         <h2>User Profile</h2>
         <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzY2NzMiLz4KICA8dGV4dCB4PSI1MCIgeT0iNTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlVzZXI8L3RleHQ+Cjwvc3ZnPgo="
-             alt="Profile Picture"
-             class="profile-picture" />
+            alt="Profile Picture"
+            class="profile-picture" />
 
         <h3 title="User's Name">Jane Doe</h3>
         <p data-testid="user-email">jane.doe@example.com</p>
@@ -295,4 +306,5 @@
         });
     </script>
 </body>
+
 </html>

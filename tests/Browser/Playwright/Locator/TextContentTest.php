@@ -8,3 +8,10 @@ it('can get text content', function (): void {
 
     expect($element->textContent())->toContain('Profile Section');
 });
+
+it('can get text content as empty string when no content', function (): void {
+    $page = $this->page()->goto('/test/element-tests');
+    $element = $page->locator('#empty-id');
+
+    expect($element->textContent())->toBe('');
+});
