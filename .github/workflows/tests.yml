@@ -56,11 +56,3 @@ jobs:
     - name: Tests
       run: |
         composer test
-
-    - name: Non-parallel Tests
-      run: |
-        ./vendor/bin/pest
-
-    - name: Parallel Tests
-      run: |
-        ./vendor/bin/pest --parallel

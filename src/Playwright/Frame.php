@@ -84,11 +84,12 @@ final class Frame
         $response = $this->sendMessage('querySelectorAll', ['selector' => $selector]);
         $elements = [];
 
+        /** @var array{method?: string|null, params: array{type?: string|null, guid?: string}} $message */
         foreach ($response as $message) {
             if (
-                isset($message['method']) && $message['method'] === '__create__'
-                && isset($message['params']['type']) && $message['params']['type'] === 'ElementHandle'
-                && isset($message['params']['guid'])
+                isset($message['method'], $message['params']['type'], $message['params']['guid'])
+                && $message['method'] === '__create__'
+                && $message['params']['type'] === 'ElementHandle'
             ) {
                 $elements[] = new Element($message['params']['guid']);
             }
@@ -328,6 +329,9 @@ final class Frame
 
     /**
      * Hovers over the element matching the specified selector.
+     *
+     * @param  array<int, string>|null  $modifiers
+     * @param  array<int, int>|null  $position
      */
     public function hover(
         string $selector,
@@ -468,15 +472,15 @@ final class Frame
     /**
      * Selects option(s) in a select element.
      *
-     * @param  string|array|null  $value
-     * @param  string|array|null  $label
-     * @param  int|array|null  $index
+     * @param  array<int, string>|string|null  $value
+     * @param  array<int, string>|string|null  $label
+     * @param  array<int, int>|int|null  $index
      */
     public function selectOption(
         string $selector,
-        $value = null,
-        $label = null,
-        $index = null,
+        array|string|null $value = null,
+        array|string|null $label = null,
+        array|int|null $index = null,
         ?bool $force = null,
         ?bool $noWaitAfter = null,
         ?bool $strict = null,
@@ -517,9 +521,8 @@ final class Frame
      * Evaluates a JavaScript expression in the frame context.
      *
      * @param  mixed  $arg
-     * @return mixed
      */
-    public function evaluate(string $pageFunction, $arg = null)
+    public function evaluate(string $pageFunction, $arg = null): mixed
     {
         $params = ['expression' => $pageFunction];
 
@@ -535,7 +538,7 @@ final class Frame
     /**
      * Evaluates a JavaScript expression and returns a JSHandle.
      */
-    public function evaluateHandle(string $pageFunction, $arg = null): mixed
+    public function evaluateHandle(string $pageFunction, mixed $arg = null): mixed
     {
         $params = ['expression' => $pageFunction];
 
