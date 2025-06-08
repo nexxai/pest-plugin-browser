@@ -63,6 +63,8 @@ final class Process
             $this->port,
         ), $this->baseDirectory);
 
+        $this->systemProcess->setTimeout(0);
+
         $this->systemProcess->start();
 
         $this->systemProcess->waitUntil(
