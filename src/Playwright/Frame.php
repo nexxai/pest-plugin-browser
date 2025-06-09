@@ -31,8 +31,11 @@ final class Frame
      */
     public function goto(string $url): self
     {
-        $url = mb_ltrim($url, '/');
-        $url = ServerManager::instance()->http()->url().'/'.$url;
+        if (! str_starts_with($url, 'http://') && ! str_starts_with($url, 'https://')) {
+            $url = mb_ltrim($url, '/');
+
+            $url = ServerManager::instance()->http()->url().'/'.$url;
+        }
 
         if ($this->url === $url) {
             return $this;

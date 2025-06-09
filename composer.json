@@ -49,7 +49,7 @@
         "test:type-coverage": "pest --type-coverage --exactly=100",
         "test:typos": "peck",
         "test:lint": "pint --test",
-        "test:unit": "pest --parallel --coverage --exactly=80.4",
+        "test:unit": "pest --parallel --coverage --exactly=80.5",
         "test:types": "phpstan",
         "test:refactor": "rector --dry-run",
         "test": [

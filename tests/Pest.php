@@ -4,9 +4,20 @@ declare(strict_types=1);
 
 use Pest\Browser\Playwright\Element;
 use Pest\Browser\Playwright\Locator;
+use Pest\Browser\Playwright\Page;
 use Pest\Expectation;
 
 // todo: move this to Pest core
+expect()->extend('toHaveTitle', function (string $title): Expectation {
+    if (! $this->value instanceof Page) {
+        throw new InvalidArgumentException('Expected value to be an Page instance');
+    }
+
+    expect($this->value->title())->toBe($title);
+
+    return $this;
+});
+
 expect()->extend('toBeChecked', function (): Expectation {
 
     if (! $this->value instanceof Element && ! $this->value instanceof Locator) {
