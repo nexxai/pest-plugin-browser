@@ -14,7 +14,6 @@ describe('inputValue', function (): void {
     });
 
     it('gets empty value for empty inputs', function (): void {
-        // First clear the input to ensure it's empty
         $this->page->fill('#test-input', '');
         $value = $this->page->inputValue('#test-input');
 

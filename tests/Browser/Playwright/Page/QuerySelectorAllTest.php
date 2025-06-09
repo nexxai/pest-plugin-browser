@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Pest\Browser\Playwright\Element;
+
 describe('querySelectorAll', function (): void {
     beforeEach(function (): void {
         $this->page = $this->page('/test/frame-tests');
@@ -19,7 +21,7 @@ describe('querySelectorAll', function (): void {
 
         expect($elements)->toBeArray();
         expect($elements)->toHaveCount(1);
-        expect($elements[0])->toBeInstanceOf(Pest\Browser\Playwright\Element::class);
+        expect($elements[0])->toBeInstanceOf(Element::class);
     });
 
     it('returns multiple elements when multiple match', function (): void {
@@ -29,7 +31,7 @@ describe('querySelectorAll', function (): void {
         expect(count($elements))->toBeGreaterThan(1);
 
         foreach ($elements as $element) {
-            expect($element)->toBeInstanceOf(Pest\Browser\Playwright\Element::class);
+            expect($element)->toBeInstanceOf(Element::class);
         }
     });
 
@@ -40,7 +42,7 @@ describe('querySelectorAll', function (): void {
         expect(count($inputs))->toBeGreaterThan(0);
 
         foreach ($inputs as $input) {
-            expect($input)->toBeInstanceOf(Pest\Browser\Playwright\Element::class);
+            expect($input)->toBeInstanceOf(Element::class);
         }
     });
 
