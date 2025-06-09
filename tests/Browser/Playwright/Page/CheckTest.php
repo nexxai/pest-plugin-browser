@@ -16,10 +16,8 @@ describe('check', function (): void {
     });
 
     it('changes state after checking', function (): void {
-        // Initially unchecked
         expect($this->page->isChecked('#unchecked-checkbox'))->toBeFalse();
 
-        // Check it
         $this->page->check('#unchecked-checkbox');
         expect($this->page->isChecked('#unchecked-checkbox'))->toBeTrue();
     });
