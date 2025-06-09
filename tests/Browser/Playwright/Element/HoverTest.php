@@ -2,11 +2,19 @@
 
 declare(strict_types=1);
 
-it('can hover over elements', function (): void {
+it('hovers over elements and verifies hover state changes', function (): void {
     $page = $this->page()->goto('/test/element-tests');
-    $locator = $page->getByRole('button', ['name' => 'Save']);
-    $element = $locator->elementHandle();
 
-    $element->hover();
-    expect($element->isVisible())->toBeTrue();
+    $hoverTargetLocator = $page->getByTestId('hover-target');
+    $hoverTarget = $hoverTargetLocator->elementHandle();
+
+    $hoverDisplayLocator = $page->getByTestId('hover-display');
+    $hoverDisplay = $hoverDisplayLocator->elementHandle();
+
+    expect($hoverDisplay->textContent())->toBe('No element hovered yet');
+
+    $hoverTarget->hover();
+
+    expect($hoverDisplay->textContent())->toBe('Last hovered: hover-target');
+    expect($hoverTarget->isVisible())->toBeTrue();
 });

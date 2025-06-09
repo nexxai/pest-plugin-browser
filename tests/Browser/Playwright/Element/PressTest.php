@@ -2,16 +2,23 @@
 
 declare(strict_types=1);
 
-use Pest\Browser\Playwright\Element;
-
-it('can press keys', function (): void {
+it('presses keys on input elements and verifies input changes', function (): void {
     $page = $this->page()->goto('/test/element-tests');
-    $locator = $page->getByLabel('Username');
+    $locator = $page->getByTestId('text-input');
     $element = $locator->elementHandle();
 
     $element->focus();
+    $element->fill('');
 
-    $element->press('Enter');
-    // Key press doesn't change the element state, just verify no error
-    expect($element)->toBeInstanceOf(Element::class);
+    $element->press('a');
+    $element->press('b');
+    $element->press('c');
+    expect($element->inputValue())->toBe('abc');
+
+    $element->press('Backspace');
+    expect($element->inputValue())->toBe('ab');
+
+    $element->press('Control+a');
+    $element->press('Delete');
+    expect($element->inputValue())->toBe('');
 });

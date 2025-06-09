@@ -252,6 +252,12 @@
     <!-- Elements for Event Testing -->
     <div class="section">
         <h2>Event Testing</h2>
+        <div id="focus-display" data-testid="focus-display" class="p-2 bg-blue-50 border text-sm mb-2">No element focused yet</div>
+        <div id="hover-display" data-testid="hover-display" class="p-2 bg-green-50 border text-sm mb-2">No element hovered yet</div>
+        <div id="hover-target" data-testid="hover-target" class="p-4 border bg-blue-100 hover:bg-blue-200 transition-colors cursor-pointer mb-4">
+            Hover Target
+        </div>
+        <input id="focus-target" data-testid="focus-target" type="text" class="bg-white text-black p-2 border focus:border-blue-500 mb-4" placeholder="Focus on me" />
         <button id="event-button" data-testid="event-button">Click Me</button>
         <div id="event-result" data-testid="event-result"></div>
     </div>
@@ -262,15 +268,29 @@
         <div data-testid="scroll-target" style="margin-top: 500px;">
             This element is far down the page for scroll testing
         </div>
-    </div>
-
-    <script>
+    </div>    <script>
         // Counter for click testing
         let clickCounter = 0;
 
         function incrementCounter() {
             clickCounter++;
             document.querySelector('[data-testid="click-counter"]').textContent = clickCounter;
+        }
+
+        // Focus tracking function
+        function trackFocus(elementId) {
+            const focusDisplay = document.getElementById('focus-display');
+            if (focusDisplay) {
+                focusDisplay.textContent = 'Last focused: ' + elementId;
+            }
+        }
+
+        // Hover tracking function
+        function trackHover(elementId) {
+            const hoverDisplay = document.getElementById('hover-display');
+            if (hoverDisplay) {
+                hoverDisplay.textContent = 'Last hovered: ' + elementId;
+            }
         }
 
         // Add some basic interactivity for testing
@@ -284,6 +304,40 @@
                     eventResult.textContent = 'Button was clicked!';
                 });
             }
+
+            // Add focus tracking event listeners
+            document.getElementById('focus-target').addEventListener('focus', function() {
+                trackFocus('focus-target');
+            });
+            document.getElementById('username').addEventListener('focus', function() {
+                trackFocus('username');
+            });
+            document.getElementById('password').addEventListener('focus', function() {
+                trackFocus('password');
+            });
+            document.getElementById('search').addEventListener('focus', function() {
+                trackFocus('search');
+            });
+            document.getElementById('comments').addEventListener('focus', function() {
+                trackFocus('comments');
+            });
+
+            // Hover tracking
+            const hoverTarget = document.getElementById('hover-target');
+            if (hoverTarget) {
+                ['mouseenter', 'mouseover', 'pointerenter'].forEach(event => {
+                    hoverTarget.addEventListener(event, function() {
+                        trackHover('hover-target');
+                    });
+                });
+            }
+
+            // Add global hover detection for Playwright compatibility
+            document.addEventListener('mousemove', function(e) {
+                if (e.target.id === 'hover-target') {
+                    trackHover('hover-target');
+                }
+            });
 
             // Make forms more interactive
             const usernameInput = document.getElementById('username');
