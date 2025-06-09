@@ -442,13 +442,12 @@ final class Locator
             );
 
             $found = false;
-            /** @var array<string, mixed> $message */
+            /** @var array{method?: string, params: array{type?: string}} $message */
             foreach ($response as $message) {
                 if (
                     isset($message['method'], $message['params']['type'])
                     && $message['method'] === '__create__'
-                    && isset($message['params']) && is_array($message['params'])
-                    && isset($message['params']['type']) && $message['params']['type'] === 'ElementHandle'
+                    && $message['params']['type'] === 'ElementHandle'
                 ) {
                     $found = true;
                     break;
@@ -478,6 +477,8 @@ final class Locator
 
     /**
      * Returns an array of all locators matching this locator.
+     *
+     * @return array<int, self>
      */
     public function all(): array
     {
@@ -493,16 +494,17 @@ final class Locator
 
     /**
      * Returns an array of all inner texts for elements matching this locator.
+     *
+     * @return array<int, string>
      */
     public function allInnerTexts(): array
     {
-        // Alternative implementation using existing methods
         $texts = [];
         $count = $this->count();
 
         for ($i = 0; $i < $count; $i++) {
             $element = $this->nth($i)->elementHandle();
-            if ($element !== null) {
+            if ($element instanceof Element) {
                 $texts[] = $element->innerText();
             }
         }
@@ -512,6 +514,8 @@ final class Locator
 
     /**
      * Returns an array of all text contents for elements matching this locator.
+     *
+     * @return array<int, string>
      */
     public function allTextContents(): array
     {
@@ -521,7 +525,7 @@ final class Locator
 
         for ($i = 0; $i < $count; $i++) {
             $element = $this->nth($i)->elementHandle();
-            if ($element !== null) {
+            if ($element instanceof Element) {
                 $textContent = $element->textContent();
                 $texts[] = $textContent ?? '';
             }
@@ -559,11 +563,13 @@ final class Locator
 
     /**
      * Returns the bounding box of the element, or null if not visible.
+     *
+     * @return array{x: float, y: float, width: float, height: float}|null
      */
     public function boundingBox(): ?array
     {
         $element = $this->elementHandle();
-        if ($element === null) {
+        if (! $element instanceof Element) {
             return null;
         }
 
@@ -576,7 +582,7 @@ final class Locator
     public function selectText(): void
     {
         $element = $this->elementHandle();
-        if ($element === null) {
+        if (! $element instanceof Element) {
             throw new RuntimeException('Element not found');
         }
         $element->selectText();
@@ -588,7 +594,7 @@ final class Locator
     public function setChecked(bool $checked): void
     {
         $element = $this->elementHandle();
-        if ($element === null) {
+        if (! $element instanceof Element) {
             throw new RuntimeException('Element not found');
         }
 
@@ -607,7 +613,7 @@ final class Locator
     public function screenshot(?array $options = null): string
     {
         $element = $this->elementHandle();
-        if ($element === null) {
+        if (! $element instanceof Element) {
             throw new RuntimeException('Element not found');
         }
 
@@ -620,7 +626,7 @@ final class Locator
     public function scrollIntoViewIfNeeded(): void
     {
         $element = $this->elementHandle();
-        if ($element === null) {
+        if (! $element instanceof Element) {
             throw new RuntimeException('Element not found');
         }
         $element->scrollIntoViewIfNeeded();
@@ -662,32 +668,10 @@ final class Locator
     public function waitForState(string $state = 'visible', ?array $options = null): void
     {
         $element = $this->elementHandle();
-        if ($element === null) {
+        if (! $element instanceof Element) {
             throw new RuntimeException('Element not found');
         }
         $element->waitForElementState($state, $options);
-    }
-
-    /**
-     * Get all Element handles for this locator.
-     *
-     * @deprecated Use all() method instead for better type safety
-     *
-     * @return Element[]
-     */
-    public function elementHandles(): array
-    {
-        $elements = [];
-        $count = $this->count();
-
-        for ($i = 0; $i < $count; $i++) {
-            $element = $this->nth($i)->elementHandle();
-            if ($element !== null) {
-                $elements[] = $element;
-            }
-        }
-
-        return $elements;
     }
 
     /**

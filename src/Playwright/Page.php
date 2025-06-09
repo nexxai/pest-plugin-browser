@@ -329,6 +329,9 @@ final class Page
 
     /**
      * Hover over an element.
+     *
+     * @param  array<int, string>|null  $modifiers
+     * @param  array<int, int>|null  $position
      */
     public function hover(
         string $selector,

@@ -7,6 +7,8 @@ namespace Pest\Browser\Playwright\Concerns;
 use Generator;
 use Pest\Browser\Playwright\Client;
 use Pest\Browser\Playwright\Element;
+use Pest\Browser\Playwright\Locator;
+use Pest\Browser\Playwright\Page;
 
 /**
  * @internal
@@ -113,9 +115,16 @@ trait InteractsWithPlaywright
     {
         /** @var array{method: string|null, params: array{url: string|null}} $message */
         foreach ($response as $message) {
-            if (isset($message['method']) && $message['method'] === 'navigated') {
-                $this->url = $message['params']['url'] ?? '';
+            if (! isset($message['method'])) {
+                continue;
             }
+            if ($message['method'] !== 'navigated') {
+                continue;
+            }
+            if (! $this instanceof Page) {
+                continue;
+            }
+            $this->url = $message['params']['url'] ?? '';
         }
     }
 
@@ -127,6 +136,7 @@ trait InteractsWithPlaywright
         /** @var array{method: string|null, params: array{type: string|null, guid: string}} $message */
         foreach ($response as $message) {
             if (
+                // @phpstan-ignore-next-line
                 isset($message['method'], $message['params']['type'], $message['params']['guid'])
                 && $message['method'] === '__create__'
                 && $message['params']['type'] === 'ElementHandle'
@@ -163,7 +173,7 @@ trait InteractsWithPlaywright
     {
         $elements = [];
 
-        /** @var array{method: string|null, params: array{type: string|null, guid: string}} $message */
+        /** @var array{method?: string|null, params: array{type?: string|null, guid?: string}} $message */
         foreach ($response as $message) {
             if (
                 isset($message['method'], $message['params']['type'], $message['params']['guid'])
@@ -185,7 +195,7 @@ trait InteractsWithPlaywright
         /** @var array{result: array{binary: string|null}} $message */
         foreach ($response as $message) {
             if (isset($message['result']['binary'])) {
-                return (string) $message['result']['binary'];
+                return $message['result']['binary'];
             }
         }
 

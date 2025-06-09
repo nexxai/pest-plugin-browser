@@ -157,9 +157,9 @@ final class Element
     /**
      * Select options in a select element.
      *
-     * @param  string|array<string>|array<int, string>  $values
+     * @param  string|array<int, string>|array<int, string>  $values
      * @param  array<string, mixed>|null  $options
-     * @return array<string>
+     * @return array<array-key, string>
      */
     public function selectOption(string|array $values, ?array $options = null): array
     {
@@ -167,7 +167,7 @@ final class Element
 
         $result = $this->processArrayResponse($this->sendMessage('selectOption', $params));
 
-        return array_map(static fn ($value): string => is_scalar($value) ? (string) $value : '', $result);
+        return array_map(static fn (mixed $value): string => is_scalar($value) ? (string) $value : '', $result);
     }
 
     /**
@@ -303,7 +303,7 @@ final class Element
 
         $element = $this->processElementCreationResponse($this->sendMessage('waitForSelector', $params));
 
-        if ($element === null) {
+        if (! $element instanceof self) {
             return null;
         }
 
@@ -317,7 +317,7 @@ final class Element
     {
         $element = $this->processElementCreationResponse($this->sendMessage('querySelector', ['selector' => $selector]));
 
-        if ($element === null) {
+        if (! $element instanceof self) {
             return null;
         }
 
@@ -333,7 +333,7 @@ final class Element
     {
         $elements = $this->processMultipleElementCreationResponse($this->sendMessage('querySelectorAll', ['selector' => $selector]));
 
-        return array_map(fn (Element $element) => new self($element->guid), $elements);
+        return array_map(fn (Element $element): Element => new self($element->guid), $elements);
     }
 
     /**
