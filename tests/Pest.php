@@ -104,6 +104,28 @@ expect()->extend('toHaveId', function (string $id): Expectation {
     return $this;
 });
 
+expect()->extend('toHaveClass', function (string $id): Expectation {
+
+    if (! $this->value instanceof Element && ! $this->value instanceof Locator) {
+        throw new InvalidArgumentException('Expected value to be an Element or Locator instance');
+    }
+
+    expect($this->value->getAttribute('class'))->toBe($id);
+
+    return $this;
+});
+
+expect()->extend('toHaveRole', function (string $role): Expectation {
+
+    if (! $this->value instanceof Element && ! $this->value instanceof Locator) {
+        throw new InvalidArgumentException('Expected value to be an Element or Locator instance');
+    }
+
+    expect($this->value->getByRole($role))->not->toBeNull();
+
+    return $this;
+});
+
 expect()->intercept(
     'toBeEmpty',
     Locator::class,

@@ -6,7 +6,7 @@
         <div>
             <h1 class="text-2xl font-bold my-2">Checkboxes</h1>
             <div class="flex space-x-4 mb-2">
-                <input id="default-checkbox" name="default-checkbox" type="checkbox" />
+                <input id="default-checkbox" name="default-checkbox" type="checkbox" class="check-class" />
                 <label for="default-checkbox" class="">Default checkbox</label>
             </div>
 
