@@ -18,7 +18,12 @@ it('presses keys on input elements and verifies input changes', function (): voi
     $element->press('Backspace');
     expect($element->inputValue())->toBe('ab');
 
-    $element->press('Control+a');
+    if (PHP_OS_FAMILY === 'Windows' || PHP_OS_FAMILY === 'Linux') {
+        $element->press('Control+a');
+    } else {
+        $element->press('Meta+a');
+    }
+
     $element->press('Delete');
     expect($element->inputValue())->toBe('');
 });
