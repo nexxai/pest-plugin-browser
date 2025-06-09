@@ -519,10 +519,8 @@ final class Frame
 
     /**
      * Evaluates a JavaScript expression in the frame context.
-     *
-     * @param  mixed  $arg
      */
-    public function evaluate(string $pageFunction, $arg = null): mixed
+    public function evaluate(string $pageFunction, mixed $arg = null): mixed
     {
         $params = ['expression' => $pageFunction];
 

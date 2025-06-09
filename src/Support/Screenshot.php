@@ -4,22 +4,20 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Support;
 
-use SplFileObject;
+use Pest\TestSuite;
 
 /**
  * @internal
  */
 final class Screenshot
 {
-    private const string DEFAULT_DIR = '/tmp/pest-browser-screenshots';
-
     /**
-     * Return the path to the screenshots directory.
+     * Return the path to the screenshots' directory.
      */
     public static function dir(): string
     {
-        // @phpstan-ignore-next-line
-        return mb_rtrim((string) $_ENV['PEST_BROWSER_SCREENSHOT_DIR'] ?? self::DEFAULT_DIR, '/');
+        return TestSuite::getInstance()->rootPath
+            .'/tests/Browser/screenshots';
     }
 
     /**
@@ -27,7 +25,14 @@ final class Screenshot
      */
     public static function path(string $filename): string
     {
-        return self::dir().'/'.mb_ltrim($filename, '/').'.png';
+        $filename = self::dir().'/'.mb_ltrim($filename, '/');
+
+        // check if there is extension, if not, add .png
+        if (pathinfo($filename, PATHINFO_EXTENSION) === '') {
+            $filename .= '.png';
+        }
+
+        return $filename;
     }
 
     /**
@@ -43,11 +48,10 @@ final class Screenshot
         }
 
         if (is_dir(self::dir()) === false) {
-            mkdir(self::dir(), 0775, true);
+            mkdir(self::dir(), 0755, true);
         }
 
-        $file = new SplFileObject(self::path($filename), 'wb');
-        $file->fwrite($decodedBinary);
+        file_put_contents(self::path($filename), $decodedBinary);
     }
 
     /**

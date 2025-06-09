@@ -9,6 +9,8 @@ use Symfony\Component\Process\Process as SystemProcess;
 
 /**
  * @internal
+ *
+ * @codeCoverageIgnore This class is used at plugin level to manage processes.
  */
 final class Process
 {

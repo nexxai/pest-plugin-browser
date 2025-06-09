@@ -13,3 +13,6 @@ coverage.xml
 # Playwright
 node_modules/
 /tests/Browser/screenshots
+
+# MacOS
+.DS_Store

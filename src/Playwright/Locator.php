@@ -190,10 +190,10 @@ final class Locator
     /**
      * Select options by value in a select element matching the locator.
      *
-     * @param  string|array<string>  $values
+     * @param  array<int, string>|string  $values
      * @param  array<string, mixed>|null  $options
      */
-    public function selectOption($values, ?array $options = null): void
+    public function selectOption(array|string $values, ?array $options = null): void
     {
         $values = is_array($values) ? $values : [$values];
         $params = array_merge(['values' => $values], $options ?? []);
