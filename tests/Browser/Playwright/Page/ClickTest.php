@@ -7,10 +7,11 @@ describe('click', function (): void {
         $this->page = $this->page('/test/frame-tests');
     });
 
-    it('can click on buttons', function (): void {
-        $this->page->click('#enabled-button');
+    it('clicks on elements and verifies click effects', function (): void {
+        $this->page->waitForSelector('#click-target');
+        expect($this->page->textContent('#click-target'))->toContain('Click Me');
 
-        // Verify button is still visible after click
-        expect($this->page->isVisible('#enabled-button'))->toBeTrue();
+        $this->page->click('#click-target');
+        expect($this->page->textContent('#click-target'))->toBe('Clicked!');
     });
 });
