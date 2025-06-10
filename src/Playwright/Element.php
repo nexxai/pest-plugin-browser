@@ -23,14 +23,6 @@ final class Element
     }
 
     /**
-     * Check if element is checked.
-     */
-    public function isChecked(): bool
-    {
-        return $this->processBooleanResponse($this->sendMessage('isChecked'));
-    }
-
-    /**
      * Check element.
      */
     public function check(): void
@@ -47,25 +39,6 @@ final class Element
     }
 
     /**
-     * Get the Attribute of the element.
-     */
-    public function getAttribute(string $attribute): ?string
-    {
-        return $this->processNullableStringResponse($this->sendMessage('getAttribute', ['name' => $attribute]));
-    }
-
-    /**
-     * Fill the element with text.
-     *
-     * @param  array<string, mixed>|null  $options
-     */
-    public function fill(string $value, ?array $options = null): void
-    {
-        $params = array_merge(['value' => $value], $options ?? []);
-        $this->processVoidResponse($this->sendMessage('fill', $params));
-    }
-
-    /**
      * Tap the element (touch screen interaction).
      *
      * @param  array<string, mixed>|null  $options
@@ -73,22 +46,6 @@ final class Element
     public function tap(?array $options = null): void
     {
         $this->processVoidResponse($this->sendMessage('tap', $options ?? []));
-    }
-
-    /**
-     * Select options in a select element.
-     *
-     * @param  string|array<int, string>|array<int, string>  $values
-     * @param  array<string, mixed>|null  $options
-     * @return array<array-key, string>
-     */
-    public function selectOption(string|array $values, ?array $options = null): array
-    {
-        $params = array_merge(['values' => $values], $options ?? []);
-
-        $result = $this->processArrayResponse($this->sendMessage('selectOption', $params));
-
-        return array_map(static fn (mixed $value): string => is_scalar($value) ? (string) $value : '', $result);
     }
 
     /**
@@ -107,23 +64,9 @@ final class Element
         return $this->processStringResponse($this->sendMessage('innerText'));
     }
 
-    /**
-     * Get the inner HTML of the element.
-     */
-    public function innerHTML(): string
-    {
-        return $this->processStringResponse($this->sendMessage('innerHTML'));
-    }
 
-    /**
-     * Get the input value of the element.
-     *
-     * @param  array<string, mixed>|null  $options
-     */
-    public function inputValue(?array $options = null): string
-    {
-        return $this->processStringResponse($this->sendMessage('inputValue', $options ?? []));
-    }
+
+
 
     /**
      * Get the bounding box of the element.
