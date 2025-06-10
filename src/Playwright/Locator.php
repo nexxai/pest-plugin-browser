@@ -642,6 +642,93 @@ final class Locator
     }
 
     /**
+     * Tap the element (touch screen interaction).
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function tap(?array $options = null): void
+    {
+        $element = $this->elementHandle();
+        if (! $element instanceof Element) {
+            throw new RuntimeException('Element not found');
+        }
+        $element->tap($options);
+    }
+
+    /**
+     * Wait for element to reach a specific state.
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function waitForElementState(string $state, ?array $options = null): void
+    {
+        $element = $this->elementHandle();
+        if (! $element instanceof Element) {
+            throw new RuntimeException('Element not found');
+        }
+        $element->waitForElementState($state, $options);
+    }
+
+    /**
+     * Wait for a selector to appear relative to this locator.
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function waitForSelector(string $selector, ?array $options = null): ?self
+    {
+        $element = $this->elementHandle();
+        if (! $element instanceof Element) {
+            throw new RuntimeException('Element not found');
+        }
+
+        try {
+            $foundElement = $element->waitForSelector($selector, $options);
+            if (! $foundElement instanceof Element) {
+                return null;
+            }
+
+            // Create a new locator using the found element's selector
+            return new self($this->frameGuid, $this->selector.' >> '.$selector);
+        } catch (RuntimeException $e) {
+            // Handle timeout exceptions by returning null
+            if (strpos($e->getMessage(), 'Timeout') !== false) {
+                return null;
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * Get the content frame for iframe elements.
+     *
+     * @return object|null Frame object with guid property, or null if not an iframe
+     */
+    public function contentFrame(): ?object
+    {
+        $element = $this->elementHandle();
+        if (! $element instanceof Element) {
+            throw new RuntimeException('Element not found');
+        }
+
+        return $element->contentFrame();
+    }
+
+    /**
+     * Get the owner frame of the element.
+     *
+     * @return object|null Frame object with guid property, or null if no owner frame
+     */
+    public function ownerFrame(): ?object
+    {
+        $element = $this->elementHandle();
+        if (! $element instanceof Element) {
+            throw new RuntimeException('Element not found');
+        }
+
+        return $element->ownerFrame();
+    }
+
+    /**
      * Create a frame locator for iframe elements.
      */
     public function frameLocator(string $selector): self

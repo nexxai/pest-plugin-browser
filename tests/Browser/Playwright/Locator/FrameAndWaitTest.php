@@ -50,3 +50,42 @@ it('can wait with timeout', function (): void {
 
     expect($button->isVisible())->toBeTrue();
 });
+
+it('can wait for element state using waitForElementState method', function (): void {
+    $page = $this->page()->goto('/test/element-tests');
+    $button = $page->getByTestId('click-button');
+
+    // Wait for visible state using the new method
+    $button->waitForElementState('visible');
+
+    expect($button->isVisible())->toBeTrue();
+});
+
+it('can wait for element state with options using waitForElementState', function (): void {
+    $page = $this->page()->goto('/test/element-tests');
+    $button = $page->getByTestId('click-button');
+
+    $button->waitForElementState('enabled', ['timeout' => 5000]);
+
+    expect($button->isEnabled())->toBeTrue();
+});
+
+it('can wait for selector to appear relative to locator', function (): void {
+    $page = $this->page()->goto('/test/element-tests');
+    $container = $page->getByTestId('profile-section');
+
+    // Wait for a child element that actually exists
+    $childLocator = $container->waitForSelector('h2');
+
+    expect($childLocator)->toBeInstanceOf(Locator::class);
+});
+
+it('returns null when waitForSelector times out', function (): void {
+    $page = $this->page()->goto('/test/element-tests');
+    $container = $page->getByTestId('profile-section');
+
+    // Wait for a non-existent element with short timeout
+    $result = $container->waitForSelector('.definitely-non-existent-element-12345', ['timeout' => 100]);
+
+    expect($result)->toBeNull();
+});
