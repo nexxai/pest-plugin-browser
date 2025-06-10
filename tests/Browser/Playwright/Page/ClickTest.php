@@ -2,15 +2,11 @@
 
 declare(strict_types=1);
 
-describe('click', function (): void {
-    beforeEach(function (): void {
-        $this->page = $this->page('/test/frame-tests');
-    });
+it('clicks on elements and verifies click effects', function (): void {
+    $page = $this->page('/test/frame-tests');
+    $page->waitForSelector('#click-target');
+    expect($page->textContent('#click-target'))->toContain('Click Me');
 
-    it('can click on buttons', function (): void {
-        $this->page->click('#enabled-button');
-
-        // Verify button is still visible after click
-        expect($this->page->isVisible('#enabled-button'))->toBeTrue();
-    });
+    $page->click('#click-target');
+    expect($page->textContent('#click-target'))->toBe('Clicked!');
 });

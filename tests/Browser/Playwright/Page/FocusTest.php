@@ -2,24 +2,38 @@
 
 declare(strict_types=1);
 
-describe('focus', function (): void {
-    beforeEach(function (): void {
-        $this->page = $this->page('/test/frame-tests');
-    });
+it('focuses on elements and triggers focus state changes', function (): void {
+    $page = $this->page('/test/frame-tests');
+    $page->waitForSelector('#focus-target');
+    expect($page->textContent('#focus-display'))->toBe('No element focused yet');
 
-    it('focuses on input elements', function (): void {
-        $this->page->focus('#focus-target');
+    $page->focus('#focus-target');
+    expect($page->textContent('#focus-display'))->toBe('Last focused: focus-target');
+    expect($page->isVisible('#focus-target'))->toBeTrue();
+});
 
-        // Verify the element can be focused (check if it has focus-related state)
-        expect($this->page->isVisible('#focus-target'))->toBeTrue();
-    });
+it('focuses on multiple elements and tracks state changes', function (): void {
+    $page = $this->page('/test/frame-tests');
+    $page->waitForSelector('#test-input');
+    expect($page->textContent('#focus-display'))->toBe('No element focused yet');
 
-    it('focuses on different input types', function (): void {
-        $this->page->focus('#test-input');
-        $this->page->focus('#password-input');
-        $this->page->focus('#test-textarea');
+    $page->focus('#test-input');
+    expect($page->textContent('#focus-display'))->toBe('Last focused: test-input');
 
-        // Verify we can focus on different input types without errors
-        expect($this->page->isVisible('#test-textarea'))->toBeTrue();
-    });
+    $page->focus('#password-input');
+    expect($page->textContent('#focus-display'))->toBe('Last focused: password-input');
+
+    $page->focus('#test-textarea');
+    expect($page->textContent('#focus-display'))->toBe('Last focused: test-textarea');
+});
+
+it('focuses on keyboard input and verifies focus', function (): void {
+    $page = $this->page('/test/frame-tests');
+    $page->waitForSelector('#keyboard-input');
+
+    $page->focus('#keyboard-input');
+    expect($page->textContent('#focus-display'))->toBe('Last focused: keyboard-input');
+
+    $page->type('#keyboard-input', 'test typing');
+    expect($page->inputValue('#keyboard-input'))->toBe('test typing');
 });

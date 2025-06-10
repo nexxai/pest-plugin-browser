@@ -190,15 +190,18 @@ final class Locator
     /**
      * Select options by value in a select element matching the locator.
      *
-     * @param  string|array<string>  $values
+     * @param  array<int, string>|string  $values
      * @param  array<string, mixed>|null  $options
+     * @return array<array-key, string>
      */
-    public function selectOption($values, ?array $options = null): void
+    public function selectOption(array|string $values, ?array $options = null): array
     {
-        $values = is_array($values) ? $values : [$values];
-        $params = array_merge(['values' => $values], $options ?? []);
-        $response = $this->sendMessage('selectOption', $params);
-        $this->processVoidResponse($response);
+        $element = $this->elementHandle();
+        if (! $element instanceof Element) {
+            throw new RuntimeException('Element not found');
+        }
+
+        return $element->selectOption($values, $options);
     }
 
     /**
@@ -233,10 +236,12 @@ final class Locator
 
     /**
      * Get the value of an input element matching the locator.
+     *
+     * @param  array<string, mixed>|null  $options
      */
-    public function inputValue(): string
+    public function inputValue(?array $options = null): string
     {
-        $response = $this->sendMessage('inputValue');
+        $response = $this->sendMessage('inputValue', $options ?? []);
 
         return $this->processStringResponse($response);
     }
@@ -622,14 +627,16 @@ final class Locator
 
     /**
      * Scroll element into view if needed.
+     *
+     * @param  array<string, mixed>|null  $options
      */
-    public function scrollIntoViewIfNeeded(): void
+    public function scrollIntoViewIfNeeded(?array $options = null): void
     {
         $element = $this->elementHandle();
         if (! $element instanceof Element) {
             throw new RuntimeException('Element not found');
         }
-        $element->scrollIntoViewIfNeeded();
+        $element->scrollIntoViewIfNeeded($options);
     }
 
     /**
@@ -639,6 +646,93 @@ final class Locator
     {
         $response = $this->sendMessage('highlight');
         $this->processVoidResponse($response);
+    }
+
+    /**
+     * Tap the element (touch screen interaction).
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function tap(?array $options = null): void
+    {
+        $element = $this->elementHandle();
+        if (! $element instanceof Element) {
+            throw new RuntimeException('Element not found');
+        }
+        $element->tap($options);
+    }
+
+    /**
+     * Wait for element to reach a specific state.
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function waitForElementState(string $state, ?array $options = null): void
+    {
+        $element = $this->elementHandle();
+        if (! $element instanceof Element) {
+            throw new RuntimeException('Element not found');
+        }
+        $element->waitForElementState($state, $options);
+    }
+
+    /**
+     * Wait for a selector to appear relative to this locator.
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function waitForSelector(string $selector, ?array $options = null): ?self
+    {
+        $element = $this->elementHandle();
+        if (! $element instanceof Element) {
+            throw new RuntimeException('Element not found');
+        }
+
+        try {
+            $foundElement = $element->waitForSelector($selector, $options);
+            if (! $foundElement instanceof Element) {
+                return null;
+            }
+
+            // Create a new locator using the found element's selector
+            return new self($this->frameGuid, $this->selector.' >> '.$selector);
+        } catch (RuntimeException $e) {
+            // Handle timeout exceptions by returning null
+            if (mb_strpos($e->getMessage(), 'Timeout') !== false) {
+                return null;
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * Get the content frame for iframe elements.
+     *
+     * @return object|null Frame object with guid property, or null if not an iframe
+     */
+    public function contentFrame(): ?object
+    {
+        $element = $this->elementHandle();
+        if (! $element instanceof Element) {
+            throw new RuntimeException('Element not found');
+        }
+
+        return $element->contentFrame();
+    }
+
+    /**
+     * Get the owner frame of the element.
+     *
+     * @return object|null Frame object with guid property, or null if no owner frame
+     */
+    public function ownerFrame(): ?object
+    {
+        $element = $this->elementHandle();
+        if (! $element instanceof Element) {
+            throw new RuntimeException('Element not found');
+        }
+
+        return $element->ownerFrame();
     }
 
     /**

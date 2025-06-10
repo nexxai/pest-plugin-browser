@@ -2,17 +2,12 @@
 
 declare(strict_types=1);
 
-describe('dragAndDrop', function (): void {
-    beforeEach(function (): void {
-        $this->page = $this->page('/test/frame-tests');
-    });
+it('performs drag and drop operations and verifies state changes', function (): void {
+    $page = $this->page('/test/frame-tests');
+    $page->waitForSelector('#draggable');
+    $page->waitForSelector('#droppable');
+    expect($page->textContent('#droppable'))->toContain('Drop Zone');
 
-    it('performs drag and drop operations', function (): void {
-        // Drag and drop should complete without error
-        $this->page->dragAndDrop('#draggable', '#droppable');
-
-        // Verify both elements still exist and are visible (drag and drop completed)
-        expect($this->page->isVisible('#draggable'))->toBeTrue();
-        expect($this->page->isVisible('#droppable'))->toBeTrue();
-    });
+    $page->dragAndDrop('#draggable', '#droppable');
+    expect($page->textContent('#droppable'))->toBe('Element dropped!');
 });

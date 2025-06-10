@@ -8,3 +8,12 @@ it('can get attribute values', function (): void {
 
     expect($element->getAttribute('data-testid'))->toBe('profile-section');
 });
+
+it('can get multiple attributes and handles null cases', function (): void {
+    $page = $this->page()->goto('/test/element-tests');
+    $input = $page->getByLabel('Username');
+
+    expect($input->getAttribute('type'))->toBe('text');
+    expect($input->getAttribute('name'))->toBe('username');
+    expect($input->getAttribute('nonexistent'))->toBeNull();
+});

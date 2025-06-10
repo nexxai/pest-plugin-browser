@@ -33,7 +33,6 @@ it('can get all text contents from multiple elements', function (): void {
 
     expect(count($allButtons))->toBeGreaterThan(1);
 
-    // Verify each element in the array can be interacted with
     foreach ($allButtons as $button) {
         expect($button->isVisible())->toBeTrue();
     }

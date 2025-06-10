@@ -2,24 +2,17 @@
 
 declare(strict_types=1);
 
-describe('press', function (): void {
-    beforeEach(function (): void {
-        $this->page = $this->page('/test/frame-tests');
-    });
+it('presses keys and triggers key events', function (): void {
+    $page = $this->page('/test/frame-tests');
+    $page->waitForSelector('#keyboard-input');
+    $page->focus('#keyboard-input');
 
-    it('presses keys on focused elements', function (): void {
-        $this->page->focus('#keyboard-input');
-        $this->page->press('#keyboard-input', 'Enter');
+    $page->press('#keyboard-input', 'a');
+    expect($page->textContent('#key-display'))->toContain('Key pressed: a');
 
-        // Verify the input is still focused and visible after key press
-        expect($this->page->isVisible('#keyboard-input'))->toBeTrue();
-    });
+    $page->press('#keyboard-input', 'Enter');
+    expect($page->textContent('#key-display'))->toContain('Key pressed: Enter');
 
-    it('presses special key combinations', function (): void {
-        $this->page->focus('#keyboard-input');
-        $this->page->press('#keyboard-input', 'Shift+Home');
-
-        // Verify the input element is still available and functional after key combinations
-        expect($this->page->isEnabled('#keyboard-input'))->toBeTrue();
-    });
+    $page->press('#keyboard-input', 'ArrowRight');
+    expect($page->textContent('#key-display'))->toContain('Key pressed: ArrowRight');
 });

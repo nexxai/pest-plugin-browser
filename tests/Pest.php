@@ -2,35 +2,25 @@
 
 declare(strict_types=1);
 
-use Pest\Browser\Playwright\Element;
 use Pest\Browser\Playwright\Locator;
+use Pest\Browser\Playwright\Page;
 use Pest\Expectation;
-use Pest\TestSuite;
-
-pest()
-    ->beforeEach(fn() => cleanupScreenshots())
-    ->afterEach(fn() => cleanupScreenshots());
-
-function cleanupScreenshots(): void
-{
-    $basePath = TestSuite::getInstance()->testPath . '/Browser/screenshots';
-
-    foreach (glob("$basePath/*") as $file) {
-        if (is_file($file)) {
-            unlink($file);
-        }
-    }
-
-    if (file_exists($basePath)) {
-        rmdir($basePath);
-    }
-}
 
 // todo: move this to Pest core
+expect()->extend('toHaveTitle', function (string $title): Expectation {
+    if (! $this->value instanceof Page) {
+        throw new InvalidArgumentException('Expected value to be an Page instance');
+    }
+
+    expect($this->value->title())->toBe($title);
+
+    return $this;
+});
+
 expect()->extend('toBeChecked', function (): Expectation {
 
-    if (! $this->value instanceof Element && ! $this->value instanceof Locator) {
-        throw new InvalidArgumentException('Expected value to be an Element or Locator instance');
+    if (! $this->value instanceof Locator) {
+        throw new InvalidArgumentException('Expected value to be a Locator instance');
     }
 
     expect($this->value->isChecked())->toBeTrue();
@@ -40,8 +30,8 @@ expect()->extend('toBeChecked', function (): Expectation {
 
 expect()->extend('toBeVisible', function (): Expectation {
 
-    if (! $this->value instanceof Element && ! $this->value instanceof Locator) {
-        throw new InvalidArgumentException('Expected value to be an Element or Locator instance');
+    if (! $this->value instanceof Locator) {
+        throw new InvalidArgumentException('Expected value to be a Locator instance');
     }
 
     expect($this->value->isVisible())->toBeTrue();
@@ -51,8 +41,8 @@ expect()->extend('toBeVisible', function (): Expectation {
 
 expect()->extend('toBeEnabled', function (): Expectation {
 
-    if (! $this->value instanceof Element && ! $this->value instanceof Locator) {
-        throw new InvalidArgumentException('Expected value to be an Element or Locator instance');
+    if (! $this->value instanceof Locator) {
+        throw new InvalidArgumentException('Expected value to be a Locator instance');
     }
 
     expect($this->value->isEnabled())->toBeTrue();
@@ -62,8 +52,8 @@ expect()->extend('toBeEnabled', function (): Expectation {
 
 expect()->extend('toBeDisabled', function (): Expectation {
 
-    if (! $this->value instanceof Element && ! $this->value instanceof Locator) {
-        throw new InvalidArgumentException('Expected value to be an Element or Locator instance');
+    if (! $this->value instanceof Locator) {
+        throw new InvalidArgumentException('Expected value to be a Locator instance');
     }
 
     expect($this->value->isDisabled())->toBeTrue();
@@ -73,8 +63,8 @@ expect()->extend('toBeDisabled', function (): Expectation {
 
 expect()->extend('toBeEditable', function (): Expectation {
 
-    if (! $this->value instanceof Element && ! $this->value instanceof Locator) {
-        throw new InvalidArgumentException('Expected value to be an Element or Locator instance');
+    if (! $this->value instanceof Locator) {
+        throw new InvalidArgumentException('Expected value to be a Locator instance');
     }
 
     expect($this->value->isEditable())->toBeTrue();
@@ -84,8 +74,8 @@ expect()->extend('toBeEditable', function (): Expectation {
 
 expect()->extend('toBeHidden', function (): Expectation {
 
-    if (! $this->value instanceof Element && ! $this->value instanceof Locator) {
-        throw new InvalidArgumentException('Expected value to be an Element or Locator instance');
+    if (! $this->value instanceof Locator) {
+        throw new InvalidArgumentException('Expected value to be a Locator instance');
     }
 
     expect($this->value->isHidden())->toBeTrue();

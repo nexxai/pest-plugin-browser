@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pest\Browser;
 
+use Pest\Browser\Support\Screenshot;
 use Pest\Contracts\Plugins\Bootable;
 use Pest\Contracts\Plugins\Terminable;
 use Pest\Plugins\Parallel;
@@ -20,6 +21,8 @@ final readonly class Plugin implements Bootable, Terminable // @pest-arch-ignore
     {
         if (Parallel::isWorker() === false) {
             ServerManager::instance()->playwright()->start();
+
+            Screenshot::cleanup();
         }
     }
 

@@ -8,3 +8,10 @@ it('can get input value', function (): void {
 
     expect($input->inputValue())->not()->toBe('');
 });
+
+it('can get specific input values', function (): void {
+    $page = $this->page()->goto('/test/element-tests');
+    $input = $page->getByLabel('Username');
+
+    expect($input->inputValue())->toBe('johndoe');
+});

@@ -31,8 +31,11 @@ final class Frame
      */
     public function goto(string $url): self
     {
-        $url = mb_ltrim($url, '/');
-        $url = ServerManager::instance()->http()->url().'/'.$url;
+        if (! str_starts_with($url, 'http://') && ! str_starts_with($url, 'https://')) {
+            $url = mb_ltrim($url, '/');
+
+            $url = ServerManager::instance()->http()->url().'/'.$url;
+        }
 
         if ($this->url === $url) {
             return $this;
@@ -519,10 +522,8 @@ final class Frame
 
     /**
      * Evaluates a JavaScript expression in the frame context.
-     *
-     * @param  mixed  $arg
      */
-    public function evaluate(string $pageFunction, $arg = null): mixed
+    public function evaluate(string $pageFunction, mixed $arg = null): mixed
     {
         $params = ['expression' => $pageFunction];
 
