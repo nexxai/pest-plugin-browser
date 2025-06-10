@@ -12,6 +12,5 @@ it('returns frame information for elements', function (): void {
 
     $frame = $locator->ownerFrame();
 
-    // This would return the frame that owns this element
-    expect($frame)->toBeNull(); // Will be null until Frame class is properly integrated
+    expect($frame)->toBeNull();
 });

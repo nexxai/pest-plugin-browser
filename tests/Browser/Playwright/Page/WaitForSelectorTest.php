@@ -2,22 +2,18 @@
 
 declare(strict_types=1);
 
-describe('waitForSelector', function (): void {
-    beforeEach(function (): void {
-        $this->page = $this->page('/test/frame-tests');
-    });
+it('waits for element to be available', function (): void {
+    $page = $this->page('/test/frame-tests');
+    $page->waitForSelector('#hover-target');
 
-    it('waits for element to be available', function (): void {
-        $this->page->waitForSelector('#hover-target');
+    expect($page->isVisible('#hover-target'))->toBeTrue();
+});
 
-        expect($this->page->isVisible('#hover-target'))->toBeTrue();
-    });
+it('waits for multiple elements', function (): void {
+    $page = $this->page('/test/frame-tests');
+    $page->waitForSelector('#test-input');
+    $page->waitForSelector('#test-form');
 
-    it('waits for multiple elements', function (): void {
-        $this->page->waitForSelector('#test-input');
-        $this->page->waitForSelector('#test-form');
-
-        expect($this->page->isVisible('#test-input'))->toBeTrue();
-        expect($this->page->isVisible('#test-form'))->toBeTrue();
-    });
+    expect($page->isVisible('#test-input'))->toBeTrue();
+    expect($page->isVisible('#test-form'))->toBeTrue();
 });

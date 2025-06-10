@@ -68,7 +68,6 @@ it('backward compatibility with string filter', function (): void {
     $page = $this->page()->goto('/test/element-tests');
     $buttons = $page->locator('button');
 
-    // Old string-based filter should still work
     $filteredButtons = $buttons->filter('[data-testid="click-button"]');
 
     expect($filteredButtons)->toBeInstanceOf(Locator::class);

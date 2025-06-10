@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Pest\Browser\Playwright\Element;
 use Pest\Browser\Playwright\Locator;
 
 it('can get element handles', function (): void {
@@ -37,7 +36,6 @@ it('element handles can be interacted with', function (): void {
 
     expect(count($elementHandles))->toBeGreaterThan(0);
 
-    // Test that we can interact with the first element handle
     $firstHandle = $elementHandles[0];
     expect($firstHandle->isVisible())->toBeTrue();
 });

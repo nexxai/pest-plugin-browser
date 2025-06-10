@@ -21,6 +21,5 @@ it('returns frame for iframe elements', function (): void {
 
     $frame = $locator->contentFrame();
 
-    // Frame would be an object with guid if implemented
-    expect($frame)->toBeNull(); // Will be null until Frame class is properly integrated
+    expect($frame)->toBeNull();
 });
