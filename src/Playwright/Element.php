@@ -210,32 +210,6 @@ final class Element
     }
 
     /**
-     * Query for a single element relative to this element.
-     */
-    public function querySelector(string $selector): ?self
-    {
-        $element = $this->processElementCreationResponse($this->sendMessage('querySelector', ['selector' => $selector]));
-
-        if (! $element instanceof self) {
-            return null;
-        }
-
-        return new self($element->guid);
-    }
-
-    /**
-     * Query for multiple elements relative to this element.
-     *
-     * @return array<self>
-     */
-    public function querySelectorAll(string $selector): array
-    {
-        $elements = $this->processMultipleElementCreationResponse($this->sendMessage('querySelectorAll', ['selector' => $selector]));
-
-        return array_map(fn (Element $element): Element => new self($element->guid), $elements);
-    }
-
-    /**
      * Get the content frame for iframe elements.
      */
     public function contentFrame(): ?object
