@@ -10,3 +10,11 @@ it('can fill input fields', function (): void {
 
     expect($input->inputValue())->toBe('Hello World');
 });
+
+it('can fill with options', function (): void {
+    $page = $this->page()->goto('/test/element-tests');
+    $input = $page->getByLabel('Username');
+
+    $input->fill('testuser', ['force' => true]);
+    expect($input->inputValue())->toBe('testuser');
+});

@@ -192,13 +192,16 @@ final class Locator
      *
      * @param  array<int, string>|string  $values
      * @param  array<string, mixed>|null  $options
+     * @return array<array-key, string>
      */
-    public function selectOption(array|string $values, ?array $options = null): void
+    public function selectOption(array|string $values, ?array $options = null): array
     {
-        $values = is_array($values) ? $values : [$values];
-        $params = array_merge(['values' => $values], $options ?? []);
-        $response = $this->sendMessage('selectOption', $params);
-        $this->processVoidResponse($response);
+        $element = $this->elementHandle();
+        if (! $element instanceof Element) {
+            throw new RuntimeException('Element not found');
+        }
+
+        return $element->selectOption($values, $options);
     }
 
     /**
@@ -233,10 +236,12 @@ final class Locator
 
     /**
      * Get the value of an input element matching the locator.
+     *
+     * @param  array<string, mixed>|null  $options
      */
-    public function inputValue(): string
+    public function inputValue(?array $options = null): string
     {
-        $response = $this->sendMessage('inputValue');
+        $response = $this->sendMessage('inputValue', $options ?? []);
 
         return $this->processStringResponse($response);
     }
@@ -622,14 +627,16 @@ final class Locator
 
     /**
      * Scroll element into view if needed.
+     *
+     * @param  array<string, mixed>|null  $options
      */
-    public function scrollIntoViewIfNeeded(): void
+    public function scrollIntoViewIfNeeded(?array $options = null): void
     {
         $element = $this->elementHandle();
         if (! $element instanceof Element) {
             throw new RuntimeException('Element not found');
         }
-        $element->scrollIntoViewIfNeeded();
+        $element->scrollIntoViewIfNeeded($options);
     }
 
     /**
