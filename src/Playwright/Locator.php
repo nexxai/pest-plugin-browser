@@ -698,7 +698,7 @@ final class Locator
             return new self($this->frameGuid, $this->selector.' >> '.$selector);
         } catch (RuntimeException $e) {
             // Handle timeout exceptions by returning null
-            if (strpos($e->getMessage(), 'Timeout') !== false) {
+            if (mb_strpos($e->getMessage(), 'Timeout') !== false) {
                 return null;
             }
             throw $e;
