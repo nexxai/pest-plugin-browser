@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 it('returns a successful response', function () {
-    $response = $this->get('/');
+    $page = page()->goto(route('database'));
 
-    $response->assertStatus(200);
+    expect($page->locator('h1'))->toHaveText()('Nunonation Database');
 });
