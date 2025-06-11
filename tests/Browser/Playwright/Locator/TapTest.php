@@ -34,6 +34,6 @@ it('throws RuntimeException when tap element is not found', function (): void {
     $page = page(null, ['hasTouch' => true])->goto('/test/element-tests');
     $locator = $page->locator('.non-existent-element');
 
-    expect(fn() => $locator->tap())
+    expect(fn () => $locator->tap())
         ->toThrow(RuntimeException::class, 'Element not found');
 });

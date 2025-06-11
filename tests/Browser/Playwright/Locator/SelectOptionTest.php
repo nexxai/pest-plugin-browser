@@ -33,6 +33,6 @@ it('throws RuntimeException when selectOption element is not found', function ()
     $page = page()->goto('/test/element-tests');
     $locator = $page->locator('.non-existent-element');
 
-    expect(fn() => $locator->selectOption('value'))
+    expect(fn (): array => $locator->selectOption('value'))
         ->toThrow(RuntimeException::class, 'Element not found');
 });

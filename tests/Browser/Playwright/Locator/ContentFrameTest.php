@@ -28,6 +28,6 @@ it('throws RuntimeException when contentFrame element is not found', function ()
     $page = page()->goto('/test/element-tests');
     $locator = $page->locator('.non-existent-element');
 
-    expect(fn() => $locator->contentFrame())
+    expect(fn (): ?object => $locator->contentFrame())
         ->toThrow(RuntimeException::class, 'Element not found');
 });

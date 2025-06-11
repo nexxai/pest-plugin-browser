@@ -52,7 +52,7 @@ it('can double click with button and modifiers options', function (): void {
 
     $button->dblclick([
         'button' => 'left',
-        'modifiers' => ['Shift']
+        'modifiers' => ['Shift'],
     ]);
 
     expect($counter->textContent())->toBe('1');
@@ -66,7 +66,7 @@ it('can double click with position option', function (): void {
     expect($counter->textContent())->toBe('0');
 
     $button->dblclick([
-        'position' => ['x' => 10, 'y' => 10]
+        'position' => ['x' => 10, 'y' => 10],
     ]);
 
     expect($counter->textContent())->toBe('1');

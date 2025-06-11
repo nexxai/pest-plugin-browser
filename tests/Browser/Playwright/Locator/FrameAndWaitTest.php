@@ -72,7 +72,7 @@ it('throws RuntimeException when waitForElementState element is not found', func
     $page = page()->goto('/test/element-tests');
     $locator = $page->locator('.non-existent-element');
 
-    expect(fn() => $locator->waitForElementState('visible'))
+    expect(fn () => $locator->waitForElementState('visible'))
         ->toThrow(RuntimeException::class, 'Element not found');
 });
 
@@ -80,6 +80,6 @@ it('throws RuntimeException when waitForState element is not found', function ()
     $page = page()->goto('/test/element-tests');
     $locator = $page->locator('.non-existent-element');
 
-    expect(fn() => $locator->waitForState('visible'))
+    expect(fn () => $locator->waitForState('visible'))
         ->toThrow(RuntimeException::class, 'Element not found');
 });

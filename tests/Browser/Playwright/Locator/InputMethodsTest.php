@@ -31,7 +31,7 @@ it('throws RuntimeException when selectText element is not found', function (): 
     $page = page()->goto('/test/element-tests');
     $locator = $page->locator('.non-existent-element');
 
-    expect(fn() => $locator->selectText())
+    expect(fn () => $locator->selectText())
         ->toThrow(RuntimeException::class, 'Element not found');
 });
 
@@ -39,6 +39,6 @@ it('throws RuntimeException when setChecked element is not found', function (): 
     $page = page()->goto('/test/element-tests');
     $locator = $page->locator('.non-existent-element');
 
-    expect(fn() => $locator->setChecked(true))
+    expect(fn () => $locator->setChecked(true))
         ->toThrow(RuntimeException::class, 'Element not found');
 });

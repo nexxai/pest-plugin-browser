@@ -19,6 +19,6 @@ it('throws RuntimeException when ownerFrame element is not found', function (): 
     $page = page()->goto('/test/element-tests');
     $locator = $page->locator('.non-existent-element');
 
-    expect(fn() => $locator->ownerFrame())
+    expect(fn (): ?object => $locator->ownerFrame())
         ->toThrow(RuntimeException::class, 'Element not found');
 });

@@ -20,7 +20,7 @@ it('throws RuntimeException for non-editable elements', function (): void {
     $page = page()->goto('/test/element-tests');
     $divLocator = $page->getByTestId('profile-section');
 
-    expect(fn() => $divLocator->isEditable())
+    expect(fn (): bool => $divLocator->isEditable())
         ->toThrow(RuntimeException::class, 'Element is not an <input>, <textarea>, <select> or [contenteditable]');
 });
 

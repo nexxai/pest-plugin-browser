@@ -47,7 +47,7 @@ it('throws RuntimeException when screenshot element is not found', function (): 
     $page = page()->goto('/test/element-tests');
     $locator = $page->locator('.non-existent-element');
 
-    expect(fn() => $locator->screenshot())
+    expect(fn (): string => $locator->screenshot())
         ->toThrow(RuntimeException::class, 'Element not found');
 });
 
@@ -55,6 +55,6 @@ it('throws RuntimeException when scrollIntoViewIfNeeded element is not found', f
     $page = page()->goto('/test/element-tests');
     $locator = $page->locator('.non-existent-element');
 
-    expect(fn() => $locator->scrollIntoViewIfNeeded())
+    expect(fn () => $locator->scrollIntoViewIfNeeded())
         ->toThrow(RuntimeException::class, 'Element not found');
 });
