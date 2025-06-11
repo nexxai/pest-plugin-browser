@@ -10,11 +10,6 @@ namespace Pest\Browser\Playwright;
 final class BrowserContext
 {
     /**
-     * Frame.
-     */
-    public Frame $frame;
-
-    /**
      * Page.
      */
     public Page $page;
@@ -35,16 +30,23 @@ final class BrowserContext
     {
         $response = Client::instance()->execute($this->guid, 'newPage');
 
+        $frameUrl = '';
+        $frameGuid = '';
+        $pageGuid = '';
+
         /** @var array{method: string|null, params: array{type: string|null, guid: string, initializer: array{url: string}}, result: array{page: array{guid: string|null}}} $message */
         foreach ($response as $message) {
             if (isset($message['method']) && $message['method'] === '__create__' && (isset($message['params']['type']) && $message['params']['type'] === 'Frame')) {
-                $this->frame = new Frame($message['params']['guid'], $message['params']['initializer']['url']);
+                $frameGuid = $message['params']['guid'];
+                $frameUrl = $message['params']['initializer']['url'];
             }
 
             if (isset($message['result']['page']['guid'])) {
-                $this->page = new Page($message['result']['page']['guid'], $this->frame);
+                $pageGuid = $message['result']['page']['guid'];
             }
         }
+
+        $this->page = new Page($pageGuid, $frameGuid, $frameUrl);
 
         return $this->page;
     }
