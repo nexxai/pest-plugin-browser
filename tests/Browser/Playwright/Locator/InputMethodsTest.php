@@ -17,13 +17,13 @@ it('can set checked state explicitly', function (): void {
     $page = page()->goto('/test/element-tests');
     $checkbox = $page->getByTestId('checkbox-input');
 
-    $checkbox->setChecked(true);
+    $checkbox->check();
     expect($checkbox->isChecked())->toBeTrue();
 
-    $checkbox->setChecked(false);
+    $checkbox->uncheck();
     expect($checkbox->isChecked())->toBeFalse();
 
-    $checkbox->setChecked(true);
+    $checkbox->check();
     expect($checkbox->isChecked())->toBeTrue();
 });
 
@@ -35,10 +35,4 @@ it('throws RuntimeException when selectText element is not found', function (): 
         ->toThrow(RuntimeException::class, 'Element not found');
 });
 
-it('throws RuntimeException when setChecked element is not found', function (): void {
-    $page = page()->goto('/test/element-tests');
-    $locator = $page->locator('.non-existent-element');
 
-    expect(fn () => $locator->setChecked(true))
-        ->toThrow(RuntimeException::class, 'Element not found');
-});

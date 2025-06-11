@@ -23,22 +23,6 @@ final class Element
     }
 
     /**
-     * Check element.
-     */
-    public function check(): void
-    {
-        $this->processVoidResponse($this->sendMessage('check'));
-    }
-
-    /**
-     * Uncheck element.
-     */
-    public function uncheck(): void
-    {
-        $this->processVoidResponse($this->sendMessage('uncheck'));
-    }
-
-    /**
      * Tap the element (touch screen interaction).
      *
      * @param  array<string, mixed>|null  $options

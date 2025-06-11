@@ -586,23 +586,6 @@ final class Locator
     }
 
     /**
-     * Set the checked state of a checkbox or radio.
-     */
-    public function setChecked(bool $checked): void
-    {
-        $element = $this->elementHandle();
-        if (! $element instanceof Element) {
-            throw new RuntimeException('Element not found');
-        }
-
-        if ($checked) {
-            $element->check();
-        } else {
-            $element->uncheck();
-        }
-    }
-
-    /**
      * Take a screenshot of the element.
      *
      * @param  array<string, mixed>|null  $options
