@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Pest\Browser\Playwright\Locator;
 use Pest\Browser\Playwright\Page;
 use Pest\Expectation;
+use Pest\Mixins\Expectation as ExpectationMixin;
 
 // todo: move this to Pest core
 expect()->extend('toHaveTitle', function (string $title): Expectation {
@@ -85,8 +86,8 @@ expect()->extend('toBeHidden', function (): Expectation {
 
 expect()->extend('toHaveId', function (string $id): Expectation {
 
-    if (! $this->value instanceof Element && ! $this->value instanceof Locator) {
-        throw new InvalidArgumentException('Expected value to be an Element or Locator instance');
+    if (! $this->value instanceof Locator) {
+        throw new InvalidArgumentException('Expected value to be an Locator instance');
     }
 
     expect($this->value->getAttribute('id'))->toBe($id);
@@ -96,8 +97,8 @@ expect()->extend('toHaveId', function (string $id): Expectation {
 
 expect()->extend('toHaveClass', function (string $id): Expectation {
 
-    if (! $this->value instanceof Element && ! $this->value instanceof Locator) {
-        throw new InvalidArgumentException('Expected value to be an Element or Locator instance');
+    if (! $this->value instanceof Locator) {
+        throw new InvalidArgumentException('Expected value to be an Locator instance');
     }
 
     expect($this->value->getAttribute('class'))->toBe($id);
@@ -106,9 +107,8 @@ expect()->extend('toHaveClass', function (string $id): Expectation {
 });
 
 expect()->extend('toHaveRole', function (string $role): Expectation {
-
-    if (! $this->value instanceof Element && ! $this->value instanceof Locator) {
-        throw new InvalidArgumentException('Expected value to be an Element or Locator instance');
+    if (! $this->value instanceof Locator) {
+        throw new InvalidArgumentException('Expected value to be an Locator instance');
     }
 
     expect($this->value->getByRole($role))->not->toBeNull();
@@ -116,12 +116,11 @@ expect()->extend('toHaveRole', function (string $role): Expectation {
     return $this;
 });
 
-expect()->intercept(
-    'toBeEmpty',
-    Locator::class,
-    function (string $id): Expectation {
-        if (! $this->value instanceof Element && ! $this->value instanceof Locator) {
-            throw new InvalidArgumentException('Expected value to be an Element or Locator instance');
+expect()->intercept('toBeEmpty', Locator::class,
+    function (): ExpectationMixin {
+
+        if (! $this->value instanceof Locator) {
+            throw new InvalidArgumentException('Expected value to be an Locator instance');
         }
 
         expect($this->value->textContent())->toBe('');
@@ -129,6 +128,5 @@ expect()->intercept(
         return $this;
     }
 );
-        
 
 // todo: move this to Pest core end

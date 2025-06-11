@@ -470,8 +470,9 @@ final class Locator
     }
 
     /**
-     * Get the Element handle for this locator.
-     * Returns the first element matching the locator.
+     * Get the Element handle for this locator. Returns the first element matching the locator.
+     *
+     * @internal
      */
     public function elementHandle(): ?Element
     {
