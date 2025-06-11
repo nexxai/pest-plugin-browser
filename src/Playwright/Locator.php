@@ -669,35 +669,6 @@ final class Locator
     }
 
     /**
-     * Wait for a selector to appear relative to this locator.
-     *
-     * @param  array<string, mixed>|null  $options
-     */
-    public function waitForSelector(string $selector, ?array $options = null): ?self
-    {
-        $element = $this->elementHandle();
-        if (! $element instanceof Element) {
-            throw new RuntimeException('Element not found');
-        }
-
-        try {
-            $foundElement = $element->waitForSelector($selector, $options);
-            if (! $foundElement instanceof Element) {
-                return null;
-            }
-
-            // Create a new locator using the found element's selector
-            return $this->locator($selector);
-        } catch (RuntimeException $e) {
-            // Handle timeout exceptions by returning null
-            if (mb_strpos($e->getMessage(), 'Timeout') !== false) {
-                return null;
-            }
-            throw $e;
-        }
-    }
-
-    /**
      * Get the content frame for iframe elements.
      *
      * @return object|null Frame object with guid property, or null if not an iframe

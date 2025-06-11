@@ -147,24 +147,6 @@ final class Element
     }
 
     /**
-     * Wait for a selector to appear relative to this element.
-     *
-     * @param  array<string, mixed>|null  $options
-     */
-    public function waitForSelector(string $selector, ?array $options = null): ?self
-    {
-        $params = array_merge(['selector' => $selector], $options ?? []);
-
-        $element = $this->processElementCreationResponse($this->sendMessage('waitForSelector', $params));
-
-        if (! $element instanceof self) {
-            return null;
-        }
-
-        return new self($element->guid);
-    }
-
-    /**
      * Get the content frame for iframe elements.
      */
     public function contentFrame(): ?object
