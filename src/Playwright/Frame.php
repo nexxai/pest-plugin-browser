@@ -116,7 +116,7 @@ final class Frame
      */
     public function getByRole(string $role, array $params = []): Locator
     {
-        return new Locator($this->guid, Selector::getByRoleSelector($role, $params));
+        return $this->locator(Selector::getByRoleSelector($role, $params));
     }
 
     /**
@@ -126,7 +126,7 @@ final class Frame
     {
         $testIdAttributeName = 'data-testid';
 
-        return new Locator($this->guid, Selector::getByTestIdSelector($testIdAttributeName, $testId));
+        return $this->locator(Selector::getByTestIdSelector($testIdAttributeName, $testId));
     }
 
     /**
@@ -134,7 +134,7 @@ final class Frame
      */
     public function getByAltText(string $text, bool $exact = false): Locator
     {
-        return new Locator($this->guid, Selector::getByAltTextSelector($text, $exact));
+        return $this->locator(Selector::getByAltTextSelector($text, $exact));
     }
 
     /**
@@ -142,7 +142,7 @@ final class Frame
      */
     public function getByLabel(string $text, bool $exact = false): Locator
     {
-        return new Locator($this->guid, Selector::getByLabelSelector($text, $exact));
+        return $this->locator(Selector::getByLabelSelector($text, $exact));
     }
 
     /**
@@ -150,7 +150,7 @@ final class Frame
      */
     public function getByPlaceholder(string $text, bool $exact = false): Locator
     {
-        return new Locator($this->guid, Selector::getByPlaceholderSelector($text, $exact));
+        return $this->locator(Selector::getByPlaceholderSelector($text, $exact));
     }
 
     /**
@@ -158,7 +158,7 @@ final class Frame
      */
     public function getByText(string $text, bool $exact = false): Locator
     {
-        return new Locator($this->guid, Selector::getByTextSelector($text, $exact));
+        return $this->locator(Selector::getByTextSelector($text, $exact));
     }
 
     /**
@@ -166,7 +166,7 @@ final class Frame
      */
     public function getByTitle(string $text, bool $exact = false): Locator
     {
-        return new Locator($this->guid, Selector::getByTitleSelector($text, $exact));
+        return $this->locator(Selector::getByTitleSelector($text, $exact));
     }
 
     /**
