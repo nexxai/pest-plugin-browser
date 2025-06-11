@@ -127,6 +127,11 @@
         </div>
 
         <div class="form-group">
+            <button type="button" data-testid="dblclick-button" ondblclick="incrementDoubleClickCounter()">Double Click Counter</button>
+            <span data-testid="dblclick-counter">0</span>
+        </div>
+
+        <div class="form-group">
             <input type="text" data-testid="text-input" placeholder="Text input">
             <input type="text" data-testid="prefilled-input" value="Prefilled value">
         </div>
@@ -286,6 +291,14 @@
         function incrementCounter() {
             clickCounter++;
             document.querySelector('[data-testid="click-counter"]').textContent = clickCounter;
+        }
+
+        // Counter for double click testing
+        let doubleClickCounter = 0;
+
+        function incrementDoubleClickCounter() {
+            doubleClickCounter++;
+            document.querySelector('[data-testid="dblclick-counter"]').textContent = doubleClickCounter;
         }
 
         // Focus tracking function
