@@ -118,11 +118,6 @@ expect()->extend('toHaveRole', function (string $role): Expectation {
 
 expect()->intercept('toBeEmpty', Locator::class,
     function (): ExpectationMixin {
-
-        if (! $this->value instanceof Locator) {
-            throw new InvalidArgumentException('Expected value to be an Locator instance');
-        }
-
         expect($this->value->textContent())->toBe('');
 
         return $this;
