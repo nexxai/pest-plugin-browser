@@ -116,7 +116,9 @@ expect()->extend('toHaveRole', function (string $role): Expectation {
     return $this;
 });
 
-expect()->intercept('toBeEmpty', Locator::class,
+expect()->intercept(
+    'toBeEmpty',
+    Locator::class,
     function (): ExpectationMixin {
         expect($this->value->textContent())->toBe('');
 
@@ -124,4 +126,13 @@ expect()->intercept('toBeEmpty', Locator::class,
     }
 );
 
+expect()->extend('toHaveValue', function (string $id): Expectation {
+    if (! $this->value instanceof Locator) {
+        throw new InvalidArgumentException('Expected value to be an Locator instance');
+    }
+
+    expect($this->value->inputValue())->toBe($id);
+
+    return $this;
+});
 // todo: move this to Pest core end
