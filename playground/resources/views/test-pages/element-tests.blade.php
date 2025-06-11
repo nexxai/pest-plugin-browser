@@ -182,7 +182,7 @@
     <!-- User Profile Section -->
     <div class="section user-profile" data-testid="user-profile">
         <h2>User Profile</h2>
-        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzY2NzMiLz4KICA8dGV4dCB4PSI1MCIgeT0iNTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlVzZXI8L3RleHQ+Cjwvc3ZnPgo="
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzY2NzMiLz4KICA8dGV4dCB4PSI1MCIgeT0iNTUiIGZvcnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlVzZXI8L3RleHQ+Cjwvc3ZnPgo="
             alt="Profile Picture"
             class="profile-picture" />
 
@@ -284,7 +284,58 @@
         <div data-testid="scroll-target" style="margin-top: 500px;">
             This element is far down the page for scroll testing
         </div>
-    </div>    <script>
+    </div>
+
+    <!-- Edge case elements that might return malformed bounding box data -->
+    <div class="section">
+        <h2>Edge Case Elements for Bounding Box Testing</h2>
+
+        <!-- Elements with unusual CSS properties -->
+        <div data-testid="zero-width-element" style="width: 0; height: 0; overflow: hidden;">Zero dimensions element
+        </div>
+        <div data-testid="negative-margin-element" style="margin: -100px; width: 50px; height: 50px;">Negative margin element
+        </div>
+        <div data-testid="transform-element" style="transform: scale(0); width: 100px; height: 100px;">Scaled to zero element
+        </div>
+        <div data-testid="position-absolute-element" style="position: absolute; left: -9999px; top: -9999px;">Off-screen absolute element
+        </div>
+
+        <!-- Elements that might cause bounding box calculation issues -->
+        <div data-testid="float-element" style="float: left; width: 0.1px; height: 0.1px;">Tiny float element</div>
+        <div data-testid="inline-block-element" style="display: inline-block; width: 0; height: 0;">Inline block zero size
+        </div>
+
+        <!-- SVG elements that might have edge cases -->
+        <svg width="0" height="0" data-testid="zero-svg">
+            <rect width="0" height="0" data-testid="zero-rect" />
+        </svg>
+
+        <!-- Table elements with edge cases -->
+        <table data-testid="empty-table" style="border-collapse: collapse;">
+            <tr data-testid="empty-row">
+                <td data-testid="empty-cell" style="padding: 0; margin: 0; width: 0; height: 0;"></td>
+            </tr>
+        </table>
+
+        <!-- Elements with CSS that might cause calculation errors -->
+        <div data-testid="overflow-hidden-element" style="overflow: hidden; width: 0; height: 0;">
+            <div style="width: 100px; height: 100px;">Hidden content</div>
+        </div>
+
+        <!-- Element with complex transform that might break calculations -->
+        <div data-testid="complex-transform-element" style="transform: matrix(0, 0, 0, 0, 0, 0); width: 100px; height: 100px;">Matrix transform zero
+        </div>
+
+        <!-- Element with visibility hidden but dimensions -->
+        <div data-testid="visibility-hidden-element" style="visibility: hidden; width: 100px; height: 100px;">Visibility hidden element
+        </div>
+
+        <!-- Element with opacity 0 -->
+        <div data-testid="opacity-zero-element" style="opacity: 0; width: 100px; height: 100px;">Opacity zero element
+        </div>
+    </div>
+
+    <script>
         // Counter for click testing
         let clickCounter = 0;
 
@@ -318,31 +369,31 @@
         }
 
         // Add some basic interactivity for testing
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Event button click handler
             const eventButton = document.getElementById('event-button');
             const eventResult = document.getElementById('event-result');
 
             if (eventButton && eventResult) {
-                eventButton.addEventListener('click', function() {
+                eventButton.addEventListener('click', function () {
                     eventResult.textContent = 'Button was clicked!';
                 });
             }
 
             // Add focus tracking event listeners
-            document.getElementById('focus-target').addEventListener('focus', function() {
+            document.getElementById('focus-target').addEventListener('focus', function () {
                 trackFocus('focus-target');
             });
-            document.getElementById('username').addEventListener('focus', function() {
+            document.getElementById('username').addEventListener('focus', function () {
                 trackFocus('username');
             });
-            document.getElementById('password').addEventListener('focus', function() {
+            document.getElementById('password').addEventListener('focus', function () {
                 trackFocus('password');
             });
-            document.getElementById('search').addEventListener('focus', function() {
+            document.getElementById('search').addEventListener('focus', function () {
                 trackFocus('search');
             });
-            document.getElementById('comments').addEventListener('focus', function() {
+            document.getElementById('comments').addEventListener('focus', function () {
                 trackFocus('comments');
             });
 
@@ -350,14 +401,14 @@
             const hoverTarget = document.getElementById('hover-target');
             if (hoverTarget) {
                 ['mouseenter', 'mouseover', 'pointerenter'].forEach(event => {
-                    hoverTarget.addEventListener(event, function() {
+                    hoverTarget.addEventListener(event, function () {
                         trackHover('hover-target');
                     });
                 });
             }
 
             // Add global hover detection for Playwright compatibility
-            document.addEventListener('mousemove', function(e) {
+            document.addEventListener('mousemove', function (e) {
                 if (e.target.id === 'hover-target') {
                     trackHover('hover-target');
                 }
@@ -366,7 +417,7 @@
             // Make forms more interactive
             const usernameInput = document.getElementById('username');
             if (usernameInput) {
-                usernameInput.addEventListener('input', function() {
+                usernameInput.addEventListener('input', function () {
                     console.log('Username changed to:', this.value);
                 });
             }
