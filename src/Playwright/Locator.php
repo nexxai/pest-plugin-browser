@@ -272,7 +272,7 @@ final class Locator
      */
     public function first(): self
     {
-        return new self($this->frameGuid, $this->selector.' >> nth=0');
+        return $this->locator('nth=0');
     }
 
     /**
@@ -280,7 +280,7 @@ final class Locator
      */
     public function last(): self
     {
-        return new self($this->frameGuid, $this->selector.' >> nth=-1');
+        return $this->locator('nth=-1');
     }
 
     /**
@@ -288,7 +288,7 @@ final class Locator
      */
     public function nth(int $index): self
     {
-        return new self($this->frameGuid, $this->selector." >> nth={$index}");
+        return $this->locator("nth={$index}");
     }
 
     /**
@@ -298,7 +298,7 @@ final class Locator
     {
         $textSelector = Selector::getByTextSelector($text, $exact);
 
-        return new self($this->frameGuid, $this->selector.' >> '.$textSelector);
+        return $this->locator($textSelector);
     }
 
     /**
@@ -310,7 +310,7 @@ final class Locator
     {
         $roleSelector = Selector::getByRoleSelector($role, $params);
 
-        return new self($this->frameGuid, $this->selector.' >> '.$roleSelector);
+        return $this->locator($roleSelector);
     }
 
     /**
@@ -320,7 +320,7 @@ final class Locator
     {
         $testIdSelector = Selector::getByTestIdSelector('data-testid', $testId);
 
-        return new self($this->frameGuid, $this->selector.' >> '.$testIdSelector);
+        return $this->locator($testIdSelector);
     }
 
     /**
@@ -330,7 +330,7 @@ final class Locator
     {
         $altTextSelector = Selector::getByAltTextSelector($text, $exact);
 
-        return new self($this->frameGuid, $this->selector.' >> '.$altTextSelector);
+        return $this->locator($altTextSelector);
     }
 
     /**
@@ -340,7 +340,7 @@ final class Locator
     {
         $labelSelector = Selector::getByLabelSelector($text, $exact);
 
-        return new self($this->frameGuid, $this->selector.' >> '.$labelSelector);
+        return $this->locator($labelSelector);
     }
 
     /**
@@ -350,7 +350,7 @@ final class Locator
     {
         $placeholderSelector = Selector::getByPlaceholderSelector($text, $exact);
 
-        return new self($this->frameGuid, $this->selector.' >> '.$placeholderSelector);
+        return $this->locator($placeholderSelector);
     }
 
     /**
@@ -360,7 +360,7 @@ final class Locator
     {
         $titleSelector = Selector::getByTitleSelector($text, $exact);
 
-        return new self($this->frameGuid, $this->selector.' >> '.$titleSelector);
+        return $this->locator($titleSelector);
     }
 
     /**
@@ -380,7 +380,7 @@ final class Locator
     {
         // Handle backward compatibility - if string is passed, treat as selector
         if (is_string($options)) {
-            return new self($this->frameGuid, $this->selector.' >> '.$options);
+            return $this->locator($options);
         }
 
         // Handle array options for enhanced filtering
@@ -687,7 +687,7 @@ final class Locator
             }
 
             // Create a new locator using the found element's selector
-            return new self($this->frameGuid, $this->selector.' >> '.$selector);
+            return $this->locator($selector);
         } catch (RuntimeException $e) {
             // Handle timeout exceptions by returning null
             if (mb_strpos($e->getMessage(), 'Timeout') !== false) {
@@ -734,7 +734,7 @@ final class Locator
     {
         // This would typically return a FrameLocator, but for simplicity
         // we'll return a regular locator pointing to the frame content
-        return new self($this->frameGuid, $this->selector.' >> '.$selector);
+        return $this->locator($selector);
     }
 
     /**
