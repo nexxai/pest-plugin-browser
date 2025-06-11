@@ -559,15 +559,6 @@ final class Locator
     }
 
     /**
-     * Calls blur() on the element.
-     */
-    public function blur(): void
-    {
-        $response = $this->sendMessage('blur');
-        $this->processVoidResponse($response);
-    }
-
-    /**
      * Returns the bounding box of the element, or null if not visible.
      *
      * @return array{x: float, y: float, width: float, height: float}|null
