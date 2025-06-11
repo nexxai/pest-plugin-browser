@@ -9,7 +9,7 @@ it('can take screenshot of element', function (): void {
     $screenshot = $button->screenshot();
 
     expect($screenshot)->toBeString();
-    expect(mb_strlen((string) $screenshot))->toBeGreaterThan(0);
+    expect(mb_strlen($screenshot))->toBeGreaterThan(0);
     expect($screenshot)->toMatch('/^[A-Za-z0-9+\/]+=*$/');
 });
 
@@ -22,7 +22,7 @@ it('can take screenshot with options', function (): void {
     ]);
 
     expect($screenshot)->toBeString();
-    expect(mb_strlen((string) $screenshot))->toBeGreaterThan(0);
+    expect(mb_strlen($screenshot))->toBeGreaterThan(0);
 });
 
 it('can scroll element into view if needed', function (): void {
