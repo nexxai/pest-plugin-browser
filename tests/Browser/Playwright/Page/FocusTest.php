@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 it('focuses on elements and triggers focus state changes', function (): void {
-    $page = $this->page('/test/frame-tests');
+    $page = page('/test/frame-tests');
     $page->waitForSelector('#focus-target');
     expect($page->textContent('#focus-display'))->toBe('No element focused yet');
 
@@ -13,7 +13,7 @@ it('focuses on elements and triggers focus state changes', function (): void {
 });
 
 it('focuses on multiple elements and tracks state changes', function (): void {
-    $page = $this->page('/test/frame-tests');
+    $page = page('/test/frame-tests');
     $page->waitForSelector('#test-input');
     expect($page->textContent('#focus-display'))->toBe('No element focused yet');
 
@@ -28,7 +28,7 @@ it('focuses on multiple elements and tracks state changes', function (): void {
 });
 
 it('focuses on keyboard input and verifies focus', function (): void {
-    $page = $this->page('/test/frame-tests');
+    $page = page('/test/frame-tests');
     $page->waitForSelector('#keyboard-input');
 
     $page->focus('#keyboard-input');

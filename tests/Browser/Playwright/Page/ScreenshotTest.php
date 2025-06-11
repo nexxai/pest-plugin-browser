@@ -11,7 +11,7 @@ it('deletes the screenshots directory', function (): void {
 });
 
 it('may screen a page', function (): void {
-    $page = $this->page('/test/frame-tests');
+    $page = page('/test/frame-tests');
 
     $page->screenshot('screenshot.png');
 

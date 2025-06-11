@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 it('presses keys and triggers key events', function (): void {
-    $page = $this->page('/test/frame-tests');
+    $page = page('/test/frame-tests');
     $page->waitForSelector('#keyboard-input');
     $page->focus('#keyboard-input');
 

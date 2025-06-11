@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Pest\Browser\Playwright\Locator;
 
 it('finds an element by test ID', function (): void {
-    $page = $this->page('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $element = $page->getByTestId('profile-section');
 
     expect($element)->toBeInstanceOf(Locator::class);
@@ -13,7 +13,7 @@ it('finds an element by test ID', function (): void {
 });
 
 it('finds a nested element by test ID', function (): void {
-    $page = $this->page('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $element = $page->getByTestId('user-email');
 
     expect($element)->toBeInstanceOf(Locator::class);

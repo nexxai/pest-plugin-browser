@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 it('can get all inner texts from multiple elements', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $buttons = $page->locator('button');
     $allInnerTexts = $buttons->allInnerTexts();
 
@@ -16,7 +16,7 @@ it('can get all inner texts from multiple elements', function (): void {
 });
 
 it('returns empty array for non-existent elements', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $nonExistent = $page->locator('.non-existent-class');
     $allTexts = $nonExistent->allInnerTexts();
 
@@ -25,7 +25,7 @@ it('returns empty array for non-existent elements', function (): void {
 });
 
 it('can get all text contents from multiple elements', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $buttons = $page->locator('button');
     $allTextContents = $buttons->allTextContents();
 
@@ -38,7 +38,7 @@ it('can get all text contents from multiple elements', function (): void {
 });
 
 it('inner texts and text contents return same count', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $buttons = $page->locator('button');
 
     $innerTexts = $buttons->allInnerTexts();

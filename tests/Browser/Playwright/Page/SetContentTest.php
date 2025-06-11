@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 it('can set simple HTML content', function (): void {
-    $page = $this->page('/test/frame-tests');
+    $page = page('/test/frame-tests');
     $html = '<h1>Test Title</h1><p>Test paragraph</p>';
 
     $page->setContent($html);
@@ -13,7 +13,7 @@ it('can set simple HTML content', function (): void {
 });
 
 it('can set content with forms', function (): void {
-    $page = $this->page('/test/frame-tests');
+    $page = page('/test/frame-tests');
     $html = '
     <form>
         <input type="text" id="test-input" value="test-value">
@@ -27,7 +27,7 @@ it('can set content with forms', function (): void {
 });
 
 it('can set content with scripts', function (): void {
-    $page = $this->page('/test/frame-tests');
+    $page = page('/test/frame-tests');
     $html = '
     <div id="target">Initial</div>
     <script>
@@ -40,7 +40,7 @@ it('can set content with scripts', function (): void {
 });
 
 it('can set complete HTML document', function (): void {
-    $page = $this->page('/test/frame-tests');
+    $page = page('/test/frame-tests');
     $html = '<!DOCTYPE html>
     <html>
     <head>
@@ -60,7 +60,7 @@ it('can set complete HTML document', function (): void {
 });
 
 it('can clear content by setting empty HTML', function (): void {
-    $page = $this->page('/test/frame-tests');
+    $page = page('/test/frame-tests');
     $page->setContent('<div id="test">Original content</div>');
     expect($page->isVisible('#test'))->toBeTrue();
 

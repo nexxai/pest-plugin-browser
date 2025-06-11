@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 it('can get bounding box of element', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $button = $page->getByTestId('click-button');
 
     $boundingBox = $button->boundingBox();
@@ -19,7 +19,7 @@ it('can get bounding box of element', function (): void {
 });
 
 it('returns null for hidden elements', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $hiddenElement = $page->getByTestId('hidden-element');
 
     $boundingBox = $hiddenElement->boundingBox();
@@ -28,7 +28,7 @@ it('returns null for hidden elements', function (): void {
 });
 
 it('bounding box coordinates are valid', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $button = $page->getByTestId('click-button');
 
     $boundingBox = $button->boundingBox();

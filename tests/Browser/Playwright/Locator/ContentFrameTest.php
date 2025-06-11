@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Pest\Browser\Playwright\Locator;
 
 it('returns null for non-iframe elements', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $locator = $page->getByTestId('profile-section');
 
     expect($locator)->toBeInstanceOf(Locator::class);
@@ -16,7 +16,7 @@ it('returns null for non-iframe elements', function (): void {
 });
 
 it('returns frame for iframe elements', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $locator = $page->getByTestId('test-iframe');
 
     $frame = $locator->contentFrame();

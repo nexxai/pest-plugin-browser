@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Pest\Browser\Playwright\Locator;
 
 it('can create frame locator', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $frameElement = $page->getByTestId('test-frame');
 
     $frameLocator = $frameElement->frameLocator('.frame-content');
@@ -14,7 +14,7 @@ it('can create frame locator', function (): void {
 });
 
 it('can get page identifier from locator', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $button = $page->getByTestId('click-button');
 
     $locatorPageId = $button->page();
@@ -24,7 +24,7 @@ it('can get page identifier from locator', function (): void {
 });
 
 it('can wait for element state', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $button = $page->getByTestId('click-button');
 
     $button->waitForState('visible');
@@ -33,7 +33,7 @@ it('can wait for element state', function (): void {
 });
 
 it('can wait for enabled state', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $button = $page->getByTestId('click-button');
 
     $button->waitForState('enabled');
@@ -42,7 +42,7 @@ it('can wait for enabled state', function (): void {
 });
 
 it('can wait with timeout', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $button = $page->getByTestId('click-button');
 
     $button->waitForState('visible', ['timeout' => 5000]);
@@ -51,7 +51,7 @@ it('can wait with timeout', function (): void {
 });
 
 it('can wait for element state using waitForElementState method', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $button = $page->getByTestId('click-button');
 
     $button->waitForElementState('visible');
@@ -60,7 +60,7 @@ it('can wait for element state using waitForElementState method', function (): v
 });
 
 it('can wait for element state with options using waitForElementState', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $button = $page->getByTestId('click-button');
 
     $button->waitForElementState('enabled', ['timeout' => 5000]);
@@ -69,7 +69,7 @@ it('can wait for element state with options using waitForElementState', function
 });
 
 it('can wait for selector to appear relative to locator', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $container = $page->getByTestId('profile-section');
 
     $childLocator = $container->waitForSelector('h2');
@@ -78,7 +78,7 @@ it('can wait for selector to appear relative to locator', function (): void {
 });
 
 it('returns null when waitForSelector times out', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $container = $page->getByTestId('profile-section');
 
     $result = $container->waitForSelector('.definitely-non-existent-element-12345', ['timeout' => 100]);

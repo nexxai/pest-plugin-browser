@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 it('can select all text in input', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $input = $page->getByTestId('text-input');
 
     $input->fill('Select this text');
@@ -14,7 +14,7 @@ it('can select all text in input', function (): void {
 });
 
 it('can set checked state explicitly', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $checkbox = $page->getByTestId('checkbox-input');
 
     $checkbox->setChecked(true);

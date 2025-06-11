@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Pest\Browser\Playwright\Element;
 
 it('returns empty array when no elements match', function (): void {
-    $page = $this->page('/test/frame-tests');
+    $page = page('/test/frame-tests');
     $elements = $page->querySelectorAll('.non-existent-class');
 
     expect($elements)->toBeArray();
@@ -13,7 +13,7 @@ it('returns empty array when no elements match', function (): void {
 });
 
 it('returns single element in array when one element matches', function (): void {
-    $page = $this->page('/test/frame-tests');
+    $page = page('/test/frame-tests');
     $elements = $page->querySelectorAll('#unique-element');
 
     expect($elements)->toBeArray();
@@ -22,7 +22,7 @@ it('returns single element in array when one element matches', function (): void
 });
 
 it('returns multiple elements when multiple match', function (): void {
-    $page = $this->page('/test/frame-tests');
+    $page = page('/test/frame-tests');
     $elements = $page->querySelectorAll('.test-item');
 
     expect($elements)->toBeArray();
@@ -34,7 +34,7 @@ it('returns multiple elements when multiple match', function (): void {
 });
 
 it('can find all input elements', function (): void {
-    $page = $this->page('/test/frame-tests');
+    $page = page('/test/frame-tests');
     $inputs = $page->querySelectorAll('input');
 
     expect($inputs)->toBeArray();
@@ -46,7 +46,7 @@ it('can find all input elements', function (): void {
 });
 
 it('can find all elements by tag name', function (): void {
-    $page = $this->page('/test/frame-tests');
+    $page = page('/test/frame-tests');
     $buttons = $page->querySelectorAll('button');
 
     expect($buttons)->toBeArray();

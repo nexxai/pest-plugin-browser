@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 it('can take screenshot of element', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $button = $page->getByTestId('click-button');
 
     $screenshot = $button->screenshot();
@@ -14,7 +14,7 @@ it('can take screenshot of element', function (): void {
 });
 
 it('can take screenshot with options', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $button = $page->getByTestId('click-button');
 
     $screenshot = $button->screenshot([
@@ -26,7 +26,7 @@ it('can take screenshot with options', function (): void {
 });
 
 it('can scroll element into view if needed', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $button = $page->getByTestId('click-button');
 
     $button->scrollIntoViewIfNeeded();
@@ -35,7 +35,7 @@ it('can scroll element into view if needed', function (): void {
 });
 
 it('can highlight element', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $button = $page->getByTestId('click-button');
 
     $button->highlight();

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 it('can fill input fields', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $input = $page->getByTestId('text-input');
 
     $input->fill('Hello World');
@@ -12,7 +12,7 @@ it('can fill input fields', function (): void {
 });
 
 it('can fill with options', function (): void {
-    $page = $this->page()->goto('/test/element-tests');
+    $page = page()->goto('/test/element-tests');
     $input = $page->getByLabel('Username');
 
     $input->fill('testuser', ['force' => true]);
