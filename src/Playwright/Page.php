@@ -53,6 +53,7 @@ final class Page
         }
 
         $response = $this->sendMessage('goto', ['url' => $url, 'waitUntil' => 'load']);
+
         $this->processNavigationResponse($response);
 
         return $this;

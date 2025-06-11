@@ -25,9 +25,10 @@ it('can get page identifier from locator', function (): void {
 
 it('can wait for element state', function (): void {
     $page = page()->goto('/test/element-tests');
+
     $button = $page->getByTestId('click-button');
 
-    $button->waitForState('visible');
+    $button->waitFor();
 
     expect($button->isVisible())->toBeTrue();
 });

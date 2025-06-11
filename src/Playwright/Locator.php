@@ -7,7 +7,9 @@ namespace Pest\Browser\Playwright;
 use Generator;
 use Pest\Browser\Playwright\Concerns\InteractsWithPlaywright;
 use Pest\Browser\Support\Selector;
+use PHPUnit\Framework\ExpectationFailedException;
 use RuntimeException;
+use WebSocket\TimeoutException;
 
 /**
  * @internal
@@ -31,6 +33,8 @@ final class Locator
      */
     public function isVisible(): bool
     {
+        $this->waitFor();
+
         $response = $this->sendMessage('isVisible');
 
         return $this->processBooleanResponse($response);
@@ -41,6 +45,8 @@ final class Locator
      */
     public function isChecked(): bool
     {
+        $this->waitFor();
+
         $response = $this->sendMessage('isChecked');
 
         return $this->processBooleanResponse($response);
@@ -51,6 +57,8 @@ final class Locator
      */
     public function isEnabled(): bool
     {
+        $this->waitFor();
+
         $response = $this->sendMessage('isEnabled');
 
         return $this->processBooleanResponse($response);
@@ -61,7 +69,11 @@ final class Locator
      */
     public function isDisabled(): bool
     {
-        return ! $this->isEnabled();
+        $this->waitFor();
+
+        $response = $this->sendMessage('isDisabled');
+
+        return $this->processBooleanResponse($response);
     }
 
     /**
@@ -69,7 +81,11 @@ final class Locator
      */
     public function isHidden(): bool
     {
-        return ! $this->isVisible();
+        $this->waitFor(['state' => 'hidden']);
+
+        $response = $this->sendMessage('isHidden');
+
+        return $this->processBooleanResponse($response);
     }
 
     /**
@@ -77,6 +93,8 @@ final class Locator
      */
     public function isEditable(): bool
     {
+        $this->waitFor();
+
         $response = $this->sendMessage('isEditable');
 
         return $this->processBooleanResponse($response);
@@ -87,7 +105,10 @@ final class Locator
      */
     public function check(): void
     {
+        $this->waitFor();
+
         $response = $this->sendMessage('check');
+
         $this->processVoidResponse($response);
     }
 
@@ -263,8 +284,13 @@ final class Locator
      */
     public function waitFor(?array $options = null): void
     {
-        $response = $this->sendMessage('waitForSelector', $options ?? []);
-        $this->processVoidResponse($response);
+        try {
+            $response = $this->sendMessage('waitForSelector', $options ?? []);
+
+            $this->processVoidResponse($response);
+        } catch (TimeoutException) {
+            throw new ExpectationFailedException('Element not found.');
+        }
     }
 
     /**

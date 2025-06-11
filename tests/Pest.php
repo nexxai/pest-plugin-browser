@@ -19,7 +19,6 @@ expect()->extend('toHaveTitle', function (string $title): Expectation {
 });
 
 expect()->extend('toBeChecked', function (): Expectation {
-
     if (! $this->value instanceof Locator) {
         throw new InvalidArgumentException('Expected value to be a Locator instance');
     }
@@ -30,7 +29,6 @@ expect()->extend('toBeChecked', function (): Expectation {
 });
 
 expect()->extend('toBeVisible', function (): Expectation {
-
     if (! $this->value instanceof Locator) {
         throw new InvalidArgumentException('Expected value to be a Locator instance');
     }
@@ -62,7 +60,7 @@ expect()->extend('toBeDisabled', function (): Expectation {
     return $this;
 });
 
-expect()->extend('toBeEditable', function (): Expectation {
+expect()->extend('toBeEditable', function (): Expectation
 
     if (! $this->value instanceof Locator) {
         throw new InvalidArgumentException('Expected value to be a Locator instance');
@@ -74,7 +72,6 @@ expect()->extend('toBeEditable', function (): Expectation {
 });
 
 expect()->extend('toBeHidden', function (): Expectation {
-
     if (! $this->value instanceof Locator) {
         throw new InvalidArgumentException('Expected value to be a Locator instance');
     }
