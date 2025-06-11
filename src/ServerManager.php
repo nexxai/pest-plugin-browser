@@ -55,7 +55,8 @@ final class ServerManager
 
         $baseDirectory = match (true) {
             // laravel...
-            function_exists('app_path') => app_path(),
+            function_exists('app_path')
+                && file_exists(getcwd().'/artisan') => getcwd(),
 
             // playground...
             file_exists(__DIR__.'/../playground/artisan') => __DIR__.'/../playground',

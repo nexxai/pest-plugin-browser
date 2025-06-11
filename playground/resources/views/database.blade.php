@@ -1,7 +1,4 @@
-@extends('layouts.app')
+<h1>
+    Nunonation Database
+</h1>
 
-@section('content')
-    <h1>
-        Nunonation Database
-    </h1>
-@endsection

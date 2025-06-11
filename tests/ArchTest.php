@@ -7,9 +7,17 @@ arch('src')
     ->toHaveMethodsDocumented()
     ->toHavePropertiesDocumented();
 
-arch()->preset()->php();
-arch()->preset()->strict();
+arch()->preset()->php()->ignoring([
+    'App',
+    'Tests',
+]);
+arch()->preset()->strict()->ignoring([
+    'App',
+    'Tests',
+]);
 arch()->preset()->security()->ignoring([
+    'App',
+    'Tests',
     'assert',
     'uniqid',
     'rand',

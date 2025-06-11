@@ -63,7 +63,9 @@ final class Process
             $this->command,
             $this->host,
             $this->port,
-        ), $this->baseDirectory);
+        ), $this->baseDirectory, [
+            'APP_URL' => sprintf('http://%s:%d', $this->host, $this->port),
+        ]);
 
         $this->systemProcess->setTimeout(0);
 

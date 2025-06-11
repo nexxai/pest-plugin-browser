@@ -70,8 +70,7 @@ expect()->extend('toBeDisabled', function (): Expectation {
     return $this;
 });
 
-expect()->extend('toBeEditable', function (): Expectation
-{
+expect()->extend('toBeEditable', function (): Expectation {
     if (! $this->value instanceof Locator) {
         throw new InvalidArgumentException('Expected value to be a Locator instance');
     }
