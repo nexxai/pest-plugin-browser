@@ -652,7 +652,7 @@ final class Page
             'reload',
             'screenshot',
             'waitForLoadState',
-            'waitForURL'
+            'waitForURL',
         ];
 
         return in_array($method, $pageLevelOperations, true);
