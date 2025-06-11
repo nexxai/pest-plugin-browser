@@ -34,5 +34,3 @@ it('throws RuntimeException when selectText element is not found', function (): 
     expect(fn () => $locator->selectText())
         ->toThrow(RuntimeException::class, 'Element not found');
 });
-
-
