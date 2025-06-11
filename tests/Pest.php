@@ -49,7 +49,6 @@ expect()->extend('toBeVisible', function (): Expectation {
 });
 
 expect()->extend('toBeEnabled', function (): Expectation {
-
     if (! $this->value instanceof Locator) {
         throw new InvalidArgumentException('Expected value to be a Locator instance');
     }

@@ -71,6 +71,7 @@
             "rector",
             "pint"
         ],
+        "test:profanity": "pest --profanity --compact --language=en",
         "test:type-coverage": "pest --type-coverage --exactly=100",
         "test:typos": "peck",
         "test:lint": [
@@ -81,6 +82,7 @@
         "test:types": "phpstan",
         "test": [
             "@test:lint",
+            "@test:profanity",
             "@test:type-coverage",
             "@test:typos",
             "@test:unit",
