@@ -23,3 +23,11 @@ it('returns frame for iframe elements', function (): void {
 
     expect($frame)->toBeNull();
 });
+
+it('throws RuntimeException when contentFrame element is not found', function (): void {
+    $page = page()->goto('/test/element-tests');
+    $locator = $page->locator('.non-existent-element');
+
+    expect(fn() => $locator->contentFrame())
+        ->toThrow(RuntimeException::class, 'Element not found');
+});

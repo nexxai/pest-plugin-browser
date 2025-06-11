@@ -42,3 +42,19 @@ it('can highlight element', function (): void {
 
     expect($button->isVisible())->toBeTrue();
 });
+
+it('throws RuntimeException when screenshot element is not found', function (): void {
+    $page = page()->goto('/test/element-tests');
+    $locator = $page->locator('.non-existent-element');
+
+    expect(fn() => $locator->screenshot())
+        ->toThrow(RuntimeException::class, 'Element not found');
+});
+
+it('throws RuntimeException when scrollIntoViewIfNeeded element is not found', function (): void {
+    $page = page()->goto('/test/element-tests');
+    $locator = $page->locator('.non-existent-element');
+
+    expect(fn() => $locator->scrollIntoViewIfNeeded())
+        ->toThrow(RuntimeException::class, 'Element not found');
+});

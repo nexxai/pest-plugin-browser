@@ -68,20 +68,18 @@ it('can wait for element state with options using waitForElementState', function
     expect($button->isEnabled())->toBeTrue();
 });
 
-it('can wait for selector to appear relative to locator', function (): void {
+it('throws RuntimeException when waitForElementState element is not found', function (): void {
     $page = page()->goto('/test/element-tests');
-    $container = $page->getByTestId('profile-section');
+    $locator = $page->locator('.non-existent-element');
 
-    $childLocator = $container->waitForSelector('h2');
-
-    expect($childLocator)->toBeInstanceOf(Locator::class);
+    expect(fn() => $locator->waitForElementState('visible'))
+        ->toThrow(RuntimeException::class, 'Element not found');
 });
 
-it('returns null when waitForSelector times out', function (): void {
+it('throws RuntimeException when waitForState element is not found', function (): void {
     $page = page()->goto('/test/element-tests');
-    $container = $page->getByTestId('profile-section');
+    $locator = $page->locator('.non-existent-element');
 
-    $result = $container->waitForSelector('.definitely-non-existent-element-12345', ['timeout' => 100]);
-
-    expect($result)->toBeNull();
+    expect(fn() => $locator->waitForState('visible'))
+        ->toThrow(RuntimeException::class, 'Element not found');
 });

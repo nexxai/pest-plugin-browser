@@ -138,7 +138,7 @@
 
         <div class="form-group">
             <label for="comments">Comments</label>
-            <textarea id="comments" name="comments" placeholder="Enter your comments here"></textarea>
+            <textarea id="comments" name="comments" data-testid="textarea-input" placeholder="Enter your comments here"></textarea>
         </div>
 
         <div class="form-group">

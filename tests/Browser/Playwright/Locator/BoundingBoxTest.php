@@ -38,3 +38,12 @@ it('bounding box coordinates are valid', function (): void {
     expect($boundingBox['width'])->toBeGreaterThan(0);
     expect($boundingBox['height'])->toBeGreaterThan(0);
 });
+
+it('returns null when boundingBox element is not found', function (): void {
+    $page = page()->goto('/test/element-tests');
+    $locator = $page->locator('.non-existent-element');
+
+    $boundingBox = $locator->boundingBox();
+
+    expect($boundingBox)->toBeNull();
+});

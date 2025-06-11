@@ -28,3 +28,11 @@ it('can select options with options parameter', function (): void {
 
     expect($selected)->toBeArray();
 });
+
+it('throws RuntimeException when selectOption element is not found', function (): void {
+    $page = page()->goto('/test/element-tests');
+    $locator = $page->locator('.non-existent-element');
+
+    expect(fn() => $locator->selectOption('value'))
+        ->toThrow(RuntimeException::class, 'Element not found');
+});

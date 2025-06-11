@@ -80,3 +80,43 @@ it('can use filterBySelector method', function (): void {
 
     expect($filteredButtons)->toBeInstanceOf(Locator::class);
 });
+
+it('handles non-string hasText in filter options', function (): void {
+    $page = page()->goto('/test/element-tests');
+    $buttons = $page->locator('button');
+
+    // Test with non-string hasText (this should be ignored based on the code)
+    $filteredButtons = $buttons->filter(['hasText' => 123]);
+
+    expect($filteredButtons)->toBeInstanceOf(Locator::class);
+});
+
+it('handles non-string hasNotText in filter options', function (): void {
+    $page = page()->goto('/test/element-tests');
+    $buttons = $page->locator('button');
+
+    // Test with non-string hasNotText (this should be ignored based on the code)
+    $filteredButtons = $buttons->filter(['hasNotText' => 123]);
+
+    expect($filteredButtons)->toBeInstanceOf(Locator::class);
+});
+
+it('handles non-locator has in filter options', function (): void {
+    $page = page()->goto('/test/element-tests');
+    $buttons = $page->locator('button');
+
+    // Test with non-locator has (this should be ignored based on the code)
+    $filteredButtons = $buttons->filter(['has' => 'not-a-locator']);
+
+    expect($filteredButtons)->toBeInstanceOf(Locator::class);
+});
+
+it('handles non-locator hasNot in filter options', function (): void {
+    $page = page()->goto('/test/element-tests');
+    $buttons = $page->locator('button');
+
+    // Test with non-locator hasNot (this should be ignored based on the code)
+    $filteredButtons = $buttons->filter(['hasNot' => 'not-a-locator']);
+
+    expect($filteredButtons)->toBeInstanceOf(Locator::class);
+});

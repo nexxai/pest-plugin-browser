@@ -14,3 +14,11 @@ it('returns frame information for elements', function (): void {
 
     expect($frame)->toBeNull();
 });
+
+it('throws RuntimeException when ownerFrame element is not found', function (): void {
+    $page = page()->goto('/test/element-tests');
+    $locator = $page->locator('.non-existent-element');
+
+    expect(fn() => $locator->ownerFrame())
+        ->toThrow(RuntimeException::class, 'Element not found');
+});
