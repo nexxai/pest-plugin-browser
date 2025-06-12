@@ -39,6 +39,8 @@ final class Page
 
     /**
      * Navigates to the given URL.
+     *
+     * @param  array<string, mixed>  $options
      */
     public function goto(string $url, array $options = []): self
     {
@@ -46,10 +48,6 @@ final class Page
             $url = mb_ltrim($url, '/');
 
             $url = ServerManager::instance()->http()->url().'/'.$url;
-        }
-
-        if ($this->url === $url) {
-            return $this;
         }
 
         $response = $this->sendMessage('goto', [

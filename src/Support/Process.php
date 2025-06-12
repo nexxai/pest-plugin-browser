@@ -107,7 +107,7 @@ final class Process
                     'port' => $this->port,
                     'until' => $this->until,
                 ]),
-            ));
+                ));
         }
 
         return sprintf('%s:%d', $this->host, $this->port);
