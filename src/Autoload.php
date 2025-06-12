@@ -14,7 +14,7 @@ if (! function_exists('\Pest\Browser\page')) {
      * Visits the given URL, and starts a new browser test.
      *
      * @param  string|null  $url  The URL to visit
-     * @param  array<string, mixed>  $options  Options for the page, e.g. ['hasTouch' => true]
+     * @param  array<string, mixed>  $options  Options for the page or for the goto, e.g. ['hasTouch' => true]
      */
     function page(?string $url = null, array $options = []): Page
     {
