@@ -282,7 +282,9 @@ final class Locator
      */
     public function waitFor(?array $options = null): void
     {
-        $this->sendMessage('waitForSelector', $options ?? []);
+        $response = $this->sendMessage('waitForSelector', $options ?? []);
+
+        $this->processVoidResponse($response);
     }
 
     /**
