@@ -7,6 +7,7 @@ namespace Pest\Browser\Playwright;
 use Generator;
 use Pest\Browser\Playwright\Concerns\InteractsWithPlaywright;
 use Pest\Browser\ServerManager;
+use Pest\Browser\Support\JavaScriptSerializer;
 use Pest\Browser\Support\Screenshot;
 use Pest\Browser\Support\Selector;
 use RuntimeException;
@@ -25,9 +26,7 @@ final class Page
         public string $guid,
         public string $frameGuid,
         public string $url = '',
-    ) {
-        //
-    }
+    ) {}
 
     /**
      * Get the current URL of the page.
@@ -536,13 +535,12 @@ final class Page
      */
     public function evaluate(string $pageFunction, mixed $arg = null): mixed
     {
-        $params = ['expression' => $pageFunction];
+        $params = [
+            'expression' => $pageFunction,
+            'arg' => JavaScriptSerializer::serializeArgument($arg),
+        ];
 
-        if ($arg !== null) {
-            $params['arg'] = $arg;
-        }
-
-        $response = $this->sendMessage('evaluate', $params);
+        $response = $this->sendMessage('evaluateExpression', $params);
 
         return $this->processResultResponse($response);
     }
@@ -550,17 +548,29 @@ final class Page
     /**
      * Evaluates a JavaScript expression and returns a JSHandle.
      */
-    public function evaluateHandle(string $pageFunction, mixed $arg = null): mixed
+    public function evaluateHandle(string $pageFunction, mixed $arg = null): JSHandle
     {
-        $params = ['expression' => $pageFunction];
+        $params = [
+            'expression' => $pageFunction,
+            'arg' => JavaScriptSerializer::serializeArgument($arg),
+        ];
 
-        if ($arg !== null) {
-            $params['arg'] = $arg;
+        $response = $this->sendMessage('evaluateExpressionHandle', $params);        /** @var array{method?: string|null, params: array{type?: string|null, guid?: string}} $message */
+        foreach ($response as $message) {
+            if (
+                isset($message['method'], $message['params']['type'], $message['params']['guid'])
+                && $message['method'] === '__create__'
+                && $message['params']['type'] === 'JSHandle'
+            ) {
+                return new JSHandle($message['params']['guid']);
+            }
+
+            if (isset($message['result']['handle'])) {
+                return new JSHandle($message['result']['handle']['guid']);
+            }
         }
 
-        $response = $this->sendMessage('evaluateHandle', $params);
-
-        return $this->processResultResponse($response);
+        throw new RuntimeException('Failed to create JSHandle from evaluate response');
     }
 
     /**
