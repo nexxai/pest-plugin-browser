@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Playwright;
 
-use Exception;
 use Generator;
 use Pest\Browser\Playwright\Concerns\InteractsWithPlaywright;
 use Pest\Browser\Support\Selector;
-use PHPUnit\Framework\ExpectationFailedException;
 use RuntimeException;
 
 /**
@@ -284,19 +282,7 @@ final class Locator
      */
     public function waitFor(?array $options = null): void
     {
-        set_error_handler(static fn (): false => false);
-
-        try {
-            $response = $this->sendMessage('waitForSelector', $options ?? []);
-
-            $this->processVoidResponse($response);
-        } catch (Exception $e) {
-            if ($e->getMessage() === 'Client read timeout') {
-                throw new ExpectationFailedException('Element not found.');
-            }
-        } finally {
-            restore_error_handler();
-        }
+        $this->sendMessage('waitForSelector', $options ?? []);
     }
 
     /**

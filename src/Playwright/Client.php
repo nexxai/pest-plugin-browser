@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Pest\Browser\Playwright;
 
 use Generator;
-use RuntimeException;
+use PHPUnit\Framework\ExpectationFailedException;
 use WebSocket\Client as WebSocketClient;
 
 /**
@@ -60,7 +60,7 @@ final class Client
             'id' => $requestId,
             'guid' => $guid,
             'method' => $method,
-            'params' => ['timeout' => 30_000, ...$params],
+            'params' => ['timeout' => 5_000, ...$params],
             'metadata' => $meta,
         ]);
 
@@ -68,13 +68,13 @@ final class Client
 
         while (true) {
             /** @var string $responseJson */
-            $responseJson = $this->websocketClient?->receive();
+            $responseJson = $this->websocketClient?->receive()?->getContent();
 
             /** @var array{id: string|null, params: array{add: string|null}, error: array{error: array{message: string|null}}} $response */
             $response = json_decode($responseJson, true);
 
             if (isset($response['error']['error']['message'])) {
-                throw new RuntimeException($response['error']['error']['message']);
+                throw new ExpectationFailedException($response['error']['error']['message']);
             }
 
             yield $response;
