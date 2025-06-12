@@ -40,7 +40,7 @@ final class Page
     /**
      * Navigates to the given URL.
      */
-    public function goto(string $url): self
+    public function goto(string $url, array $options = []): self
     {
         if (! str_starts_with($url, 'http://') && ! str_starts_with($url, 'https://')) {
             $url = mb_ltrim($url, '/');
@@ -52,7 +52,10 @@ final class Page
             return $this;
         }
 
-        $response = $this->sendMessage('goto', ['url' => $url, 'waitUntil' => 'load']);
+        $response = $this->sendMessage('goto', [
+            ...['url' => $url, 'waitUntil' => 'load'],
+            ...$options,
+        ]);
 
         $this->processNavigationResponse($response);
 

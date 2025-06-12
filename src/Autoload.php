@@ -22,7 +22,7 @@ if (! function_exists('\Pest\Browser\page')) {
         $page = $browser->newContext($options)->newPage();
 
         if ($url !== null) {
-            $page->goto($url);
+            $page->goto($url, $options);
         }
 
         return $page;

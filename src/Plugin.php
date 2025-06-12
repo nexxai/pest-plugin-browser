@@ -36,7 +36,7 @@ final class Plugin implements Bootable, Terminable // @pest-arch-ignore-line
         }
 
         Client::instance()->connectTo(
-            ServerManager::instance()->playwright()->url().'?browser=chromium',
+            '127.0.0.1:8077/?browser=chromium',
         );
 
         if (Parallel::isEnabled() === false || Parallel::isWorker()) {
