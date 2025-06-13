@@ -81,8 +81,8 @@ it('serializes nested structures correctly', function (): void {
     $nested = [
         'user' => [
             'name' => 'Alice',
-            'tags' => ['developer', 'tester']
-        ]
+            'tags' => ['developer', 'tester'],
+        ],
     ];
 
     $result = JavaScriptSerializer::serializeValue($nested);
@@ -136,8 +136,8 @@ it('parses arrays correctly', function (): void {
         'a' => [
             ['n' => 1],
             ['n' => 2],
-            ['s' => 'test']
-        ]
+            ['s' => 'test'],
+        ],
     ];
 
     $result = JavaScriptSerializer::parseValue($array);
@@ -151,8 +151,8 @@ it('parses objects correctly', function (): void {
         'o' => [
             ['k' => 'name', 'v' => ['s' => 'John']],
             ['k' => 'age', 'v' => ['n' => 30]],
-            ['k' => 'active', 'v' => ['b' => true]]
-        ]
+            ['k' => 'active', 'v' => ['b' => true]],
+        ],
     ];
 
     $result = JavaScriptSerializer::parseValue($object);
@@ -161,7 +161,7 @@ it('parses objects correctly', function (): void {
     expect($result)->toBe([
         'name' => 'John',
         'age' => 30,
-        'active' => true
+        'active' => true,
     ]);
 });
 
@@ -178,14 +178,14 @@ it('parses nested structures correctly', function (): void {
                             'v' => [
                                 'a' => [
                                     ['s' => 'reading'],
-                                    ['s' => 'coding']
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ]
+                                    ['s' => 'coding'],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
     ];
 
     $result = JavaScriptSerializer::parseValue($nested);

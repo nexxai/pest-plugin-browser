@@ -62,14 +62,15 @@ final class JavaScriptSerializer
                 foreach ($value as $key => $val) {
                     $result[] = ['k' => $key, 'v' => self::serializeValue($val)];
                 }
+
                 return ['o' => $result];
-            } else {
-                $result = [];
-                foreach ($value as $item) {
-                    $result[] = self::serializeValue($item);
-                }
-                return ['a' => $result];
             }
+            $result = [];
+            foreach ($value as $item) {
+                $result[] = self::serializeValue($item);
+            }
+
+            return ['a' => $result];
         }
 
         if (is_object($value)) {
@@ -81,6 +82,7 @@ final class JavaScriptSerializer
             foreach (get_object_vars($value) as $key => $val) {
                 $result[] = ['k' => $key, 'v' => self::serializeValue($val)];
             }
+
             return ['o' => $result];
         }
 
@@ -139,6 +141,7 @@ final class JavaScriptSerializer
             foreach ($value['o'] as $item) {
                 $result[$item['k']] = self::parseValue($item['v']);
             }
+
             return $result;
         }
 
