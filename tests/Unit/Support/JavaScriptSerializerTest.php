@@ -214,7 +214,7 @@ it('parses DateTimeImmutable values correctly', function (): void {
 });
 
 it('serializes big integers correctly', function (): void {
-    $bigInt = 9007199254740993;
+    $bigInt = 9007199254740993; // Greater than JavaScript's MAX_SAFE_INTEGER
     $result = JavaScriptSerializer::serializeValue($bigInt);
 
     expect($result)->toHaveKey('bi');
@@ -226,4 +226,22 @@ it('parses big integer values correctly', function (): void {
     $result = JavaScriptSerializer::parseValue($bigIntValue);
 
     expect($result)->toBe('9007199254740993');
+});
+
+it('serializes resources as strings (fallback)', function (): void {
+    $resource = fopen('php://memory', 'r');
+    $result = JavaScriptSerializer::serializeValue($resource);
+
+    expect($result)->toHaveKey('s');
+    expect($result['s'])->toBeString();
+    expect($result['s'])->toContain('Resource');
+
+    fclose($resource);
+});
+
+it('parses values that are not arrays as-is', function (): void {
+    expect(JavaScriptSerializer::parseValue('plain string'))->toBe('plain string');
+    expect(JavaScriptSerializer::parseValue(42))->toBe(42);
+    expect(JavaScriptSerializer::parseValue(true))->toBeTrue();
+    expect(JavaScriptSerializer::parseValue(null))->toBeNull();
 });
