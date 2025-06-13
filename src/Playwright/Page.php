@@ -26,7 +26,9 @@ final class Page
         public string $guid,
         public string $frameGuid,
         public string $url = '',
-    ) {}
+    ) {
+        //
+    }
 
     /**
      * Get the current URL of the page.
@@ -555,7 +557,8 @@ final class Page
             'arg' => JavaScriptSerializer::serializeArgument($arg),
         ];
 
-        $response = $this->sendMessage('evaluateExpressionHandle', $params);        /** @var array{method?: string|null, params: array{type?: string|null, guid?: string}} $message */
+        $response = $this->sendMessage('evaluateExpressionHandle', $params);
+
         foreach ($response as $message) {
             if (
                 isset($message['method'], $message['params']['type'], $message['params']['guid'])

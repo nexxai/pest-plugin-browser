@@ -4,43 +4,19 @@ declare(strict_types=1);
 
 use Pest\Browser\Support\JavaScriptSerializer;
 
-it('serializes null values correctly', function (): void {
-    $value = null;
-    $result = JavaScriptSerializer::serializeValue($value);
-
-    expect($result)->toBe(['v' => 'null']);
-});
-
-it('serializes boolean values correctly', function (): void {
-    $true = JavaScriptSerializer::serializeValue(true);
-    $false = JavaScriptSerializer::serializeValue(false);
-
-    expect($true)->toBe(['b' => true]);
-    expect($false)->toBe(['b' => false]);
-});
-
-it('serializes numeric values correctly', function (): void {
-    $int = JavaScriptSerializer::serializeValue(42);
-    $float = JavaScriptSerializer::serializeValue(3.14);
-
-    expect($int)->toBe(['n' => 42]);
-    expect($float)->toBe(['n' => 3.14]);
+it('serializes primitive values correctly', function (): void {
+    expect(JavaScriptSerializer::serializeValue(null))->toBe(['v' => 'null']);
+    expect(JavaScriptSerializer::serializeValue(true))->toBe(['b' => true]);
+    expect(JavaScriptSerializer::serializeValue(false))->toBe(['b' => false]);
+    expect(JavaScriptSerializer::serializeValue(42))->toBe(['n' => 42]);
+    expect(JavaScriptSerializer::serializeValue(3.14))->toBe(['n' => 3.14]);
+    expect(JavaScriptSerializer::serializeValue('hello'))->toBe(['s' => 'hello']);
 });
 
 it('serializes special numeric values correctly', function (): void {
-    $nan = JavaScriptSerializer::serializeValue(NAN);
-    $infinity = JavaScriptSerializer::serializeValue(INF);
-    $negInfinity = JavaScriptSerializer::serializeValue(-INF);
-
-    expect($nan)->toBe(['v' => 'NaN']);
-    expect($infinity)->toBe(['v' => 'Infinity']);
-    expect($negInfinity)->toBe(['v' => '-Infinity']);
-});
-
-it('serializes strings correctly', function (): void {
-    $string = JavaScriptSerializer::serializeValue('hello world');
-
-    expect($string)->toBe(['s' => 'hello world']);
+    expect(JavaScriptSerializer::serializeValue(NAN))->toBe(['v' => 'NaN']);
+    expect(JavaScriptSerializer::serializeValue(INF))->toBe(['v' => 'Infinity']);
+    expect(JavaScriptSerializer::serializeValue(-INF))->toBe(['v' => '-Infinity']);
 });
 
 it('serializes arrays correctly', function (): void {
@@ -59,7 +35,6 @@ it('serializes associative arrays as objects correctly', function (): void {
     expect($assoc)->toHaveKey('o');
     expect($assoc['o'])->toBeArray();
 
-    // Check for the name key-value pair
     $hasName = false;
     $hasAge = false;
 
@@ -86,7 +61,6 @@ it('serializes objects correctly', function (): void {
     expect($result)->toHaveKey('o');
     expect($result['o'])->toBeArray();
 
-    // Check for the needed properties
     $hasName = false;
     $hasActive = false;
 
@@ -221,4 +195,35 @@ it('parses nested structures correctly', function (): void {
     expect($result['user'])->toHaveKeys(['name', 'hobbies']);
     expect($result['user']['name'])->toBe('Alice');
     expect($result['user']['hobbies'])->toBe(['reading', 'coding']);
+});
+
+it('serializes DateTimeImmutable objects correctly', function (): void {
+    $date = new DateTimeImmutable('2023-01-01T12:00:00Z');
+    $result = JavaScriptSerializer::serializeValue($date);
+
+    expect($result)->toHaveKey('d');
+    expect($result['d'])->toBe('2023-01-01T12:00:00+00:00');
+});
+
+it('parses DateTimeImmutable values correctly', function (): void {
+    $dateValue = ['d' => '2023-01-01T12:00:00+00:00'];
+    $result = JavaScriptSerializer::parseValue($dateValue);
+
+    expect($result)->toBeInstanceOf(DateTimeImmutable::class);
+    expect($result->format('Y-m-d\TH:i:s\Z'))->toBe('2023-01-01T12:00:00Z');
+});
+
+it('serializes big integers correctly', function (): void {
+    $bigInt = 9007199254740993;
+    $result = JavaScriptSerializer::serializeValue($bigInt);
+
+    expect($result)->toHaveKey('bi');
+    expect($result['bi'])->toBe('9007199254740993');
+});
+
+it('parses big integer values correctly', function (): void {
+    $bigIntValue = ['bi' => '9007199254740993'];
+    $result = JavaScriptSerializer::parseValue($bigIntValue);
+
+    expect($result)->toBe('9007199254740993');
 });

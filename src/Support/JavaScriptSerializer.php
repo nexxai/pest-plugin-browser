@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pest\Browser\Support;
 
 use DateTimeImmutable;
-use stdClass;
 
 /**
  * Handles serialization and deserialization of JavaScript values.
@@ -85,7 +84,6 @@ final class JavaScriptSerializer
             return ['o' => $result];
         }
 
-        // Fallback for unsupported types
         return ['s' => (string) $value];
     }
 

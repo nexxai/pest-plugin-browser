@@ -65,6 +65,12 @@ final class JSHandle
      */
     public function toString(): string
     {
-        return $this->jsonValue();
+        $value = $this->jsonValue();
+
+        if (is_string($value)) {
+            return $value;
+        }
+
+        return (string) $value;
     }
 }
