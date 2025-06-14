@@ -4,19 +4,18 @@ This repository contains the Pest Plugin Browser.
 
 > If you want to start testing your application with Pest, visit the main **[Pest Repository](https://github.com/pestphp/pest)**.
 
-
 ## Community & Resources
 
-- Explore our docs at **[pestphp.com »](https://pestphp.com)**
-- Follow us on Twitter at **[@pestphp »](https://twitter.com/pestphp)**
-- Join us at **[discord.gg/kaHY6p54JH »](https://discord.gg/kaHY6p54JH)** or **[t.me/+kYH5G4d5MV83ODk0 »](https://t.me/+kYH5G4d5MV83ODk0)**
-- Follow the creator Nuno Maduro:
-    - YouTube: **[youtube.com/@nunomaduro](https://www.youtube.com/@nunomaduro)** — Videos every weekday
-    - Twitch: **[twitch.tv/enunomaduro](https://www.twitch.tv/enunomaduro)** — Streams (almost) every weekday
-    - Twitter / X: **[x.com/enunomaduro](https://x.com/enunomaduro)**
-    - LinkedIn: **[linkedin.com/in/nunomaduro](https://www.linkedin.com/in/nunomaduro)**
-    - Instagram: **[instagram.com/enunomaduro](https://www.instagram.com/enunomaduro)**
-    - Tiktok: **[tiktok.com/@enunomaduro](https://www.tiktok.com/@enunomaduro)**
+-   Explore our docs at **[pestphp.com »](https://pestphp.com)**
+-   Follow us on Twitter at **[@pestphp »](https://twitter.com/pestphp)**
+-   Join us at **[discord.gg/kaHY6p54JH »](https://discord.gg/kaHY6p54JH)** or **[t.me/+kYH5G4d5MV83ODk0 »](https://t.me/+kYH5G4d5MV83ODk0)**
+-   Follow the creator Nuno Maduro:
+    -   YouTube: **[youtube.com/@nunomaduro](https://www.youtube.com/@nunomaduro)** — Videos every weekday
+    -   Twitch: **[twitch.tv/enunomaduro](https://www.twitch.tv/enunomaduro)** — Streams (almost) every weekday
+    -   Twitter / X: **[x.com/enunomaduro](https://x.com/enunomaduro)**
+    -   LinkedIn: **[linkedin.com/in/nunomaduro](https://www.linkedin.com/in/nunomaduro)**
+    -   Instagram: **[instagram.com/enunomaduro](https://www.instagram.com/enunomaduro)**
+    -   Tiktok: **[tiktok.com/@enunomaduro](https://www.tiktok.com/@enunomaduro)**
 
 ## Installation (for development purposes)
 
@@ -90,461 +89,164 @@ TBD
 
 ## Available Operations
 
-- [back](#back)
-- [click](#click)
-- [clickAndHold](#clickAndHold)
-- [clickAtPoint](#clickAtPoint)
-- [clickAtXPath](#clickAtXPath)
-- [clickLink](#clickLink)
-- [controlClick](#controlClick)
-- [doubleClick](#doubleClick)
-- [forward](#forward)
-- [pause](#pause)
-- [setTimeout](#setTimeout)
-- [refresh](#refresh)
-- [rightClick](#rightClick)
-- [when](#when)
-- [screenshot](#screenshot)
-- [visit](#visit)
-- [check](#check)
-- [uncheck](#uncheck)
-- [type](#type)
-- [append](#append)
-- [clear](#clear)
+-   [url](#url)
+-   [goto](#goto)
+-   [title](#title)
+-   [getAttribute](#getattribute)
+-   [querySelector](#queryselector) / [querySelectorAll](#queryselectorall)
+-   [locator](#locator)
+-   [getByRole](#getbyrole)
+-   [getByTestId](#getbytestid)
+-   [getByAltText](#getbyalttext)
+-   [getByLabel](#getbylabel)
+-   [getByPlaceholder](#getbyplaceholder)
+-   [getByText](#getbytext)
+-   [getByTitle](#getbytitle)
+-   [content](#content)
+-   [isEnabled](#isenabled)
+-   [isVisible](#isvisible)
+-   [isHidden](#ishidden)
+-   [isEditable](#iseditable)
+-   [isDisabled](#isdisabled)
+-   [isChecked](#ischecked)
+-   [fill](#fill)
+-   [innerText](#innertext)
+-   [textContent](#textcontent)
+-   [inputValue](#inputvalue)
+-   [check](#check)
+-   [uncheck](#uncheck)
+-   [hover](#hover)
+-   [focus](#focus)
+-   [press](#press)
+-   [type](#type)
+-   [waitForLoadState](#waitforloadstate)
+-   [waitForURL](#waitforurl)
+-   [waitForSelector](#waitforselector)
+-   [dragAndDrop](#draganddrop)
+-   [setContent](#setcontent)
+-   [selectOption](#selectoption)
+-   [evaluate](#evaluate)
+-   [evaluateHandle](#evaluatehandle)
+-   [forward](#forward)
+-   [back](#back)
+-   [reload](#reload)
+-   [screenshot](#screenshot)
 
-### Checkboxes
+## Available Expectations
 
-Check the given element.
+### toHaveTitle
 
-```php
-$this->visit($url)
-    ->check('#checkbox-unchecked');
-```
-
-Uncheck the given element.
-
-```php
-$this->visit($url)
-    ->uncheck('#checkbox-checked');
-```
-
-### click
-
-Click the element at the given selector.
-
-```php
-$this->click('.selector');
-```
-
-### clickAndHold
-
-Perform a mouse click and hold the mouse button down at the given selector.
-
-```php
-$this->clickAndHold('.selector');
-```
-
-### clickAtPoint
-
-Click the topmost element at the given pair of coordinates.
+Checks that the page has the given title.
 
 ```php
-$this->clickAtPoint('//div[@class = "selector"]');
+expect($page)->toHaveTitle('My Page Title');
 ```
 
-### clickAtXPath
+### toBeChecked
 
-Click the element at the given XPath expression.
+Checks that the locator is checked (for checkboxes/radios).
 
 ```php
-$this->clickAtXPath('//div[@class = "selector"]');
+expect($locator)->toBeChecked();
 ```
 
-### clickLink
+### toBeVisible
 
-Clicks some text on the page.
+Checks that the locator is visible on the page.
 
 ```php
-$this->clickLink('Sign In');
+expect($locator)->toBeVisible();
 ```
 
-### controlClick
+### toBeEnabled
 
-Control click the element at the given selector.
+Checks that the locator is enabled (not disabled).
 
 ```php
-$this->controlClick('.selector');
+expect($locator)->toBeEnabled();
 ```
 
-### doubleClick
+### toBeDisabled
 
-Double-click the element at the given selector.
+Checks that the locator is disabled.
 
 ```php
-$this->doubleClick('.selector');
+expect($locator)->toBeDisabled();
 ```
 
-### Navigate back
+### toBeEditable
 
-Go back one page from the browser history.
+Checks that the locator is editable (input, textarea, etc.).
 
 ```php
-$this->back();
+expect($locator)->toBeEditable();
 ```
 
-### Navigate forward
+### toBeHidden
 
-Go forward one page from the browser history.
+Checks that the locator is hidden from view.
 
 ```php
-$this->forward();
+expect($locator)->toBeHidden();
 ```
 
-### pause
+### toHaveId
 
-Pauses the execution for a specified number of milliseconds.
-
-> [!WARNING]
-> Discouraged: Never pause in production. Tests that wait for an amount of time are inherently flaky. Use "wait for
-> element" or "wait for an event" approaches - you can wait for an event your app dispatches.
+Checks that the locator has the given id attribute.
 
 ```php
-$this->pause(5000); // Pause for 5 seconds
+expect($locator)->toHaveId('element-id');
 ```
 
-### setTimeout
+### toHaveClass
 
-Changes the timeout for the currently running test to the given value in milliseconds.
-This feature works well in combination with [pause](#pause) when necessary or in other relevant scenarios.
+Checks that the locator has the given class attribute.
 
 ```php
-$this->setTimeout(10000); // set timeout for test execution to 10 seconds
+expect($locator)->toHaveClass('class-name');
 ```
 
-### refresh
+### toHaveRole
 
-Refreshes the current page.
+Checks that the locator has the given ARIA role.
 
 ```php
-$this->refresh();
+expect($locator)->toHaveRole('button');
 ```
 
-### rightClick
+### toBeEmpty
 
-Right click the element at the given selector.
+Checks that the locator's text content is empty.
 
 ```php
-$this->rightClick('.selector');
+expect($locator)->toBeEmpty();
 ```
 
-### screenshot
+### toHaveValue
 
-Takes a full-page screenshot of the current page and saves it under `/Browser/screenshots`.
+Checks that the locator has a value (for input elements).
 
 ```php
-$this->screenshot('filename');
+expect($locator)->toHaveValue('expected-value');
 ```
 
-### when
+### toHaveScreenshot
 
-The when operation in Pest Browser allows you to execute different actions based on whether a specific condition is met when visiting a webpage. This feature provides dynamic test execution, enhancing the flexibility of browser tests.
+The `toHaveScreenshot` expectation takes a screenshot of the current page and saves it to the specified path. It then checks that the screenshot file exists at that path. This is useful for verifying that screenshots are being generated correctly during browser tests.
+
+**Usage:**
 
 ```php
-$this->when(
-        new Pest\Browser\Conditions\See('Laravel - The PHP Framework For Web Artisans'),
-        function (Pest\Browser\PendingTest $browser): void {
-            $browser->clickLink('Get Started')
-                ->assertSee('Installation');
-        },
-        function (Pest\Browser\PendingTest $browser): void {
-            $browser->assertSee('Laravel');
-        }
-    );
+$page = page('/test/frame-tests');
+$screenshotName = 'screenshot.png';
+expect($page)->toHaveScreenshot($screenshotName);
+expect(file_exists(\Pest\Browser\Support\Screenshot::path($screenshotName)))->toBeTrue();
 ```
 
-### visit
-
-Visits the given URL, and starts a new browser test.
+If the screenshot cannot be saved (e.g., due to an invalid or unwritable path), the expectation will fail and throw an exception.
 
 ```php
-$this->visit('https://pestphp.com');
-```
-
-### type
-
-Types some text into the input.
-
-```php
-$this->type('#email', 'jane.doe@pestphp.com');
-```
-
-### append
-
-Appends some text to the input.
-
-```php
-$this->append('#email', '@pestphp.com');
-```
-
-### clear
-
-Clears the input.
-
-```php
-$this->clear('#email');
-```
-
-## Available Assertions
-
-- [assertAttribute](#assertAttribute)
-- [assertAttributeContains](#assertAttributeContains)
-- [assertAttributeDoesntContain](#assertAttributeDoesntContain)
-- [assertAttributeMissing](#assertAttributeMissing)
-- [assertDontSee](#assertDontSee)
-- [assertHasClass](#assertHasClass)
-- [assertQueryStringHas](#assertQueryStringHas)
-- [assertQueryStringMissing](#assertQueryStringMissing)
-- [assertPathBeginsWith](#assertpathbeginswith)
-- [assertPathEndsWith](#assertpathendswith)
-- [assertPathContains](#assertpathcontains)
-- [assertPathIs](#assertpathis)
-- [assertPathIsNot](#assertpathisnot)
-- [assertPresent](#assertpresent)
-- [assertNotPresent](#assertnotpresent)
-- [assertScript](#assertscript)
-- [assertVisible](#assertvisible)
-- [assertMissing](#assertmissing)
-- [assertChecked](#assertchecked)
-- [assertNotChecked](#assertnotchecked)
-- [assertInputValue](#assertInputValue)
-- [assertInputValueIsNot](#assertInputValueIsNot)
-
-### assertAttribute
-
-Assert that the specified element has the expected attribute and value:
-
-```php
-$this->visit($url)
-    ->assertAttribute('html', 'data-theme', 'light');
-```
-
-### assertAttributeContains
-
-Assert that the specified element has the expected attribute and the value contains a specific value:
-
-```php
-$this->visit($url)
-    ->assertAttributeContains('html', 'data-theme', 'ight');
-```
-
-#### assertAttributeDoesntContain
-
-Assert that the specified element has the expected attribute, but the value does not contain a specific value:
-
-```php
-$this->visit($url)
-    ->assertAttributeDoesntContain('html', 'data-theme', 'not here');
-```
-
-### assertAttributeMissing
-
-Assert that the specified element is missing a particular attribute :
-
-```php
-$this->visit($url)
-    ->assertAttributeMissing('html', 'data-missing');
-```
-
-### assertDontSee
-
-Assert that the given text is not present on the page:
-
-```php
-$this->visit($url)
-    ->assertDontSee('we are a streaming service');
-```
-
-#### assertHasClass
-
-Assert that the element has css classes bases upon string, array, regex
-
-Given the html
-
-```html
-<section>
-    <div id="div-1" class="class-1"></div>
-    <div id="div-2" class="class-1 class-2"></div>
-    <div id="div-3" class="class-1 selected class-3"></div>
-    <ul>
-        <li class="component"></li>
-        <li class="component selected"></li>
-        <li class="component"></li>
-    </ul>
-</section>
-```
-
-```php
-$this->visit('/test/interactive-elements')
-    ->assertHasClass('#div-1', 'class-1');
-
-$this->visit('/test/interactive-elements')
-    ->assertHasClass('#div-3', 'class-1 selected class-3');
-
-$this->visit('/test/interactive-elements')
-    ->assertHasClass('#div-3', '/(^|\s)selected(\s|$)/');
-
-$this->visit('/test/interactive-elements')
-    ->assertHasClass('ul > .component', ['component', 'component selected', 'component']);
-```
-
-#### assertVisible
-
-Assert that an element with the given selector is visible:
-
-```php
-test('assert visible', function () {
-    $this->visit($url)
-        ->assertVisible('h1:visible');
-});
-```
-
-### assertMissing
-
-Assert that an element with the given selector is hidden:
-
-```php
-test('assert missing', function () {
-    $this->visit($url)
-        ->assertMissing('a.hidden');
-```
-
-### assertQueryStringHas
-
-Assert that the given query string is present in the url:
-
-```php
-$this->visit($url)
-    ->assertQueryStringHas('q', 'test');
-```
-
-### assertQueryStringMissing
-
-Assert that the given query string is not present in the url:
-
-```php
-$this->visit($url)
-    ->assertQueryStringMissing('q', 'test-1');
-```
-
-### assertPathBeginsWith
-
-Assert that the current URL path begins with the given path:
-
-```php
-$this->visit($url)
-    ->assertPathBeginsWith('/test');
-```
-
-### assertPathEndsWith
-
-Assert that the current URL path ends with the given path:
-
-```php
-$this->visit($url)
-    ->assertPathEndsWith('/test');
-```
-
-### assertPathContains
-
-Assert that the current URL path contains the given path:
-
-```php
-$this->visit($url)
-    ->assertPathContains('/test');
-```
-
-### assertPathIs
-
-Assert that the current URL path matches the given path:
-
-```php
-$this->visit($url)
-    ->assertPathIs('/test');
-
-// Asterisk (*) can be used as a wildcard
-
-$this->visit($url)
-    ->assertPathIs('/test/*');
-```
-
-### assertPathIsNot
-
-Assert that the current URL path does not match the given path:
-
-```php
-$this->visit($url)
-    ->assertPathIsNot('/test');
-```
-
-### assertScript
-
-Assert that the given script returns the expected value:
-
-```php
-$this->visit($url)
-    ->assertScript('document.querySelector("title").textContent.includes("Laravel")', true);
-```
-
-### assertPresent
-
-Assert that the element with a given selector is present on the page:
-
-```php
-$this->visit($url)
-    ->assertPresent('h1:visible');
-```
-
-### assertNotPresent
-
-Assert that the element with a given selector is not present on the page:
-
-```php
-$this->visit($url)
-    ->assertNotPresent('a.non-existing-class');
-```
-
-#### assertChecked
-
-Assert that the element with a given selector is checked:
-
-```php
-$this->visit($url)
-    ->assertChecked('input[type="checkbox"].checked');
-```
-
-#### assertNotChecked
-
-Assert that the element with a given selector is not checked:
-
-```php
-$this->visit($url)
-    ->assertNotChecked('input[type="checkbox"].checked');
-```
-
-### assertInputValue
-
-Assert that the value of the input with the given selector is the expected value:
-
-```php
-$this->visit($url)
-    ->assertInputValue('#email', 'jane.doe@pestphp.com');
-```
-
-### assertInputValueIsNot
-
-Assert that the value of the input with the given selector is not the expected value:
-
-```php
-$this->visit($url)
-    ->assertInputValueIsNot('#email', 'jane.doe@pestphp.com');
+$page = page('/test/frame-tests');
+$invalidPath = '/invalid-dir/not-the-screenshot.png';
+expect($page)->toHaveScreenshot($invalidPath); // This will throw an exception
 ```
