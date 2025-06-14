@@ -469,7 +469,7 @@ $page->setContent('<h1>Hello</h1>');
 
 ### selectOption
 
-Select options in a <select> element.
+Select options in a `<select>` element.
 
 ```php
 $page = page('/test/frame-tests');
