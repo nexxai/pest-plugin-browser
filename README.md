@@ -131,6 +131,23 @@ TBD
 -   [back](#back)
 -   [reload](#reload)
 -   [screenshot](#screenshot)
+-   [locator.click](#locatorclick)
+-   [locator.fill](#locatorfill)
+-   [locator.type](#locatortype)
+-   [locator.press](#locatorpress)
+-   [locator.check](#locatorcheck)
+-   [locator.uncheck](#locatoruncheck)
+-   [locator.isVisible](#locatorisvisible)
+-   [locator.isHidden](#locatorishidden)
+-   [locator.isEnabled](#locatorisenabled)
+-   [locator.isDisabled](#locatorisdisabled)
+-   [locator.isEditable](#locatoriseditable)
+-   [locator.isChecked](#locatorischecked)
+-   [locator.textContent](#locatortextcontent)
+-   [locator.innerText](#locatorinnertext)
+-   [locator.inputValue](#locatorinputvalue)
+-   [locator.getAttribute](#locatorgetattribute)
+-   [locator.screenshot](#locatorscreenshot)
 
 ---
 
@@ -511,6 +528,125 @@ Take a screenshot of the page.
 ```php
 $page = page('/test/frame-tests');
 $page->screenshot('example.png');
+```
+
+### locator.click
+Click the element found by the locator.
+```php
+$locator = $page->locator('button.submit');
+$locator->click();
+```
+
+### locator.fill
+Fill an input or textarea found by the locator.
+```php
+$locator = $page->locator('input[name="email"]');
+$locator->fill('hello@pestphp.com');
+```
+
+### locator.type
+Type text into the element found by the locator.
+```php
+$locator = $page->locator('input[name="email"]');
+$locator->type('hello world');
+```
+
+### locator.press
+Press a key on the element found by the locator.
+```php
+$locator = $page->locator('input[name="email"]');
+$locator->press('Enter');
+```
+
+### locator.check
+Check a checkbox or radio button found by the locator.
+```php
+$locator = $page->locator('input[type="checkbox"]');
+$locator->check();
+```
+
+### locator.uncheck
+Uncheck a checkbox or radio button found by the locator.
+```php
+$locator = $page->locator('input[type="checkbox"]');
+$locator->uncheck();
+```
+
+### locator.isVisible
+Check if the element found by the locator is visible.
+```php
+$locator = $page->locator('h1');
+$isVisible = $locator->isVisible();
+```
+
+### locator.isHidden
+Check if the element found by the locator is hidden.
+```php
+$locator = $page->locator('h1');
+$isHidden = $locator->isHidden();
+```
+
+### locator.isEnabled
+Check if the element found by the locator is enabled.
+```php
+$locator = $page->locator('button.submit');
+$isEnabled = $locator->isEnabled();
+```
+
+### locator.isDisabled
+Check if the element found by the locator is disabled.
+```php
+$locator = $page->locator('button.submit');
+$isDisabled = $locator->isDisabled();
+```
+
+### locator.isEditable
+Check if the element found by the locator is editable.
+```php
+$locator = $page->locator('input[type="text"]');
+$isEditable = $locator->isEditable();
+```
+
+### locator.isChecked
+Check if a checkbox or radio button found by the locator is checked.
+```php
+$locator = $page->locator('input[type="checkbox"]');
+$isChecked = $locator->isChecked();
+```
+
+### locator.textContent
+Get the text content of the element found by the locator.
+```php
+$locator = $page->locator('h1');
+$content = $locator->textContent();
+```
+
+### locator.innerText
+Get the inner text of the element found by the locator.
+```php
+$locator = $page->locator('h1');
+$text = $locator->innerText();
+```
+
+### locator.inputValue
+Get the value of an input element found by the locator.
+```php
+$locator = $page->locator('input[name="email"]');
+$value = $locator->inputValue();
+```
+
+### locator.getAttribute
+Get an attribute value from the element found by the locator.
+```php
+$locator = $page->locator('h1');
+$id = $locator->getAttribute('id');
+```
+
+### locator.screenshot
+Take a screenshot of the element found by the locator.
+```php
+$locator = $page->locator('h1');
+$locator->screenshot('element.png');
 ```
 
 ## Available Expectations
