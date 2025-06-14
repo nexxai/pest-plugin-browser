@@ -767,3 +767,11 @@ $page = page('/test/frame-tests');
 $invalidPath = '/invalid-dir/not-the-screenshot.png';
 expect($page)->toHaveScreenshot($invalidPath); // This will throw an exception
 ```
+
+### toHaveText
+
+Checks that the locator contains the given text content.
+
+```php
+expect($locator)->toHaveText('expected text');
+```
