@@ -4,19 +4,18 @@ This repository contains the Pest Plugin Browser.
 
 > If you want to start testing your application with Pest, visit the main **[Pest Repository](https://github.com/pestphp/pest)**.
 
-
 ## Community & Resources
 
-- Explore our docs at **[pestphp.com »](https://pestphp.com)**
-- Follow us on Twitter at **[@pestphp »](https://twitter.com/pestphp)**
-- Join us at **[discord.gg/kaHY6p54JH »](https://discord.gg/kaHY6p54JH)** or **[t.me/+kYH5G4d5MV83ODk0 »](https://t.me/+kYH5G4d5MV83ODk0)**
-- Follow the creator Nuno Maduro:
-    - YouTube: **[youtube.com/@nunomaduro](https://www.youtube.com/@nunomaduro)** — Videos every weekday
-    - Twitch: **[twitch.tv/enunomaduro](https://www.twitch.tv/enunomaduro)** — Streams (almost) every weekday
-    - Twitter / X: **[x.com/enunomaduro](https://x.com/enunomaduro)**
-    - LinkedIn: **[linkedin.com/in/nunomaduro](https://www.linkedin.com/in/nunomaduro)**
-    - Instagram: **[instagram.com/enunomaduro](https://www.instagram.com/enunomaduro)**
-    - Tiktok: **[tiktok.com/@enunomaduro](https://www.tiktok.com/@enunomaduro)**
+-   Explore our docs at **[pestphp.com »](https://pestphp.com)**
+-   Follow us on Twitter at **[@pestphp »](https://twitter.com/pestphp)**
+-   Join us at **[discord.gg/kaHY6p54JH »](https://discord.gg/kaHY6p54JH)** or **[t.me/+kYH5G4d5MV83ODk0 »](https://t.me/+kYH5G4d5MV83ODk0)**
+-   Follow the creator Nuno Maduro:
+    -   YouTube: **[youtube.com/@nunomaduro](https://www.youtube.com/@nunomaduro)** — Videos every weekday
+    -   Twitch: **[twitch.tv/enunomaduro](https://www.twitch.tv/enunomaduro)** — Streams (almost) every weekday
+    -   Twitter / X: **[x.com/enunomaduro](https://x.com/enunomaduro)**
+    -   LinkedIn: **[linkedin.com/in/nunomaduro](https://www.linkedin.com/in/nunomaduro)**
+    -   Instagram: **[instagram.com/enunomaduro](https://www.instagram.com/enunomaduro)**
+    -   Tiktok: **[tiktok.com/@enunomaduro](https://www.tiktok.com/@enunomaduro)**
 
 ## Installation (for development purposes)
 
@@ -90,461 +89,723 @@ TBD
 
 ## Available Operations
 
-- [back](#back)
-- [click](#click)
-- [clickAndHold](#clickAndHold)
-- [clickAtPoint](#clickAtPoint)
-- [clickAtXPath](#clickAtXPath)
-- [clickLink](#clickLink)
-- [controlClick](#controlClick)
-- [doubleClick](#doubleClick)
-- [forward](#forward)
-- [pause](#pause)
-- [setTimeout](#setTimeout)
-- [refresh](#refresh)
-- [rightClick](#rightClick)
-- [when](#when)
-- [screenshot](#screenshot)
-- [visit](#visit)
-- [check](#check)
-- [uncheck](#uncheck)
-- [type](#type)
-- [append](#append)
-- [clear](#clear)
+-   [url](#url)
+-   [goto](#goto)
+-   [title](#title)
+-   [getAttribute](#getattribute)
+-   [querySelector](#queryselector) / [querySelectorAll](#queryselectorall)
+-   [locator](#locator)
+-   [getByRole](#getbyrole)
+-   [getByTestId](#getbytestid)
+-   [getByAltText](#getbyalttext)
+-   [getByLabel](#getbylabel)
+-   [getByPlaceholder](#getbyplaceholder)
+-   [getByText](#getbytext)
+-   [getByTitle](#getbytitle)
+-   [content](#content)
+-   [isEnabled](#isenabled)
+-   [isVisible](#isvisible)
+-   [isHidden](#ishidden)
+-   [isEditable](#iseditable)
+-   [isDisabled](#isdisabled)
+-   [isChecked](#ischecked)
+-   [fill](#fill)
+-   [innerText](#innertext)
+-   [textContent](#textcontent)
+-   [inputValue](#inputvalue)
+-   [check](#check)
+-   [uncheck](#uncheck)
+-   [hover](#hover)
+-   [focus](#focus)
+-   [press](#press)
+-   [type](#type)
+-   [waitForLoadState](#waitforloadstate)
+-   [waitForURL](#waitforurl)
+-   [waitForSelector](#waitforselector)
+-   [dragAndDrop](#draganddrop)
+-   [setContent](#setcontent)
+-   [selectOption](#selectoption)
+-   [evaluate](#evaluate)
+-   [evaluateHandle](#evaluatehandle)
+-   [forward](#forward)
+-   [back](#back)
+-   [reload](#reload)
+-   [screenshot](#screenshot)
+-   [locator.click](#locatorclick)
+-   [locator.fill](#locatorfill)
+-   [locator.type](#locatortype)
+-   [locator.press](#locatorpress)
+-   [locator.check](#locatorcheck)
+-   [locator.uncheck](#locatoruncheck)
+-   [locator.isVisible](#locatorisvisible)
+-   [locator.isHidden](#locatorishidden)
+-   [locator.isEnabled](#locatorisenabled)
+-   [locator.isDisabled](#locatorisdisabled)
+-   [locator.isEditable](#locatoriseditable)
+-   [locator.isChecked](#locatorischecked)
+-   [locator.textContent](#locatortextcontent)
+-   [locator.innerText](#locatorinnertext)
+-   [locator.inputValue](#locatorinputvalue)
+-   [locator.getAttribute](#locatorgetattribute)
+-   [locator.screenshot](#locatorscreenshot)
 
-### Checkboxes
+---
 
-Check the given element.
+### url
+
+Get the current URL of the page.
 
 ```php
-$this->visit($url)
-    ->check('#checkbox-unchecked');
+$page = page('/test/frame-tests');
+$currentUrl = $page->url();
 ```
 
-Uncheck the given element.
+### goto
+
+Navigate to a given URL.
 
 ```php
-$this->visit($url)
-    ->uncheck('#checkbox-checked');
+$page = page('/test/frame-tests');
+$page->goto('https://example.com');
 ```
 
-### click
+### title
 
-Click the element at the given selector.
+Get the meta title of the page.
 
 ```php
-$this->click('.selector');
+$page = page('/test/frame-tests');
+$title = $page->title();
 ```
 
-### clickAndHold
+### getAttribute
 
-Perform a mouse click and hold the mouse button down at the given selector.
+Get the value of an attribute for a selector.
 
 ```php
-$this->clickAndHold('.selector');
+$page = page('/test/frame-tests');
+$id = $page->getAttribute('h1', 'id');
 ```
 
-### clickAtPoint
+### querySelector / querySelectorAll
 
-Click the topmost element at the given pair of coordinates.
+Find elements by selector.
 
 ```php
-$this->clickAtPoint('//div[@class = "selector"]');
+$page = page('/test/frame-tests');
+$element = $page->querySelector('h1');
+$elements = $page->querySelectorAll('div');
 ```
 
-### clickAtXPath
+### locator
 
-Click the element at the given XPath expression.
+Create a locator for a selector.
 
 ```php
-$this->clickAtXPath('//div[@class = "selector"]');
+$page = page('/test/frame-tests');
+$locator = $page->locator('button.submit');
 ```
 
-### clickLink
+### getByRole
 
-Clicks some text on the page.
+Create a locator by ARIA role.
 
 ```php
-$this->clickLink('Sign In');
+$page = page('/test/frame-tests');
+$button = $page->getByRole('button');
 ```
 
-### controlClick
+### getByTestId
 
-Control click the element at the given selector.
+Create a locator by test id.
 
 ```php
-$this->controlClick('.selector');
+$page = page('/test/frame-tests');
+$testElement = $page->getByTestId('login-form');
 ```
 
-### doubleClick
+### getByAltText
 
-Double-click the element at the given selector.
+Create a locator by alt text.
 
 ```php
-$this->doubleClick('.selector');
+$page = page('/test/frame-tests');
+$image = $page->getByAltText('Logo');
 ```
 
-### Navigate back
+### getByLabel
 
-Go back one page from the browser history.
+Create a locator by label text.
 
 ```php
-$this->back();
+$page = page('/test/frame-tests');
+$input = $page->getByLabel('Email');
 ```
 
-### Navigate forward
+### getByPlaceholder
 
-Go forward one page from the browser history.
+Create a locator by placeholder text.
 
 ```php
-$this->forward();
+$page = page('/test/frame-tests');
+$input = $page->getByPlaceholder('Enter your email');
 ```
 
-### pause
+### getByText
 
-Pauses the execution for a specified number of milliseconds.
-
-> [!WARNING]
-> Discouraged: Never pause in production. Tests that wait for an amount of time are inherently flaky. Use "wait for
-> element" or "wait for an event" approaches - you can wait for an event your app dispatches.
+Create a locator by text content.
 
 ```php
-$this->pause(5000); // Pause for 5 seconds
+$page = page('/test/frame-tests');
+$link = $page->getByText('Sign In');
 ```
 
-### setTimeout
+### getByTitle
 
-Changes the timeout for the currently running test to the given value in milliseconds.
-This feature works well in combination with [pause](#pause) when necessary or in other relevant scenarios.
+Create a locator by title attribute.
 
 ```php
-$this->setTimeout(10000); // set timeout for test execution to 10 seconds
+$page = page('/test/frame-tests');
+$element = $page->getByTitle('Main Section');
 ```
 
-### refresh
+### content
 
-Refreshes the current page.
+Get the full HTML contents of the page.
 
 ```php
-$this->refresh();
+$page = page('/test/frame-tests');
+$html = $page->content();
 ```
 
-### rightClick
+### isEnabled
 
-Right click the element at the given selector.
+Check if an element is enabled.
 
 ```php
-$this->rightClick('.selector');
+$page = page('/test/frame-tests');
+$isEnabled = $page->isEnabled('button.submit');
 ```
 
-### screenshot
+### isVisible
 
-Takes a full-page screenshot of the current page and saves it under `/Browser/screenshots`.
+Check if an element is visible.
 
 ```php
-$this->screenshot('filename');
+$page = page('/test/frame-tests');
+$isVisible = $page->isVisible('h1');
 ```
 
-### when
+### isHidden
 
-The when operation in Pest Browser allows you to execute different actions based on whether a specific condition is met when visiting a webpage. This feature provides dynamic test execution, enhancing the flexibility of browser tests.
+Check if an element is hidden.
 
 ```php
-$this->when(
-        new Pest\Browser\Conditions\See('Laravel - The PHP Framework For Web Artisans'),
-        function (Pest\Browser\PendingTest $browser): void {
-            $browser->clickLink('Get Started')
-                ->assertSee('Installation');
-        },
-        function (Pest\Browser\PendingTest $browser): void {
-            $browser->assertSee('Laravel');
-        }
-    );
+$page = page('/test/frame-tests');
+$isHidden = $page->isHidden('h1');
 ```
 
-### visit
+### isEditable
 
-Visits the given URL, and starts a new browser test.
+Check if an element is editable.
 
 ```php
-$this->visit('https://pestphp.com');
+$page = page('/test/frame-tests');
+$isEditable = $page->isEditable('input[type="text"]');
+```
+
+### isDisabled
+
+Check if an element is disabled.
+
+```php
+$page = page('/test/frame-tests');
+$isDisabled = $page->isDisabled('button.submit');
+```
+
+### isChecked
+
+Check if a checkbox or radio is checked.
+
+```php
+$page = page('/test/frame-tests');
+$isChecked = $page->isChecked('input[type="checkbox"]');
+```
+
+### fill
+
+Fill a form field.
+
+```php
+$page = page('/test/frame-tests');
+$page->fill('input[name="email"]', 'jane@doe.com');
+```
+
+### innerText
+
+Get the inner text of an element.
+
+```php
+$page = page('/test/frame-tests');
+$text = $page->innerText('h1');
+```
+
+### textContent
+
+Get the text content of an element.
+
+```php
+$page = page('/test/frame-tests');
+$content = $page->textContent('h1');
+```
+
+### inputValue
+
+Get the value of an input element.
+
+```php
+$page = page('/test/frame-tests');
+$value = $page->inputValue('input[name="email"]');
+```
+
+### check
+
+Check a checkbox or radio button.
+
+```php
+$page = page('/test/frame-tests');
+$page->check('input[type="checkbox"]');
+```
+
+### uncheck
+
+Uncheck a checkbox or radio button.
+
+```php
+$page = page('/test/frame-tests');
+$page->uncheck('input[type="checkbox"]');
+```
+
+### hover
+
+Hover over an element.
+
+```php
+$page = page('/test/frame-tests');
+$page->hover('button');
+```
+
+### focus
+
+Focus an element.
+
+```php
+$page = page('/test/frame-tests');
+$page->focus('input[name="email"]');
+```
+
+### press
+
+Press a key on an element.
+
+```php
+$page = page('/test/frame-tests');
+$page->press('input[name="email"]', 'Enter');
 ```
 
 ### type
 
-Types some text into the input.
+Type text into an element.
 
 ```php
-$this->type('#email', 'jane.doe@pestphp.com');
+$page = page('/test/frame-tests');
+$page->type('input[name="email"]', 'hello world');
 ```
 
-### append
+### waitForLoadState
 
-Appends some text to the input.
+Wait for the page to reach a certain load state.
 
 ```php
-$this->append('#email', '@pestphp.com');
+$page = page('/test/frame-tests');
+$page->waitForLoadState('networkidle');
 ```
 
-### clear
+### waitForURL
 
-Clears the input.
+Wait for the page to reach a certain URL.
 
 ```php
-$this->clear('#email');
+$page = page('/test/frame-tests');
+$page->waitForURL('https://example.com/next');
 ```
 
-## Available Assertions
+### waitForSelector
 
-- [assertAttribute](#assertAttribute)
-- [assertAttributeContains](#assertAttributeContains)
-- [assertAttributeDoesntContain](#assertAttributeDoesntContain)
-- [assertAttributeMissing](#assertAttributeMissing)
-- [assertDontSee](#assertDontSee)
-- [assertHasClass](#assertHasClass)
-- [assertQueryStringHas](#assertQueryStringHas)
-- [assertQueryStringMissing](#assertQueryStringMissing)
-- [assertPathBeginsWith](#assertpathbeginswith)
-- [assertPathEndsWith](#assertpathendswith)
-- [assertPathContains](#assertpathcontains)
-- [assertPathIs](#assertpathis)
-- [assertPathIsNot](#assertpathisnot)
-- [assertPresent](#assertpresent)
-- [assertNotPresent](#assertnotpresent)
-- [assertScript](#assertscript)
-- [assertVisible](#assertvisible)
-- [assertMissing](#assertmissing)
-- [assertChecked](#assertchecked)
-- [assertNotChecked](#assertnotchecked)
-- [assertInputValue](#assertInputValue)
-- [assertInputValueIsNot](#assertInputValueIsNot)
-
-### assertAttribute
-
-Assert that the specified element has the expected attribute and value:
+Wait for a selector to appear or reach a state.
 
 ```php
-$this->visit($url)
-    ->assertAttribute('html', 'data-theme', 'light');
+$page = page('/test/frame-tests');
+$page->waitForSelector('h1');
 ```
 
-### assertAttributeContains
+### dragAndDrop
 
-Assert that the specified element has the expected attribute and the value contains a specific value:
+Drag one element to another.
 
 ```php
-$this->visit($url)
-    ->assertAttributeContains('html', 'data-theme', 'ight');
+$page = page('/test/frame-tests');
+$page->dragAndDrop('#source', '#target');
 ```
 
-#### assertAttributeDoesntContain
+### setContent
 
-Assert that the specified element has the expected attribute, but the value does not contain a specific value:
+Set the HTML content of the page.
 
 ```php
-$this->visit($url)
-    ->assertAttributeDoesntContain('html', 'data-theme', 'not here');
+$page = page('/test/frame-tests');
+$page->setContent('<h1>Hello</h1>');
 ```
 
-### assertAttributeMissing
+### selectOption
 
-Assert that the specified element is missing a particular attribute :
+Select options in a `<select>` element.
 
 ```php
-$this->visit($url)
-    ->assertAttributeMissing('html', 'data-missing');
+$page = page('/test/frame-tests');
+$page->selectOption('select[name="country"]', 'US');
 ```
 
-### assertDontSee
+### evaluate
 
-Assert that the given text is not present on the page:
+Run JavaScript in the page context.
 
 ```php
-$this->visit($url)
-    ->assertDontSee('we are a streaming service');
+$page = page('/test/frame-tests');
+$result = $page->evaluate('() => document.title');
 ```
 
-#### assertHasClass
+### evaluateHandle
 
-Assert that the element has css classes bases upon string, array, regex
-
-Given the html
-
-```html
-<section>
-    <div id="div-1" class="class-1"></div>
-    <div id="div-2" class="class-1 class-2"></div>
-    <div id="div-3" class="class-1 selected class-3"></div>
-    <ul>
-        <li class="component"></li>
-        <li class="component selected"></li>
-        <li class="component"></li>
-    </ul>
-</section>
-```
+Run JavaScript and return a handle.
 
 ```php
-$this->visit('/test/interactive-elements')
-    ->assertHasClass('#div-1', 'class-1');
-
-$this->visit('/test/interactive-elements')
-    ->assertHasClass('#div-3', 'class-1 selected class-3');
-
-$this->visit('/test/interactive-elements')
-    ->assertHasClass('#div-3', '/(^|\s)selected(\s|$)/');
-
-$this->visit('/test/interactive-elements')
-    ->assertHasClass('ul > .component', ['component', 'component selected', 'component']);
+$page = page('/test/frame-tests');
+$handle = $page->evaluateHandle('() => window');
 ```
 
-#### assertVisible
+### forward
 
-Assert that an element with the given selector is visible:
+Navigate forward in browser history.
 
 ```php
-test('assert visible', function () {
-    $this->visit($url)
-        ->assertVisible('h1:visible');
-});
+$page = page('/test/frame-tests');
+$page->forward();
 ```
 
-### assertMissing
+### back
 
-Assert that an element with the given selector is hidden:
+Navigate back in browser history.
 
 ```php
-test('assert missing', function () {
-    $this->visit($url)
-        ->assertMissing('a.hidden');
+$page = page('/test/frame-tests');
+$page->back();
 ```
 
-### assertQueryStringHas
+### reload
 
-Assert that the given query string is present in the url:
+Reload the current page.
 
 ```php
-$this->visit($url)
-    ->assertQueryStringHas('q', 'test');
+$page = page('/test/frame-tests');
+$page->reload();
 ```
 
-### assertQueryStringMissing
+### screenshot
 
-Assert that the given query string is not present in the url:
+Take a screenshot of the page.
 
 ```php
-$this->visit($url)
-    ->assertQueryStringMissing('q', 'test-1');
+$page = page('/test/frame-tests');
+$page->screenshot('example.png');
 ```
 
-### assertPathBeginsWith
+### locator.click
 
-Assert that the current URL path begins with the given path:
+Click the element found by the locator.
 
 ```php
-$this->visit($url)
-    ->assertPathBeginsWith('/test');
+$locator = $page->locator('button.submit');
+$locator->click();
 ```
 
-### assertPathEndsWith
+### locator.fill
 
-Assert that the current URL path ends with the given path:
+Fill an input or textarea found by the locator.
 
 ```php
-$this->visit($url)
-    ->assertPathEndsWith('/test');
+$locator = $page->locator('input[name="email"]');
+$locator->fill('hello@pestphp.com');
 ```
 
-### assertPathContains
+### locator.type
 
-Assert that the current URL path contains the given path:
+Type text into the element found by the locator.
 
 ```php
-$this->visit($url)
-    ->assertPathContains('/test');
+$locator = $page->locator('input[name="email"]');
+$locator->type('hello world');
 ```
 
-### assertPathIs
+### locator.press
 
-Assert that the current URL path matches the given path:
+Press a key on the element found by the locator.
 
 ```php
-$this->visit($url)
-    ->assertPathIs('/test');
-
-// Asterisk (*) can be used as a wildcard
-
-$this->visit($url)
-    ->assertPathIs('/test/*');
+$locator = $page->locator('input[name="email"]');
+$locator->press('Enter');
 ```
 
-### assertPathIsNot
+### locator.check
 
-Assert that the current URL path does not match the given path:
+Check a checkbox or radio button found by the locator.
 
 ```php
-$this->visit($url)
-    ->assertPathIsNot('/test');
+$locator = $page->locator('input[type="checkbox"]');
+$locator->check();
 ```
 
-### assertScript
+### locator.uncheck
 
-Assert that the given script returns the expected value:
+Uncheck a checkbox or radio button found by the locator.
 
 ```php
-$this->visit($url)
-    ->assertScript('document.querySelector("title").textContent.includes("Laravel")', true);
+$locator = $page->locator('input[type="checkbox"]');
+$locator->uncheck();
 ```
 
-### assertPresent
+### locator.isVisible
 
-Assert that the element with a given selector is present on the page:
+Check if the element found by the locator is visible.
 
 ```php
-$this->visit($url)
-    ->assertPresent('h1:visible');
+$locator = $page->locator('h1');
+$isVisible = $locator->isVisible();
 ```
 
-### assertNotPresent
+### locator.isHidden
 
-Assert that the element with a given selector is not present on the page:
+Check if the element found by the locator is hidden.
 
 ```php
-$this->visit($url)
-    ->assertNotPresent('a.non-existing-class');
+$locator = $page->locator('h1');
+$isHidden = $locator->isHidden();
 ```
 
-#### assertChecked
+### locator.isEnabled
 
-Assert that the element with a given selector is checked:
+Check if the element found by the locator is enabled.
 
 ```php
-$this->visit($url)
-    ->assertChecked('input[type="checkbox"].checked');
+$locator = $page->locator('button.submit');
+$isEnabled = $locator->isEnabled();
 ```
 
-#### assertNotChecked
+### locator.isDisabled
 
-Assert that the element with a given selector is not checked:
+Check if the element found by the locator is disabled.
 
 ```php
-$this->visit($url)
-    ->assertNotChecked('input[type="checkbox"].checked');
+$locator = $page->locator('button.submit');
+$isDisabled = $locator->isDisabled();
 ```
 
-### assertInputValue
+### locator.isEditable
 
-Assert that the value of the input with the given selector is the expected value:
+Check if the element found by the locator is editable.
 
 ```php
-$this->visit($url)
-    ->assertInputValue('#email', 'jane.doe@pestphp.com');
+$locator = $page->locator('input[type="text"]');
+$isEditable = $locator->isEditable();
 ```
 
-### assertInputValueIsNot
+### locator.isChecked
 
-Assert that the value of the input with the given selector is not the expected value:
+Check if a checkbox or radio button found by the locator is checked.
 
 ```php
-$this->visit($url)
-    ->assertInputValueIsNot('#email', 'jane.doe@pestphp.com');
+$locator = $page->locator('input[type="checkbox"]');
+$isChecked = $locator->isChecked();
+```
+
+### locator.textContent
+
+Get the text content of the element found by the locator.
+
+```php
+$locator = $page->locator('h1');
+$content = $locator->textContent();
+```
+
+### locator.innerText
+
+Get the inner text of the element found by the locator.
+
+```php
+$locator = $page->locator('h1');
+$text = $locator->innerText();
+```
+
+### locator.inputValue
+
+Get the value of an input element found by the locator.
+
+```php
+$locator = $page->locator('input[name="email"]');
+$value = $locator->inputValue();
+```
+
+### locator.getAttribute
+
+Get an attribute value from the element found by the locator.
+
+```php
+$locator = $page->locator('h1');
+$id = $locator->getAttribute('id');
+```
+
+### locator.screenshot
+
+Take a screenshot of the element found by the locator.
+
+```php
+$locator = $page->locator('h1');
+$locator->screenshot('element.png');
+```
+
+## Available Expectations
+
+### toHaveTitle
+
+Checks that the page has the given title.
+
+```php
+expect($page)->toHaveTitle('My Page Title');
+```
+
+### toBeChecked
+
+Checks that the locator is checked (for checkboxes/radios).
+
+```php
+expect($locator)->toBeChecked();
+```
+
+### toBeVisible
+
+Checks that the locator is visible on the page.
+
+```php
+expect($locator)->toBeVisible();
+```
+
+### toBeEnabled
+
+Checks that the locator is enabled (not disabled).
+
+```php
+expect($locator)->toBeEnabled();
+```
+
+### toBeDisabled
+
+Checks that the locator is disabled.
+
+```php
+expect($locator)->toBeDisabled();
+```
+
+### toBeEditable
+
+Checks that the locator is editable (input, textarea, etc.).
+
+```php
+expect($locator)->toBeEditable();
+```
+
+### toBeHidden
+
+Checks that the locator is hidden from view.
+
+```php
+expect($locator)->toBeHidden();
+```
+
+### toHaveId
+
+Checks that the locator has the given id attribute.
+
+```php
+expect($locator)->toHaveId('element-id');
+```
+
+### toHaveClass
+
+Checks that the locator has the given class attribute.
+
+```php
+expect($locator)->toHaveClass('class-name');
+```
+
+### toHaveRole
+
+Checks that the locator has the given ARIA role.
+
+```php
+expect($locator)->toHaveRole('button');
+```
+
+### toBeEmpty
+
+Checks that the locator's text content is empty.
+
+```php
+expect($locator)->toBeEmpty();
+```
+
+### toHaveValue
+
+Checks that the locator has a value (for input elements).
+
+```php
+expect($locator)->toHaveValue('expected-value');
+```
+
+### toHaveScreenshot
+
+The `toHaveScreenshot` expectation takes a screenshot of the current page and saves it to the specified path. It then checks that the screenshot file exists at that path. This is useful for verifying that screenshots are being generated correctly during browser tests.
+
+**Usage:**
+
+```php
+$page = page('/test/frame-tests');
+$screenshotName = 'screenshot.png';
+expect($page)->toHaveScreenshot($screenshotName);
+expect(file_exists(\Pest\Browser\Support\Screenshot::path($screenshotName)))->toBeTrue();
+```
+
+If the screenshot cannot be saved (e.g., due to an invalid or unwritable path), the expectation will fail and throw an exception.
+
+```php
+$page = page('/test/frame-tests');
+$invalidPath = '/invalid-dir/not-the-screenshot.png';
+expect($page)->toHaveScreenshot($invalidPath); // This will throw an exception
+```
+
+### toHaveText
+
+Checks that the locator contains the given text content.
+
+```php
+expect($locator)->toHaveText('expected text');
 ```
