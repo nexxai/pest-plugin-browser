@@ -661,6 +661,7 @@ final class Page
     private function isPageLevelOperation(string $method): bool
     {
         $pageLevelOperations = [
+            'close',
             'Network.setExtraHTTPHeaders',
             'goForward',
             'goBack',
@@ -671,5 +672,10 @@ final class Page
         ];
 
         return in_array($method, $pageLevelOperations, true);
+    }
+
+    public function __destruct()
+    {
+        $this->processVoidResponse($this->sendMessage('close'));
     }
 }
