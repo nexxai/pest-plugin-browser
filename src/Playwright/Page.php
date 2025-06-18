@@ -50,7 +50,6 @@ final class Page
 
             $url = ServerManager::instance()->http()->url().'/'.$url;
         }
-
         $response = $this->sendMessage('goto', [
             ...['url' => $url, 'waitUntil' => 'load'],
             ...$options,
@@ -295,7 +294,7 @@ final class Page
     /**
      * Returns element's text content.
      */
-    public function textContent(string $selector): ?string
+    public function textContent(string $selector = 'html'): ?string
     {
         $response = $this->sendMessage('textContent', ['selector' => $selector]);
 
@@ -662,6 +661,7 @@ final class Page
     private function isPageLevelOperation(string $method): bool
     {
         $pageLevelOperations = [
+            'Network.setExtraHTTPHeaders',
             'goForward',
             'goBack',
             'reload',

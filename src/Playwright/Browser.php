@@ -38,7 +38,15 @@ final class Browser
      */
     public function newContext(array $options = []): BrowserContext
     {
-        $response = Client::instance()->execute($this->guid, 'newContext', $options);
+        $response = Client::instance()->execute($this->guid, 'newContext', [
+            ...$options,
+            ...[
+                'extraHTTPHeaders' => [[
+                    'name' => 'X-Pest-Plugin-Browser',
+                    'value' => BrowserState::packAsString(),
+                ]],
+            ],
+        ]);
 
         /** @var array{result: array{context: array{guid: string|null}}} $message */
         foreach ($response as $message) {

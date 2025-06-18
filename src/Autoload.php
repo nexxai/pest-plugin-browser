@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Pest\Browser\Browser;
+use Pest\Browser\Drivers\Laravel\Autoload;
 use Pest\Browser\Playwright\Page;
 use Pest\Browser\Playwright\Playwright;
 use Pest\Plugin;
@@ -28,3 +29,5 @@ if (! function_exists('\Pest\Browser\page')) {
         return $page;
     }
 }
+
+Autoload::boot();

@@ -21,4 +21,5 @@ arch()->preset()->security()->ignoring([
     'assert',
     'uniqid',
     'rand',
+    'eval',
 ]);

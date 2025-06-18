@@ -29,6 +29,8 @@ final class Plugin implements Bootable, Terminable // @pest-arch-ignore-line
             return;
         }
 
+        $this->ensureSqliteDatabaseIsTouched();
+
         if (Parallel::isWorker() === false) {
             ServerManager::instance()->playwright()->start();
 
@@ -72,5 +74,13 @@ final class Plugin implements Bootable, Terminable // @pest-arch-ignore-line
         // check if any of the tests uses the page() function...
 
         return true;
+    }
+
+    /**
+     * Ensures the SQLite database is touched.
+     */
+    private function ensureSqliteDatabaseIsTouched(): void
+    {
+        // todo...
     }
 }

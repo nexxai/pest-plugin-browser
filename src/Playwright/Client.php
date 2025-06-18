@@ -60,7 +60,7 @@ final class Client
             'id' => $requestId,
             'guid' => $guid,
             'method' => $method,
-            'params' => ['timeout' => 30_000, ...$params],
+            'params' => ['timeout' => 5_000, ...$params],
             'metadata' => $meta,
         ]);
 

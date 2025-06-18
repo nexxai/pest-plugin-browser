@@ -2,10 +2,15 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Pest\Browser\Playwright\Locator;
 use Pest\Browser\Playwright\Page;
 use Pest\Expectation;
 use Pest\Mixins\Expectation as ExpectationMixin;
+use Tests\Drivers\Laravel\TestCase;
+
+pest()->uses(TestCase::class)
+    ->in('Drivers/Laravel');
 
 // todo: move this to Pest core
 expect()->extend('toHaveTitle', function (string $title): Expectation {
