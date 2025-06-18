@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Laravel\Dusk\Http\Controllers;
 
+use Illuminate\Auth\SessionGuard;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -43,15 +45,24 @@ final readonly class UserController
 
         assert(is_string($guard));
 
-        $provider = Auth::guard($guard)->getProvider(); // @phpstan-ignore-line
+        $guard = Auth::guard($guard);
+
+        /** @var SessionGuard $guard */
+        $provider = $guard->getProvider();
 
         $user = Str::contains($userId, '@')
             ? $provider->retrieveByCredentials(['email' => $userId])
             : $provider->retrieveById($userId);
 
-        Auth::guard($guard)->login($user);
+        assert($user instanceof Authenticatable);
 
-        return response(status: 204);
+        $guard->login($user);
+
+        $response = response(status: 204);
+
+        assert($response instanceof Response);
+
+        return $response;
     }
 
     /**
@@ -59,12 +70,21 @@ final readonly class UserController
      */
     public function logout(?string $guard = null): Response
     {
-        $guard = is_string($guard) ? $guard : config('auth.defaults.guard');
+        $guardAsString = is_string($guard) ? $guard : config('auth.defaults.guard');
 
-        Auth::guard($guard)->logout();
+        assert(is_string($guardAsString));
 
-        Session::forget('password_hash_'.$guard);
+        /** @var SessionGuard $guard */
+        $guard = Auth::guard($guardAsString);
 
-        return response(status: 204);
+        $guard->logout();
+
+        Session::forget('password_hash_'.$guardAsString);
+
+        $response = response(status: 204);
+
+        assert($response instanceof Response);
+
+        return $response;
     }
 }
