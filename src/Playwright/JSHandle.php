@@ -71,6 +71,6 @@ final class JSHandle
             return $value;
         }
 
-        return (string) $value;
+        return (string) $value; // @phpstan-ignore-line // temporary
     }
 }

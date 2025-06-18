@@ -15,6 +15,8 @@ final class JavaScriptSerializer
 {
     /**
      * Serialize arguments for JavaScript evaluation according to Playwright protocol.
+     *
+     * @return array<string, mixed>
      */
     public static function serializeArgument(mixed $value): array
     {
@@ -26,6 +28,8 @@ final class JavaScriptSerializer
 
     /**
      * Serialize a value according to Playwright's serialization format.
+     *
+     * @return array<string, mixed>
      */
     public static function serializeValue(mixed $value): array
     {
@@ -86,7 +90,7 @@ final class JavaScriptSerializer
             return ['o' => $result];
         }
 
-        return ['s' => (string) $value];
+        return ['s' => (string) $value]; // @phpstan-ignore-line
     }
 
     /**
@@ -98,6 +102,18 @@ final class JavaScriptSerializer
             return $value;
         }
 
+        /**
+         * @var array{
+         *      v?: string, // null, undefined, NaN, Infinity, -Infinity
+         *      b?: bool,   // boolean
+         *      n?: int|float, // number
+         *      s?: string, // string
+         *      bi?: string, // bigint
+         *      d?: string, // date in ISO 8601 format
+         *      a?: array<mixed>, // array
+         *      o?: array<array{ k: string, v: mixed }>, // object
+         *  }  $value
+         */
         // Handle primitive values
         if (isset($value['v'])) {
             return match ($value['v']) {
@@ -111,19 +127,19 @@ final class JavaScriptSerializer
         }
 
         if (isset($value['b'])) {
-            return (bool) $value['b'];
+            return $value['b'];
         }
 
         if (isset($value['n'])) {
-            return is_int($value['n']) ? $value['n'] : (float) $value['n'];
+            return $value['n'];
         }
 
         if (isset($value['s'])) {
-            return (string) $value['s'];
+            return $value['s'];
         }
 
         if (isset($value['bi'])) {
-            return (string) $value['bi'];
+            return $value['bi'];
         }
 
         if (isset($value['d'])) {

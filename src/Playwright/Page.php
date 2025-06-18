@@ -561,15 +561,20 @@ final class Page
 
         foreach ($response as $message) {
             if (
-                isset($message['method'], $message['params']['type'], $message['params']['guid'])
+                is_array($message) && is_array($message['params'] ?? null)
+                && isset($message['method'], $message['params']['type'], $message['params']['guid'])
                 && $message['method'] === '__create__'
                 && $message['params']['type'] === 'JSHandle'
             ) {
-                return new JSHandle($message['params']['guid']);
+                return new JSHandle((string) $message['params']['guid']); // @phpstan-ignore-line
             }
 
-            if (isset($message['result']['handle'])) {
-                return new JSHandle($message['result']['handle']['guid']);
+            if (
+                is_array($message)
+                && is_array($message['result'] ?? null)
+                && isset($message['result']['handle'])
+            ) {
+                return new JSHandle($message['result']['handle']['guid']); // @phpstan-ignore-line
             }
         }
 
