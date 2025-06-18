@@ -20,6 +20,7 @@ if (! function_exists('\Pest\Browser\page')) {
     function page(?string $url = null, array $options = []): Page
     {
         $browser = Playwright::chromium()->launch();
+
         $page = $browser->newContext($options)->newPage();
 
         if ($url !== null) {

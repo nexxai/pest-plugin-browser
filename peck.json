@@ -21,7 +21,9 @@
             "doctype",
             "checkboxes",
             "unchecks",
-            "attr"
+            "attr",
+            "autoloading",
+            "deserialization"
         ],
         "paths": []
     }

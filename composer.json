@@ -77,15 +77,15 @@
             "rector --dry-run",
             "pint --test"
         ],
-        "test:unit": "pest --coverage -v",
+        "test:unit": "pest --parallel",
         "test:types": "phpstan",
         "test": [
             "@test:lint",
             "@test:profanity",
             "@test:type-coverage",
             "@test:typos",
-            "@test:unit",
-            "@test:types"
+            "@test:types",
+            "@test:unit"
         ]
     },
     "extra": {

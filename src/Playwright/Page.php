@@ -20,6 +20,11 @@ final class Page
     use InteractsWithPlaywright;
 
     /**
+     * Whether the page has been closed.
+     */
+    private bool $closed = false;
+
+    /**
      * Constructs new page
      */
     public function __construct(
@@ -28,6 +33,14 @@ final class Page
         public string $url = '',
     ) {
         //
+    }
+
+    /**
+     * Closes the page when the object is destroyed.
+     */
+    public function __destruct()
+    {
+        $this->close();
     }
 
     /**
@@ -635,6 +648,30 @@ final class Page
     }
 
     /**
+     * Closes the page.
+     */
+    public function close(): void
+    {
+        if ($this->closed) {
+            return;
+        }
+
+        $response = $this->sendMessage('close');
+
+        $this->processVoidResponse($response);
+
+        $this->closed = true;
+    }
+
+    /**
+     * Checks if the page is closed.
+     */
+    public function isClosed(): bool
+    {
+        return $this->closed;
+    }
+
+    /**
      * Override processNavigationResponse for Page specific behavior
      */
     private function processNavigationResponse(Generator $response): void
@@ -677,10 +714,5 @@ final class Page
         ];
 
         return in_array($method, $pageLevelOperations, true);
-    }
-
-    public function __destruct()
-    {
-        $this->processVoidResponse($this->sendMessage('close'));
     }
 }

@@ -103,9 +103,7 @@ trait InteractsWithPlaywright
      */
     private function processVoidResponse(Generator $response): void
     {
-        foreach ($response as $message) {
-            // Consume all messages to clear the response
-        }
+        iterator_to_array($response);
     }
 
     /**
