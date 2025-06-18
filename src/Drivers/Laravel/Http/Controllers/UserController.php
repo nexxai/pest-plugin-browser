@@ -31,7 +31,7 @@ final readonly class UserController
 
         assert(is_string($id));
 
-        return ['id' => $id, 'className' => get_class($user)];
+        return ['id' => $id, 'className' => $user::class];
     }
 
     /**
@@ -39,9 +39,11 @@ final readonly class UserController
      */
     public function login(string $userId, ?string $guard = null): Response
     {
-        $guard = $guard ?: config('auth.defaults.guard');
+        $guard = is_string($guard) ? $guard : config('auth.defaults.guard');
 
-        $provider = Auth::guard($guard)->getProvider();
+        assert(is_string($guard));
+
+        $provider = Auth::guard($guard)->getProvider(); // @phpstan-ignore-line
 
         $user = Str::contains($userId, '@')
             ? $provider->retrieveByCredentials(['email' => $userId])
@@ -57,7 +59,7 @@ final readonly class UserController
      */
     public function logout(?string $guard = null): Response
     {
-        $guard = $guard ?: config('auth.defaults.guard');
+        $guard = is_string($guard) ? $guard : config('auth.defaults.guard');
 
         Auth::guard($guard)->logout();
 

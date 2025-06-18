@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 pest()->use(DatabaseMigrations::class);
 
-it('shares the same database', function () {
+it('shares the same database', function (): void {
     $page = page()->goto(route('database'));
 
     [
@@ -16,7 +16,7 @@ it('shares the same database', function () {
             'driver' => $driver,
             'name' => $name,
         ]
-    ] = json_decode($page->textContent(), true);
+    ] = json_decode((string) $page->textContent(), true);
 
     expect($users)->toBeArray()
         ->and($users)->toHaveCount(0)
@@ -27,7 +27,7 @@ it('shares the same database', function () {
 
     $page->goto(route('database'));
 
-    ['users' => $users] = json_decode($page->textContent(), true);
+    ['users' => $users] = json_decode((string) $page->textContent(), true);
 
     expect($users)->toBeArray()
         ->and($users)->toHaveCount(1)

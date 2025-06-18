@@ -28,9 +28,15 @@ final class BrowserState
      */
     public static function unpackFromHeaders(): void
     {
-        $headers = json_decode($_SERVER['HTTP_X_PEST_PLUGIN_BROWSER'] ?? '', true);
+        /** @var array{ globals?: string } $headers */
+        $headers = json_decode(
+            isset($_SERVER['HTTP_X_PEST_PLUGIN_BROWSER']) && is_string($_SERVER['HTTP_X_PEST_PLUGIN_BROWSER'])
+                ? $_SERVER['HTTP_X_PEST_PLUGIN_BROWSER']
+                : '',
+            true,
+        );
 
-        if (isset($headers['globals']) === true) {
+        if (isset($headers['globals'])) {
             eval($headers['globals']);
 
             unset($_SERVER['HTTP_X_PEST_PLUGIN_BROWSER']);

@@ -25,7 +25,7 @@ final class ServiceProvider extends BaseServiceProvider
             'prefix' => config('pest-plugin-browser.path', '_pest-plugin-browser'),
             'domain' => config('pest-plugin-browser.domain', null),
             'middleware' => config('pest-plugin-browser.middleware', 'web'),
-        ]), function () {
+        ], static fn ($value): bool => $value !== null), function (): void {
             Route::get('/login/{userId}/{guard?}', [
                 'uses' => 'Laravel\Dusk\Http\Controllers\UserController@login',
                 'as' => 'pest-plugin-browser.login',

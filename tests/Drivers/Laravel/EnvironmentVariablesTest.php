@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Pest\Plugins\Parallel;
 
-it('reuses the test case environment variables', function () {
+it('reuses the test case environment variables', function (): void {
     $page = page()->goto(route('environment-variables'));
 
     $testEnvironmentVariables = [
@@ -13,7 +13,7 @@ it('reuses the test case environment variables', function () {
         'TEST_TOKEN' => $testToken = (Parallel::isWorker() ? $_SERVER['TEST_TOKEN'] : false),
     ];
 
-    $pageEnvironmentVariables = json_decode($page->textContent(), true);
+    $pageEnvironmentVariables = json_decode((string) $page->textContent(), true);
 
     expect($pageEnvironmentVariables)->toBe($testEnvironmentVariables)
         ->and($appEnv)->toBe('testing')
