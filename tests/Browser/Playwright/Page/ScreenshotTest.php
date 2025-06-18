@@ -19,3 +19,9 @@ it('may screen a page', function (): void {
         Screenshot::path('screenshot.png')
     ))->toBeTrue();
 });
+
+test('expectScreenshot', function() {
+    $page = page('/test/frame-tests');
+
+    $page->expectScreenshot();
+});
