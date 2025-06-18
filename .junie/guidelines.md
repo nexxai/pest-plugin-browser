@@ -8,6 +8,8 @@
 •	Use PHP 8.4 syntax and features.
 •	Follow strict typing everywhere: scalar types, return types, property types.
 •	Enforce strict array shapes — no untyped or loose arrays.
+•	Use enums for fixed sets of values.
+•	Don't ever use `mixed` type hinting or in array shapes.
 4.	Code Quality
 •	Stick to existing naming, formatting, and architectural patterns.
 •	No commented-out code.
