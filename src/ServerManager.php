@@ -7,7 +7,7 @@ namespace Pest\Browser;
 use Pest\Browser\Contracts\HttpServer;
 use Pest\Browser\Contracts\PlaywrightServer;
 use Pest\Browser\Drivers\Laravel\LaravelHttpServer;
-use Pest\Browser\Playwright\Servers\PlaywrightFakeServer;
+use Pest\Browser\Playwright\Servers\AlreadyStartedPlaywrightServer;
 use Pest\Browser\Playwright\Servers\PlaywrightNpxServer;
 use Pest\Browser\Support\Port;
 use Pest\Plugins\Parallel;
@@ -53,19 +53,25 @@ final class ServerManager
     public function playwright(): PlaywrightServer
     {
         if (Parallel::isWorker()) {
-            return new PlaywrightFakeServer(
-                self::DEFAULT_HOST,
-                8077,
-            );
+            return AlreadyStartedPlaywrightServer::fromPersisted();
         }
 
-        return $this->playwright ??= PlaywrightNpxServer::create(
+        $port = Port::find();
+
+        $this->playwright ??= PlaywrightNpxServer::create(
             __DIR__.'/..',
             'npx playwright run-server --host %s --port %d',
             self::DEFAULT_HOST,
-            8077,
+            $port,
             'Listening on',
         );
+
+        AlreadyStartedPlaywrightServer::persist(
+            self::DEFAULT_HOST,
+            $port,
+        );
+
+        return $this->playwright;
     }
 
     /**

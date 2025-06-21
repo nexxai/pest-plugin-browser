@@ -43,7 +43,7 @@ final class Client
     public function connectTo(string $url): void
     {
         if (! $this->websocketClient instanceof WebSocketClient) {
-            $this->websocketClient = new WebSocketClient("ws://$url");
+            $this->websocketClient = new WebSocketClient("ws://$url?browser=chromium");
         }
     }
 

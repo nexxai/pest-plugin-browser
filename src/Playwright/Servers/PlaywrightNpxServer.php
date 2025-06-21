@@ -39,7 +39,7 @@ final class PlaywrightNpxServer implements PlaywrightServer
     public static function create(string $baseDirectory, string $command, string $host, int $port, string $until): self
     {
         return new self(
-            $baseDirectory, $command, $host, 8077, $until
+            $baseDirectory, $command, $host, $port, $until
         );
     }
 
@@ -65,30 +65,13 @@ final class PlaywrightNpxServer implements PlaywrightServer
         $this->systemProcess->start();
 
         $this->systemProcess->waitUntil(
-            function (string $type, string $output): bool {
-                // output:
-                var_dump($output);
-
-                return str_contains($output, $this->until);
-            }
+            fn (string $type, string $output): bool => str_contains($output, $this->until)
         );
 
-        sleep(10);
-
-        if (! $this->isRunning()) {
-            // output all:
-            var_dump($this->systemProcess->getOutput());
-
-            throw new RuntimeException(
-                sprintf('The process with arguments [%s] did not start successfully.', json_encode([
-                    'baseDirectory' => $this->baseDirectory,
-                    'command' => $this->command,
-                    'host' => $this->host,
-                    'port' => $this->port,
-                    'until' => $this->until,
-                ]),
-                ));
-        }
+        AlreadyStartedPlaywrightServer::persist(
+            $this->host,
+            $this->port,
+        );
     }
 
     /**
@@ -104,6 +87,8 @@ final class PlaywrightNpxServer implements PlaywrightServer
         }
 
         $this->systemProcess = null;
+
+        AlreadyStartedPlaywrightServer::markAsStopped();
     }
 
     /**
