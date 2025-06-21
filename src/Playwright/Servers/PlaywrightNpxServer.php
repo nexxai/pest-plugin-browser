@@ -65,8 +65,29 @@ final class PlaywrightNpxServer implements PlaywrightServer
         $this->systemProcess->start();
 
         $this->systemProcess->waitUntil(
-            fn (string $type, string $output): bool => str_contains($output, $this->until)
+            function (string $type, string $output): bool {
+                // output:
+                var_dump($output);
+
+                return str_contains($output, $this->until);
+            }
         );
+
+        sleep(10);
+
+        if (! $this->isRunning()) {
+            var_dump($this->systemProcess->getOutput());
+
+            throw new RuntimeException(
+                sprintf('The process with arguments [%s] did not start successfully.', json_encode([
+                    'baseDirectory' => $this->baseDirectory,
+                    'command' => $this->command,
+                    'host' => $this->host,
+                    'port' => $this->port,
+                    'until' => $this->until,
+                ]),
+                ));
+        }
 
         AlreadyStartedPlaywrightServer::persist(
             $this->host,
