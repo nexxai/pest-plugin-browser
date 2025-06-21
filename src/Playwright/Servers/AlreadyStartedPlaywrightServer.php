@@ -38,7 +38,10 @@ final readonly class AlreadyStartedPlaywrightServer implements PlaywrightServer
             throw new RuntimeException('Could not read Playwright server data from file.');
         }
 
+        // @phpstan-ignore-next-line
         ['host' => $host, 'port' => $port] = json_decode($path, true, 512, JSON_THROW_ON_ERROR);
+
+        assert(is_string($host) && is_numeric($port), 'Invalid Playwright server data persisted.');
 
         return new self($host, (int) $port);
     }
