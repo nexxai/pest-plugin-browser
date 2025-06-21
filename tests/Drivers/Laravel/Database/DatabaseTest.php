@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
-pest()->use(DatabaseMigrations::class);
+pest()->use(RefreshDatabase::class);
 
 it('shares the same database', function (): void {
     $page = page()->goto(route('database'));

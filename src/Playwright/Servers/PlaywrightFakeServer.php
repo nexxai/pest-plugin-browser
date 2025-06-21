@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Pest\Browser\Support;
+namespace Pest\Browser\Playwright\Servers;
 
+use Pest\Browser\Contracts\PlaywrightServer;
 use RuntimeException;
 
 /**
  * @internal
  */
-final readonly class FakeProcess
+final readonly class PlaywrightFakeServer implements PlaywrightServer
 {
     /**
      * Creates a new process instance.
@@ -33,6 +34,14 @@ final readonly class FakeProcess
      * Stops the process if it is running.
      */
     public function stop(): void
+    {
+        //
+    }
+
+    /**
+     * Flushes the process.
+     */
+    public function flush(): void
     {
         //
     }

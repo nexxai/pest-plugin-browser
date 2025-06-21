@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Pest\Browser;
 
+use Illuminate\Routing\UrlGenerator;
 use Pest\Browser\Playwright\Client;
 use Pest\Browser\Support\Screenshot;
 use Pest\Contracts\Plugins\Bootable;
 use Pest\Contracts\Plugins\Terminable;
 use Pest\Plugins\Parallel;
+use Pest\TestSuite;
 
 /**
  * @internal
@@ -29,25 +31,37 @@ final class Plugin implements Bootable, Terminable // @pest-arch-ignore-line
             return;
         }
 
-        $this->ensureSqliteDatabaseIsTouched();
-
         if (Parallel::isWorker() === false) {
             ServerManager::instance()->playwright()->start();
 
             Screenshot::cleanup();
         }
 
-        Client::instance()->connectTo(
-            '127.0.0.1:8077/?browser=chromium',
-        );
+        if (Parallel::isWorker() || Parallel::isEnabled() === false) {
+            Client::instance()->connectTo(
+                '127.0.0.1:8077/?browser=chromium',
+            );
 
-        if (Parallel::isEnabled() === false || Parallel::isWorker()) {
-            $http = ServerManager::instance()->http();
-
-            $http->start();
-
-            $_ENV['APP_URL'] = "http://{$http->url()}";
+            ServerManager::instance()->http()->start();
         }
+
+        pest()->beforeEach(function (): void {
+            $url = ServerManager::instance()->http()->url();
+
+            config(['app.url' => $url]);
+
+            if (app()->bound('url')) {
+                $urlGenerator = app('url');
+
+                assert($urlGenerator instanceof UrlGenerator);
+
+                $urlGenerator->useOrigin($url);
+            }
+        })->in($this->in());
+
+        pest()->afterEach(function (): void {
+            ServerManager::instance()->http()->flush();
+        })->in($this->in());
     }
 
     /**
@@ -63,7 +77,9 @@ final class Plugin implements Bootable, Terminable // @pest-arch-ignore-line
             ServerManager::instance()->playwright()->stop();
         }
 
-        ServerManager::instance()->http()->stop();
+        if (Parallel::isWorker() || Parallel::isEnabled() === false) {
+            ServerManager::instance()->http()->stop();
+        }
     }
 
     /**
@@ -77,10 +93,10 @@ final class Plugin implements Bootable, Terminable // @pest-arch-ignore-line
     }
 
     /**
-     * Ensures the SQLite database is touched.
+     * Returns the path where the test files are located.
      */
-    private function ensureSqliteDatabaseIsTouched(): void
+    private function in(): string
     {
-        // todo...
+        return TestSuite::getInstance()->rootPath.DIRECTORY_SEPARATOR.TestSuite::getInstance()->testPath;
     }
 }

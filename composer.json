@@ -15,8 +15,12 @@
         "php": "^8.3",
         "pestphp/pest": "^4.0.0",
         "pestphp/pest-plugin": "^4.0.0",
+        "phrity/websocket": "^3.5.0",
+        "react/event-loop": "^1.5",
+        "react/http": "^1.11",
         "symfony/process": "^7.3.0",
-        "phrity/websocket": "^3.5.0"
+        "symfony/psr-http-message-bridge": "^7.3",
+        "ext-sockets": "*"
     },
     "autoload": {
         "psr-4": {
@@ -41,7 +45,6 @@
         "pestphp/pest-plugin-type-coverage": "^4.0.0",
         "ext-pcntl": "*",
         "ext-posix": "*",
-
         "laravel/framework": "^11.45.1",
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^3.6.3",
@@ -89,11 +92,6 @@
         ]
     },
     "extra": {
-        "laravel": {
-            "providers": [
-                "Pest\\Browser\\Drivers\\Laravel\\ServiceProvider"
-            ]
-        },
         "pest": {
             "plugins": [
                 "Pest\\Browser\\Plugin"

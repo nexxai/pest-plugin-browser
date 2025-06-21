@@ -23,7 +23,10 @@
             "unchecks",
             "attr",
             "autoloading",
-            "deserialization"
+            "deserialization",
+            "npx",
+            "tcp",
+            "filepath"
         ],
         "paths": []
     }

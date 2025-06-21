@@ -3,14 +3,13 @@
 declare(strict_types=1);
 
 use Pest\Browser\Browser;
-use Pest\Browser\Drivers\Laravel\Autoload;
 use Pest\Browser\Playwright\Page;
 use Pest\Browser\Playwright\Playwright;
 use Pest\Plugin;
 
 Plugin::uses(Browser::class);
 
-if (! function_exists('\Pest\Browser\page')) {
+if (! function_exists('page')) {
     /**
      * Visits the given URL, and starts a new browser test.
      *
@@ -30,5 +29,3 @@ if (! function_exists('\Pest\Browser\page')) {
         return $page;
     }
 }
-
-Autoload::boot();

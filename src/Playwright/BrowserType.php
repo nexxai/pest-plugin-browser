@@ -36,13 +36,15 @@ final class BrowserType
         $response = Client::instance()->execute(
             $this->guid,
             'launch',
-            ['browserType' => $this->name]
+            ['browserType' => $this->name, 'headless' => true],
         );
 
         /** @var array{result: array{browser: array{guid: string|null}}} $message */
         foreach ($response as $message) {
             if (isset($message['result']['browser']['guid'])) {
-                $this->browser = new Browser($message['result']['browser']['guid']);
+                $guid = $message['result']['browser']['guid'];
+
+                $this->browser = new Browser($guid);
             }
         }
 

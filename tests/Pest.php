@@ -8,8 +8,7 @@ use Pest\Expectation;
 use Pest\Mixins\Expectation as ExpectationMixin;
 use Tests\Drivers\Laravel\TestCase;
 
-pest()->uses(TestCase::class)
-    ->in('Drivers/Laravel');
+pest()->uses(TestCase::class);
 
 // todo: move this to Pest core
 expect()->extend('toHaveTitle', function (string $title): Expectation {

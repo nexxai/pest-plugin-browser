@@ -6,7 +6,9 @@ namespace Pest\Browser\Playwright;
 
 use Generator;
 use PHPUnit\Framework\ExpectationFailedException;
+use React\EventLoop\Loop;
 use WebSocket\Client as WebSocketClient;
+use WebSocket\Exception\ConnectionTimeoutException;
 
 /**
  * @internal
@@ -54,21 +56,23 @@ final class Client
      */
     public function execute(string $guid, string $method, array $params = [], array $meta = []): Generator
     {
+        assert($this->websocketClient instanceof WebSocketClient, 'WebSocket client is not connected.');
+
         $requestId = uniqid();
 
         $requestJson = (string) json_encode([
             'id' => $requestId,
             'guid' => $guid,
             'method' => $method,
-            'params' => ['timeout' => 5_000, ...$params],
+            'params' => ['timeout' => 20_000, ...$params],
             'metadata' => $meta,
         ]);
 
-        $this->websocketClient?->text($requestJson);
+        $this->websocketClient->text($requestJson);
 
         while (true) {
             /** @var string $responseJson */
-            $responseJson = $this->websocketClient?->receive()?->getContent();
+            $responseJson = $this->fetch($this->websocketClient);
 
             /** @var array{id: string|null, params: array{add: string|null}, error: array{error: array{message: string|null}}} $response */
             $response = json_decode($responseJson, true);
@@ -84,6 +88,23 @@ final class Client
                 || (isset($params['waitUntil']) && isset($response['params']['add']) && $params['waitUntil'] === $response['params']['add'])
             ) {
                 break;
+            }
+        }
+    }
+
+    /**
+     * Fetches the response from the Playwright server.
+     */
+    private function fetch(WebSocketClient $client): string
+    {
+        $client->setTimeout(0.01);
+
+        while (true) {
+            try {
+                return $client->receive()->getContent();
+            } catch (ConnectionTimeoutException) {
+                Loop::futureTick(fn () => Loop::stop());
+                Loop::run();
             }
         }
     }

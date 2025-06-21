@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Pest\Browser\Support;
+namespace Pest\Browser\Playwright\Servers;
 
+use Pest\Browser\Contracts\PlaywrightServer;
 use RuntimeException;
 use Symfony\Component\Process\Process as SystemProcess;
 
@@ -12,7 +13,7 @@ use Symfony\Component\Process\Process as SystemProcess;
  *
  * @codeCoverageIgnore This class is used at plugin level to manage processes.
  */
-final class Process
+final class PlaywrightNpxServer implements PlaywrightServer
 {
     /**
      * The underlying process instance, if any.
@@ -35,18 +36,10 @@ final class Process
     /**
      * Creates a new process instance with the given parameters.
      */
-    public static function create(string $baseDirectory, string $command, string $host, string $until, ?int $port = null): self
+    public static function create(string $baseDirectory, string $command, string $host, int $port, string $until): self
     {
-        $startPort = 8010;
-
-        if (getenv('TEST_TOKEN') !== false) {
-            $startPort = (((int) getenv('TEST_TOKEN')) * 10) + $startPort;
-        }
-
-        $port = $port !== null && $port !== 0 ? $port : Port::findAvailable($host, $startPort, 9000);
-
         return new self(
-            $baseDirectory, $command, $host, $port, $until
+            $baseDirectory, $command, $host, 8077, $until
         );
     }
 
@@ -89,6 +82,14 @@ final class Process
         }
 
         $this->systemProcess = null;
+    }
+
+    /**
+     * Flushes the process.
+     */
+    public function flush(): void
+    {
+        //
     }
 
     /**

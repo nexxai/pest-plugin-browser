@@ -58,11 +58,8 @@ final class Page
      */
     public function goto(string $url, array $options = []): self
     {
-        if (! str_starts_with($url, 'http://') && ! str_starts_with($url, 'https://')) {
-            $url = mb_ltrim($url, '/');
+        $url = ServerManager::instance()->http()->rewrite($url);
 
-            $url = ServerManager::instance()->http()->url().'/'.$url;
-        }
         $response = $this->sendMessage('goto', [
             ...['url' => $url, 'waitUntil' => 'load'],
             ...$options,
