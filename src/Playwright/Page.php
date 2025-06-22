@@ -44,6 +44,7 @@ final class Page
         $this->close();
     }
 
+    /**
      * Get the browser context.
      */
     public function context(): BrowserContext
