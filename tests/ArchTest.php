@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-return;
-
 arch('src')
     ->expect('Pest\Browser')
     ->toHaveMethodsDocumented()
