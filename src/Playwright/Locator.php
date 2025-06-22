@@ -717,16 +717,17 @@ final class Locator
     public function page(): string
     {
         return $this->frameGuid;
-    }
-
-    /**
+    }    /**
      * Drag this element to the target locator.
      *
      * @param  array<string, mixed>|null  $options
      */
     public function dragTo(self $target, ?array $options = null): void
     {
-        $params = array_merge(['target' => $target->selector], $options ?? []);
+        $params = array_merge([
+            'source' => $this->selector,
+            'target' => $target->selector
+        ], $options ?? []);
         $response = $this->sendMessage('dragAndDrop', $params);
 
         $this->processVoidResponse($response);
