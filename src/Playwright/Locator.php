@@ -90,9 +90,19 @@ final class Locator
      */
     public function isEditable(): bool
     {
-        $response = $this->sendMessage('isEditable');
+        try {
+            $response = $this->sendMessage('isEditable');
 
-        return $this->processBooleanResponse($response);
+            return $this->processBooleanResponse($response);
+        } catch (RuntimeException $e) {
+            // If the element is not a form element or contenteditable, return false
+            if (str_contains($e->getMessage(), 'not an <input>, <textarea>, <select> or [contenteditable]')) {
+                return false;
+            }
+
+            // Re-throw other exceptions
+            throw $e;
+        }
     }
 
     /**
@@ -213,19 +223,23 @@ final class Locator
     /**
      * Select options by value in a select element matching the locator.
      *
-     * @param  array<int, string>|string  $values
-     * @param  array<string, mixed>|null  $options
+     * @param  array<int, string>|string|null  $values
+     * @param  array<string, mixed>|null  $options  Can include 'label', 'index', 'force', 'timeout', etc.
      * @return array<array-key, string>
      */
-    public function selectOption(array|string $values, ?array $options = null): array
+    public function selectOption(array|string|null $values = null, ?array $options = null): array
     {
-        $element = $this->elementHandle();
+        $params = $options ?? [];
 
-        if (! $element instanceof Element) {
-            throw new RuntimeException('Element not found');
+        // Handle different selection criteria - values takes precedence if provided
+        if ($values !== null) {
+            $params['value'] = is_array($values) ? $values : [$values];
         }
+        // Other criteria (label, index) should be provided via $options
 
-        return $element->selectOption($values, $options);
+        $response = $this->sendMessage('selectOption', $params);
+
+        return $this->processArrayResponse($response);
     }
 
     /**
@@ -703,6 +717,19 @@ final class Locator
     public function page(): string
     {
         return $this->frameGuid;
+    }
+
+    /**
+     * Drag this element to the target locator.
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function dragTo(self $target, ?array $options = null): void
+    {
+        $params = array_merge(['target' => $target->selector], $options ?? []);
+        $response = $this->sendMessage('dragAndDrop', $params);
+
+        $this->processVoidResponse($response);
     }
 
     /**

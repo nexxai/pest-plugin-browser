@@ -92,9 +92,7 @@ final class Page
      */
     public function getAttribute(string $selector, string $attribute): ?string
     {
-        $response = $this->sendMessage('getAttribute', ['selector' => $selector, 'name' => $attribute]);
-
-        return $this->processNullableStringResponse($response);
+        return $this->locator($selector)->getAttribute($attribute);
     }
 
     /**
@@ -136,7 +134,7 @@ final class Page
      */
     public function locator(string $selector): Locator
     {
-        return new Locator($this->frameGuid, $selector);
+        return new Locator($this->frameGuid, $selector, true);
     }
 
     /**
@@ -204,7 +202,7 @@ final class Page
      */
     public function click(string $selector): self
     {
-        $this->locator($selector)->click();
+        $this->locatorNonStrict($selector)->click();
 
         return $this;
     }
@@ -214,7 +212,7 @@ final class Page
      */
     public function doubleClick(string $selector): self
     {
-        $this->locator($selector)->dblclick();
+        $this->locatorNonStrict($selector)->dblclick();
 
         return $this;
     }
@@ -234,7 +232,7 @@ final class Page
      */
     public function isEnabled(string $selector): bool
     {
-        return $this->locator($selector)->isEnabled();
+        return $this->locatorNonStrict($selector)->isEnabled();
     }
 
     /**
@@ -242,7 +240,7 @@ final class Page
      */
     public function isVisible(string $selector): bool
     {
-        return $this->locator($selector)->isVisible();
+        return $this->locatorNonStrict($selector)->isVisible();
     }
 
     /**
@@ -250,7 +248,7 @@ final class Page
      */
     public function isHidden(string $selector): bool
     {
-        return $this->locator($selector)->isHidden();
+        return ! $this->isVisible($selector);
     }
 
     /**
@@ -258,7 +256,7 @@ final class Page
      */
     public function isEditable(string $selector): bool
     {
-        return $this->locator($selector)->isEditable();
+        return $this->locatorNonStrict($selector)->isEditable();
     }
 
     /**
@@ -266,7 +264,7 @@ final class Page
      */
     public function isDisabled(string $selector): bool
     {
-        return $this->locator($selector)->isDisabled();
+        return $this->locatorNonStrict($selector)->isDisabled();
     }
 
     /**
@@ -274,7 +272,7 @@ final class Page
      */
     public function fill(string $selector, string $value): self
     {
-        $this->locator($selector)->fill($value);
+        $this->locatorNonStrict($selector)->fill($value);
 
         return $this;
     }
@@ -284,7 +282,7 @@ final class Page
      */
     public function innerText(string $selector): string
     {
-        return $this->locator($selector)->innerText();
+        return $this->locatorNonStrict($selector)->innerText();
     }
 
     /**
@@ -292,7 +290,7 @@ final class Page
      */
     public function textContent(string $selector = 'html'): ?string
     {
-        return $this->locator($selector)->textContent();
+        return $this->locatorNonStrict($selector)->textContent();
     }
 
     /**
@@ -300,7 +298,7 @@ final class Page
      */
     public function inputValue(string $selector): string
     {
-        return $this->locator($selector)->inputValue();
+        return $this->locatorNonStrict($selector)->inputValue();
     }
 
     /**
@@ -308,7 +306,7 @@ final class Page
      */
     public function isChecked(string $selector): bool
     {
-        return $this->locator($selector)->isChecked();
+        return $this->locatorNonStrict($selector)->isChecked();
     }
 
     /**
@@ -316,7 +314,7 @@ final class Page
      */
     public function check(string $selector): self
     {
-        $this->locator($selector)->check();
+        $this->locatorNonStrict($selector)->check();
 
         return $this;
     }
@@ -326,7 +324,7 @@ final class Page
      */
     public function uncheck(string $selector): self
     {
-        $this->locator($selector)->uncheck();
+        $this->locatorNonStrict($selector)->uncheck();
 
         return $this;
     }
@@ -371,7 +369,7 @@ final class Page
             $options['trial'] = $trial;
         }
 
-        $this->locator($selector)->hover($options);
+        $this->locatorNonStrict($selector)->hover($options);
 
         return $this;
     }
@@ -381,7 +379,7 @@ final class Page
      */
     public function focus(string $selector): self
     {
-        $this->locator($selector)->focus();
+        $this->locatorNonStrict($selector)->focus();
 
         return $this;
     }
@@ -391,7 +389,7 @@ final class Page
      */
     public function press(string $selector, string $key): self
     {
-        $this->locator($selector)->press($key);
+        $this->locatorNonStrict($selector)->press($key);
 
         return $this;
     }
@@ -401,7 +399,7 @@ final class Page
      */
     public function type(string $selector, string $text): self
     {
-        $this->locator($selector)->type($text);
+        $this->locatorNonStrict($selector)->type($text);
 
         return $this;
     }
@@ -441,9 +439,10 @@ final class Page
      */
     public function waitForSelector(string $selector, ?array $options = null): ?Element
     {
-        $this->locator($selector)->waitFor($options);
+        $locator = $this->locatorNonStrict($selector);
+        $locator->waitFor($options);
 
-        return $this->locator($selector)->elementHandle();
+        return $locator->elementHandle();
     }
 
     /**
@@ -451,9 +450,10 @@ final class Page
      */
     public function dragAndDrop(string $source, string $target): self
     {
-        // For drag and drop, we need to use the frame-level operation since it involves two elements
-        $response = $this->sendMessage('dragAndDrop', ['source' => $source, 'target' => $target]);
-        $this->processVoidResponse($response);
+        $sourceLocator = $this->locatorNonStrict($source);
+        $targetLocator = $this->locatorNonStrict($target);
+
+        $sourceLocator->dragTo($targetLocator);
 
         return $this;
     }
@@ -486,35 +486,30 @@ final class Page
         ?bool $strict = null,
         ?int $timeout = null
     ): self {
-        // For now, we'll fall back to the original implementation since
-        // the Locator's selectOption method has different parameters
-        $params = ['selector' => $selector];
+        $options = [];
 
         // Add the appropriate selection criteria - choose only one
-        if ($value !== null) {
-            $params['value'] = is_array($value) ? $value : [$value];
-        } elseif ($label !== null) {
-            $params['label'] = is_array($label) ? $label : [$label];
+        if ($label !== null) {
+            $options['label'] = is_array($label) ? $label : [$label];
         } elseif ($index !== null) {
-            $params['index'] = is_array($index) ? $index : [$index];
+            $options['index'] = is_array($index) ? $index : [$index];
         }
 
         // Add optional parameters
         if ($force !== null) {
-            $params['force'] = $force;
+            $options['force'] = $force;
         }
         if ($noWaitAfter !== null) {
-            $params['noWaitAfter'] = $noWaitAfter;
+            $options['noWaitAfter'] = $noWaitAfter;
         }
         if ($strict !== null) {
-            $params['strict'] = $strict;
+            $options['strict'] = $strict;
         }
         if ($timeout !== null) {
-            $params['timeout'] = $timeout;
+            $options['timeout'] = $timeout;
         }
 
-        $response = $this->sendMessage('selectOption', $params);
-        $this->processNavigationResponse($response);
+        $this->locatorNonStrict($selector)->selectOption($value, $options);
 
         return $this;
     }
@@ -688,6 +683,14 @@ final class Page
     public function isClosed(): bool
     {
         return $this->closed;
+    }
+
+    /**
+     * Create a non-strict locator for internal use.
+     */
+    private function locatorNonStrict(string $selector): Locator
+    {
+        return new Locator($this->frameGuid, $selector, false);
     }
 
     /**
