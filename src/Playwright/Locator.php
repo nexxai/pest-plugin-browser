@@ -27,6 +27,14 @@ final class Locator
     }
 
     /**
+     * Get the selector string for this locator.
+     */
+    public function selector(): string
+    {
+        return $this->selector;
+    }
+
+    /**
      * Check if element matching the locator is visible.
      */
     public function isVisible(): bool

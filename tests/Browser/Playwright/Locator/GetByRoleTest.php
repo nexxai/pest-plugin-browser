@@ -62,8 +62,8 @@ it('returns proper selector format for getByRole', function (): void {
     $parentLocator = $page->locator('body');
     $roleLocator = $parentLocator->getByRole('button');
 
-    expect($roleLocator->selector)->toContain(' >> ');
-    expect($roleLocator->selector)->toContain('role=button');
+    expect($roleLocator->selector())->toContain(' >> ');
+    expect($roleLocator->selector())->toContain('role=button');
 });
 
 it('can interact with elements found by role', function (): void {
