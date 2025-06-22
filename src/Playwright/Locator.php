@@ -717,7 +717,9 @@ final class Locator
     public function page(): string
     {
         return $this->frameGuid;
-    }    /**
+    }
+
+    /**
      * Drag this element to the target locator.
      *
      * @param  array<string, mixed>|null  $options
@@ -726,7 +728,7 @@ final class Locator
     {
         $params = array_merge([
             'source' => $this->selector,
-            'target' => $target->selector
+            'target' => $target->selector,
         ], $options ?? []);
         $response = $this->sendMessage('dragAndDrop', $params);
 
