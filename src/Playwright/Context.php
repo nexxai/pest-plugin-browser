@@ -7,7 +7,7 @@ namespace Pest\Browser\Playwright;
 /**
  * @internal
  */
-final class BrowserContext
+final class Context
 {
     /**
      * Indicates whether the browser context is closed.
@@ -18,8 +18,8 @@ final class BrowserContext
      * Constructs browser context.
      */
     public function __construct(
-        public Browser $browser,
-        public string $guid
+        private Browser $browser,
+        private string $guid
     ) {
         //
     }

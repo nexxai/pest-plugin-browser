@@ -28,10 +28,10 @@ final class Page
      * Constructs new page
      */
     public function __construct(
-        public BrowserContext $context,
-        public string $guid,
-        public string $frameGuid,
-        public string $url = '',
+        private Context $context,
+        private string $guid,
+        private string $frameGuid,
+        private string $url = '',
     ) {
         //
     }
@@ -39,7 +39,7 @@ final class Page
     /**
      * Get the browser context.
      */
-    public function context(): BrowserContext
+    public function context(): Context
     {
         return $this->context;
     }

@@ -19,7 +19,7 @@ final class Browser
     /**
      * The browser's contexts.
      *
-     * @var array<int, BrowserContext>
+     * @var array<int, Context>
      */
     private array $contexts = [];
 
@@ -27,7 +27,7 @@ final class Browser
      * Constructs browser.
      */
     public function __construct(
-        public string $guid,
+        private string $guid,
     ) {
         //
     }
@@ -37,7 +37,7 @@ final class Browser
      *
      * @param  array<string, mixed>  $options  Options for the context, e.g. ['hasTouch' => true]
      */
-    public function newContext(array $options = []): BrowserContext
+    public function newContext(array $options = []): Context
     {
         if ($this->closed) {
             throw new BrowserAlreadyClosedException('The browser is already closed.');
@@ -48,7 +48,7 @@ final class Browser
         /** @var array{result: array{context: array{guid: string|null}}} $message */
         foreach ($response as $message) {
             if (isset($message['result']['context']['guid'])) {
-                $context = new BrowserContext($this, $message['result']['context']['guid']);
+                $context = new Context($this, $message['result']['context']['guid']);
             }
         }
 

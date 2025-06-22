@@ -20,8 +20,8 @@ final class Locator
      * Constructs new locator
      */
     public function __construct(
-        public string $frameGuid,
-        public string $selector,
+        private string $frameGuid,
+        private string $selector,
     ) {
         //
     }

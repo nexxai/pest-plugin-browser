@@ -17,7 +17,7 @@ final class Element
      * Constructs new element
      */
     public function __construct(
-        public string $guid,
+        private string $guid,
     ) {
         //
     }

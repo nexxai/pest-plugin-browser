@@ -21,7 +21,7 @@ final class JSHandle
      * Constructs new JSHandle
      */
     public function __construct(
-        public string $guid,
+        private string $guid,
     ) {
         //
     }
