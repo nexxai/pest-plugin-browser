@@ -18,8 +18,8 @@ final class Context
      * Creates a new context instance.
      */
     public function __construct(
-        private Browser $browser,
-        private string $guid
+        private readonly Browser $browser,
+        private readonly string $guid
     ) {
         //
     }

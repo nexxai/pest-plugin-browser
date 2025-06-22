@@ -90,11 +90,25 @@ final class LaravelHttpServer implements HttpServer
             return;
         }
 
-        ($this->socket = new SocketServer(
+        $this->socket = new SocketServer(
             "{$this->host}:{$this->port}",
             [],
             $this->loop,
-        ))->on('connection', fn (ConnectionInterface $connection): ConnectionInterface => $this->connections[] = $connection);
+        );
+
+        $this->socket->on('connection', function (ConnectionInterface $connection): ConnectionInterface {
+            $this->connections[] = $connection;
+
+            $connection->on('close', function () use ($connection): void {
+                $index = array_search($connection, $this->connections, true);
+
+                if ($index !== false) {
+                    unset($this->connections[$index]);
+                }
+            });
+
+            return $connection;
+        });
 
         $server = new ReactHttpServer(
             $this->loop,

@@ -11,6 +11,8 @@ use Pest\Browser\Exceptions\BrowserAlreadyClosedException;
  */
 final class Browser
 {
+    use Concerns\InteractsWithPlaywright;
+
     /**
      * Indicates whether the browser is closed.
      */
@@ -68,9 +70,8 @@ final class Browser
             return;
         }
 
-        $response = Client::instance()->execute($this->guid, 'close');
-
-        iterator_to_array($response);
+        $response = $this->sendMessage('close');
+        $this->processVoidResponse($response);
 
         $this->contexts = [];
         $this->closed = true;

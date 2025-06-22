@@ -124,6 +124,6 @@ it('can distinguish between different title attributes', function (): void {
     expect($helpLocator)->toBeInstanceOf(Locator::class);
     expect($importantLocator)->toBeInstanceOf(Locator::class);
 
-    expect($infoLocator->selector())->not()->toBe($helpLocator->selector);
-    expect($helpLocator->selector())->not()->toBe($importantLocator->selector);
+    expect($infoLocator->selector())->not()->toBe($helpLocator->selector());
+    expect($helpLocator->selector())->not()->toBe($importantLocator->selector());
 });

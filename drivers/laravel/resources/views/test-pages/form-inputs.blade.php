@@ -26,31 +26,28 @@
             </div>
         </div>
 
-        <>
-            <h1 class="text-2xl font-bold my-2">Text Inputs</h1>
-            <div class="flex space-x-4 mb-2">
-                <input id="email" name="email" type="text" class="bg-white text-black p-2" value="john.doe@pestphp.com" />
-                <label for="email">Email</label>
-            </div>
+        <h1 class="text-2xl font-bold my-2">Text Inputs</h1>
+        <div class="flex space-x-4 mb-2">
+            <input id="email" name="email" type="text" class="bg-white text-black p-2" value="john.doe@pestphp.com" />
+            <label for="email">Email</label>
+        </div>
 
-            <div class="flex space-x-4 mb-2">
-                <input id="enabled-input" name="enabled-input" type="text" class="bg-white text-black p-2" placeholder="Enabled input" />
-                <label for="enabled-input">Enabled input</label>
-            </div>
+        <div class="flex space-x-4 mb-2">
+            <input id="enabled-input" name="enabled-input" type="text" class="bg-white text-black p-2" placeholder="Enabled input" />
+            <label for="enabled-input">Enabled input</label>
+        </div>
 
-            <div class="flex space-x-4 mb-2">
-                <input id="disabled-input" name="disabled-input" type="text" class="bg-gray-300 text-gray-500 p-2" placeholder="Disabled input" disabled />
-                <label for="disabled-input">Disabled input</label>
-            </div>
+        <div class="flex space-x-4 mb-2">
+            <input id="disabled-input" name="disabled-input" type="text" class="bg-gray-300 text-gray-500 p-2" placeholder="Disabled input" disabled />
+            <label for="disabled-input">Disabled input</label>
+        </div>
 
-            <div class="flex space-x-4 mb-2">
-                <input id="readonly-input" name="readonly-input" type="text" class="bg-gray-100 text-black p-2" value="Readonly input" readonly />
-                <label for="readonly-input">Readonly input</label>
-            </div>
+        <div class="flex space-x-4 mb-2">
+            <input id="readonly-input" name="readonly-input" type="text" class="bg-gray-100 text-black p-2" value="Readonly input" readonly />
+            <label for="readonly-input">Readonly input</label>
+        </div>
 
-
-            <div id="empty-element"></div>
-
+        <div id="empty-element"></div>
     </div>
 
     <div>
@@ -75,7 +72,6 @@
         <div class="flex space-x-4 mb-2">
             <button id="disabled-button" name="disabled-button" type="button" class="bg-gray-300 text-gray-500 px-4 py-2 rounded" disabled>Disabled button</button>
         </div>
-    </div>
     </div>
 </section>
 @endsection

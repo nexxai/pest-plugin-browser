@@ -61,9 +61,9 @@ final class Plugin implements Bootable, Terminable // @pest-arch-ignore-line
         })->in($this->in());
 
         pest()->afterEach(function (): void {
-            Playwright::reset();
-
             ServerManager::instance()->http()->flush();
+
+            Playwright::reset();
         })->in($this->in());
     }
 
@@ -78,6 +78,8 @@ final class Plugin implements Bootable, Terminable // @pest-arch-ignore-line
 
         if (Parallel::isWorker() || Parallel::isEnabled() === false) {
             ServerManager::instance()->http()->stop();
+
+            Playwright::close();
         }
 
         if (Parallel::isWorker() === false) {

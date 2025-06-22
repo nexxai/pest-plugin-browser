@@ -39,8 +39,6 @@ final class Locator
      */
     public function isVisible(): bool
     {
-        $this->waitFor();
-
         $response = $this->sendMessage('isVisible');
 
         return $this->processBooleanResponse($response);
@@ -51,8 +49,6 @@ final class Locator
      */
     public function isChecked(): bool
     {
-        $this->waitFor();
-
         $response = $this->sendMessage('isChecked');
 
         return $this->processBooleanResponse($response);
@@ -63,8 +59,6 @@ final class Locator
      */
     public function isEnabled(): bool
     {
-        $this->waitFor();
-
         $response = $this->sendMessage('isEnabled');
 
         return $this->processBooleanResponse($response);
@@ -75,8 +69,6 @@ final class Locator
      */
     public function isDisabled(): bool
     {
-        $this->waitFor();
-
         $response = $this->sendMessage('isDisabled');
 
         return $this->processBooleanResponse($response);
@@ -87,8 +79,6 @@ final class Locator
      */
     public function isHidden(): bool
     {
-        $this->waitFor(['state' => 'hidden']);
-
         $response = $this->sendMessage('isHidden');
 
         return $this->processBooleanResponse($response);
@@ -99,8 +89,6 @@ final class Locator
      */
     public function isEditable(): bool
     {
-        $this->waitFor();
-
         $response = $this->sendMessage('isEditable');
 
         return $this->processBooleanResponse($response);
@@ -111,8 +99,6 @@ final class Locator
      */
     public function check(): void
     {
-        $this->waitFor();
-
         $response = $this->sendMessage('check');
 
         $this->processVoidResponse($response);
@@ -124,6 +110,7 @@ final class Locator
     public function uncheck(): void
     {
         $response = $this->sendMessage('uncheck');
+
         $this->processVoidResponse($response);
     }
 
@@ -135,6 +122,7 @@ final class Locator
     public function click(?array $options = null): void
     {
         $response = $this->sendMessage('click', $options ?? []);
+
         $this->processVoidResponse($response);
     }
 
@@ -146,6 +134,7 @@ final class Locator
     public function dblclick(?array $options = null): void
     {
         $response = $this->sendMessage('dblclick', $options ?? []);
+
         $this->processVoidResponse($response);
     }
 
@@ -158,6 +147,7 @@ final class Locator
     {
         $params = array_merge(['value' => $value], $options ?? []);
         $response = $this->sendMessage('fill', $params);
+
         $this->processVoidResponse($response);
     }
 
@@ -170,6 +160,7 @@ final class Locator
     {
         $params = array_merge(['text' => $text], $options ?? []);
         $response = $this->sendMessage('type', $params);
+
         $this->processVoidResponse($response);
     }
 
@@ -179,6 +170,7 @@ final class Locator
     public function clear(): void
     {
         $response = $this->sendMessage('fill', ['value' => '']);
+
         $this->processVoidResponse($response);
     }
 
@@ -188,6 +180,7 @@ final class Locator
     public function focus(): void
     {
         $response = $this->sendMessage('focus');
+
         $this->processVoidResponse($response);
     }
 
@@ -199,6 +192,7 @@ final class Locator
     public function hover(?array $options = null): void
     {
         $response = $this->sendMessage('hover', $options ?? []);
+
         $this->processVoidResponse($response);
     }
 
@@ -211,6 +205,7 @@ final class Locator
     {
         $params = array_merge(['key' => $key], $options ?? []);
         $response = $this->sendMessage('press', $params);
+
         $this->processVoidResponse($response);
     }
 
@@ -224,6 +219,7 @@ final class Locator
     public function selectOption(array|string $values, ?array $options = null): array
     {
         $element = $this->elementHandle();
+
         if (! $element instanceof Element) {
             throw new RuntimeException('Element not found');
         }
@@ -461,33 +457,14 @@ final class Locator
      */
     public function count(): int
     {
-        // Use the nth selector approach to count elements
         $count = 0;
 
-        // Try up to 100 elements (reasonable limit)
         for ($i = 0; $i < 100; $i++) {
-            $nthSelector = $this->selector." >> nth={$i}";
+            $locator = $this->nth($i);
 
-            $response = Client::instance()->execute(
-                $this->frameGuid,
-                'querySelector',
-                ['selector' => $nthSelector]
-            );
+            $found = $locator->elementHandle();
 
-            $found = false;
-            /** @var array{method?: string, params: array{type?: string}} $message */
-            foreach ($response as $message) {
-                if (
-                    isset($message['method'], $message['params']['type'])
-                    && $message['method'] === '__create__'
-                    && $message['params']['type'] === 'ElementHandle'
-                ) {
-                    $found = true;
-                    break;
-                }
-            }
-
-            if (! $found) {
+            if (! $found instanceof Element) {
                 break;
             }
 
@@ -504,6 +481,7 @@ final class Locator
      */
     public function elementHandle(): ?Element
     {
+
         $response = $this->sendMessage('querySelector');
 
         return $this->processElementCreationResponse($response);
@@ -573,7 +551,6 @@ final class Locator
      */
     public function and(self $locator): self
     {
-        // This would require combining selectors in a way that both match
         return new self($this->frameGuid, $this->selector.':is('.$locator->selector.')');
     }
 
@@ -582,7 +559,6 @@ final class Locator
      */
     public function or(self $locator): self
     {
-        // This would require combining selectors with OR logic
         return new self($this->frameGuid, $this->selector.', '.$locator->selector);
     }
 

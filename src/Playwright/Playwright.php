@@ -82,6 +82,7 @@ final class Playwright
                 && $message['params']['type'] === 'BrowserType'
             ) {
                 $name = $message['params']['initializer']['name'] ?? '';
+
                 self::$browserTypes[$name] = new BrowserType($message['params']['guid'], $name);
             }
         }

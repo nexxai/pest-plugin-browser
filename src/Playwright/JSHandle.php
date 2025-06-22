@@ -27,6 +27,14 @@ final class JSHandle
     }
 
     /**
+     * Get the unique identifier for this handle.
+     */
+    public function guid(): string
+    {
+        return $this->guid;
+    }
+
+    /**
      * Evaluate a JavaScript expression on this handle.
      */
     public function evaluate(string $pageFunction, mixed $arg = null): mixed

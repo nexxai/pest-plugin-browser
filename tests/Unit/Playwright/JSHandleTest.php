@@ -8,7 +8,7 @@ test('constructs JSHandle with guid correctly', function (): void {
     $guid = 'test-guid-12345';
     $handle = new JSHandle($guid);
 
-    expect($handle->guid)->toBe($guid);
+    expect($handle->guid())->toBe($guid);
 });
 
 test('has correct class properties', function (): void {
@@ -30,7 +30,7 @@ test('can be created with different guid formats', function (): void {
 
     foreach ($guidFormats as $guid) {
         $handle = new JSHandle($guid);
-        expect($handle->guid)->toBe($guid);
+        expect($handle->guid())->toBe($guid);
         expect($handle)->toBeInstanceOf(JSHandle::class);
     }
 });
@@ -39,6 +39,6 @@ test('has unique guid for different instances', function (): void {
     $handle1 = new JSHandle('guid-1');
     $handle2 = new JSHandle('guid-2');
 
-    expect($handle1->guid)->not()->toBe($handle2->guid);
+    expect($handle1->guid())->not()->toBe($handle2->guid());
     expect($handle1)->not()->toBe($handle2);
 });

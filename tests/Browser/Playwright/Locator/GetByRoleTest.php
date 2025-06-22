@@ -90,8 +90,8 @@ it('can find multiple buttons with same role', function (): void {
     $containerLocator = $page->locator('.mb-8');
     $buttonsLocator = $containerLocator->getByRole('button');
 
-    expect($buttonsLocator)->toBeInstanceOf(Locator::class);
-    expect($buttonsLocator->count())->toBeGreaterThan(1);
+    expect($buttonsLocator)->toBeInstanceOf(Locator::class)
+        ->and($buttonsLocator->count())->toBeGreaterThan(1);
 });
 
 it('works with role parameters for specificity', function (): void {

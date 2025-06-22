@@ -18,8 +18,8 @@ final class BrowserType
      * Creates a new browser type instance.
      */
     public function __construct(
-        private string $guid,
-        private string $name,
+        private readonly string $guid,
+        private readonly string $name,
     ) {
         //
     }

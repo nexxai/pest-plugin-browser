@@ -126,8 +126,8 @@ it('can use class selectors within parent locator', function (): void {
     $containerLocator = $page->locator('body');
     $sectionLocator = $containerLocator->locator('.section');
 
-    expect($sectionLocator)->toBeInstanceOf(Locator::class);
-    expect($sectionLocator->count())->toBeGreaterThan(0);
+    expect($sectionLocator)->toBeInstanceOf(Locator::class)
+        ->and($sectionLocator->count())->toBeGreaterThan(0);
 });
 
 it('handles non-existent selectors gracefully', function (): void {

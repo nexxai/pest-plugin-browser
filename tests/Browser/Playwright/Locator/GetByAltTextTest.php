@@ -30,7 +30,7 @@ it('can find different images by different alt text', function (): void {
 
     expect($logoLocator)->toBeInstanceOf(Locator::class);
     expect($anotherImageLocator)->toBeInstanceOf(Locator::class);
-    expect($logoLocator->selector())->not()->toBe($anotherImageLocator->selector);
+    expect($logoLocator->selector())->not()->toBe($anotherImageLocator->selector());
 });
 
 it('can use exact alt text matching', function (): void {

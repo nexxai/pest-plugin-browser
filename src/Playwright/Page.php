@@ -62,11 +62,14 @@ final class Page
         $url = ServerManager::instance()->http()->rewrite($url);
 
         $response = $this->sendMessage('goto', [
-            ...['url' => $url, 'waitUntil' => 'load'],
+            ...['url' => $url],
             ...$options,
         ]);
 
         $this->processNavigationResponse($response);
+
+        // why need this??
+        $this->waitForSelector('body', ['state' => 'attached']);
 
         return $this;
     }

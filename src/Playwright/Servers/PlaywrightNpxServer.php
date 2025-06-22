@@ -81,8 +81,6 @@ final class PlaywrightNpxServer implements PlaywrightServer
     public function stop(): void
     {
         if ($this->systemProcess instanceof SystemProcess && $this->isRunning()) {
-            Playwright::close();
-
             $this->systemProcess->stop(
                 timeout: 0.1,
                 signal: SIGTERM,

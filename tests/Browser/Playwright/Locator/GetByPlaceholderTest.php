@@ -109,7 +109,7 @@ it('can distinguish between different placeholder texts', function (): void {
     $searchLocator = $containerLocator->getByPlaceholder('Search...');
     $commentsLocator = $containerLocator->getByPlaceholder('Enter your comments here');
 
-    expect($searchLocator)->toBeInstanceOf(Locator::class);
-    expect($commentsLocator)->toBeInstanceOf(Locator::class);
-    expect($searchLocator->selector())->not()->toBe($commentsLocator->selector);
+    expect($searchLocator)->toBeInstanceOf(Locator::class)
+        ->and($commentsLocator)->toBeInstanceOf(Locator::class)
+        ->and($searchLocator->selector())->not()->toBe($commentsLocator->selector());
 });
