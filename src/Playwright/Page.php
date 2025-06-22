@@ -31,9 +31,9 @@ final class Page
      * Creates a new page instance.
      */
     public function __construct(
-        private Context $context,
-        private string $guid,
-        private string $frameGuid,
+        private readonly Context $context,
+        private readonly string $guid,
+        private readonly string $frameGuid,
         private string $url = '',
     ) {
         //

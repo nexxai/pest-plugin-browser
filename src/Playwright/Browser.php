@@ -29,7 +29,7 @@ final class Browser
      * Creates a new browser instance.
      */
     public function __construct(
-        private string $guid,
+        private readonly string $guid,
     ) {
         //
     }

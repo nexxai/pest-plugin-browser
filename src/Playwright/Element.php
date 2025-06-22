@@ -9,7 +9,7 @@ use Pest\Browser\Playwright\Concerns\InteractsWithPlaywright;
 /**
  * @internal
  */
-final class Element
+final readonly class Element
 {
     use InteractsWithPlaywright;
 

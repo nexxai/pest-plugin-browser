@@ -13,7 +13,7 @@ use Pest\Browser\Support\JavaScriptSerializer;
  *
  * @internal
  */
-final class JSHandle
+final readonly class JSHandle
 {
     use InteractsWithPlaywright;
 

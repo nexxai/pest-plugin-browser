@@ -12,7 +12,7 @@ use RuntimeException;
 /**
  * @internal
  */
-final class Locator
+final readonly class Locator
 {
     use InteractsWithPlaywright;
 
