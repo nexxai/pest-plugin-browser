@@ -28,6 +28,7 @@ final class Page
      * Constructs new page
      */
     public function __construct(
+        public BrowserContext $context,
         public string $guid,
         public string $frameGuid,
         public string $url = '',
@@ -41,6 +42,13 @@ final class Page
     public function __destruct()
     {
         $this->close();
+    }
+
+     * Get the browser context.
+     */
+    public function context(): BrowserContext
+    {
+        return $this->context;
     }
 
     /**
@@ -649,7 +657,7 @@ final class Page
      */
     public function close(): void
     {
-        if ($this->closed) {
+        if ($this->context->browser()->isClosed() || $this->closed) {
             return;
         }
 

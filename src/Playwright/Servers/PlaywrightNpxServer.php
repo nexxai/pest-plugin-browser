@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pest\Browser\Playwright\Servers;
 
 use Pest\Browser\Contracts\PlaywrightServer;
+use Pest\Browser\Playwright\Playwright;
 use RuntimeException;
 use Symfony\Component\Process\Process as SystemProcess;
 
@@ -80,9 +81,11 @@ final class PlaywrightNpxServer implements PlaywrightServer
     public function stop(): void
     {
         if ($this->systemProcess instanceof SystemProcess && $this->isRunning()) {
+            Playwright::close();
+
             $this->systemProcess->stop(
-                5,
-                defined('SIGTERM') ? SIGTERM : null,
+                timeout: 0.1,
+                signal: SIGTERM,
             );
         }
 

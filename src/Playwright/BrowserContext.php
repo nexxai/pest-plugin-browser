@@ -10,17 +10,21 @@ namespace Pest\Browser\Playwright;
 final class BrowserContext
 {
     /**
-     * Page.
-     */
-    public Page $page;
-
-    /**
      * Constructs browser context.
      */
     public function __construct(
+        public Browser $browser,
         public string $guid
     ) {
         //
+    }
+
+    /**
+     * Gets the browser instance.
+     */
+    public function browser(): Browser
+    {
+        return $this->browser;
     }
 
     /**
@@ -46,8 +50,6 @@ final class BrowserContext
             }
         }
 
-        $this->page = new Page($pageGuid, $frameGuid, $frameUrl);
-
-        return $this->page;
+        return new Page($this, $pageGuid, $frameGuid, $frameUrl);
     }
 }

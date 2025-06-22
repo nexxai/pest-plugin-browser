@@ -41,6 +41,18 @@ final class Playwright
     }
 
     /**
+     * Close all browser types
+     */
+    public static function close(): void
+    {
+        foreach (self::$browserTypes as $browserType) {
+            $browserType->close();
+        }
+
+        self::$browserTypes = [];
+    }
+
+    /**
      * Initialize Playwright
      */
     private static function initialize(string $browser): BrowserType

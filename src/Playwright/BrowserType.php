@@ -10,9 +10,9 @@ namespace Pest\Browser\Playwright;
 final class BrowserType
 {
     /**
-     * Browser.
+     * The browser instance.
      */
-    private Browser $browser;
+    private ?Browser $browser = null;
 
     /**
      * Constructs browser type.
@@ -29,7 +29,7 @@ final class BrowserType
      */
     public function launch(): Browser
     {
-        if (isset($this->browser)) {
+        if ($this->browser instanceof Browser) {
             return $this->browser;
         }
 
@@ -48,6 +48,20 @@ final class BrowserType
             }
         }
 
+        assert($this->browser instanceof Browser, 'Browser instance was not created successfully.');
+
         return $this->browser;
+    }
+
+    /**
+     * Closes the browser type.
+     */
+    public function close(): void
+    {
+        if ($this->browser instanceof Browser) {
+            $this->browser->close();
+        }
+
+        $this->browser = null;
     }
 }

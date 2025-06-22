@@ -73,12 +73,12 @@ final class Plugin implements Bootable, Terminable // @pest-arch-ignore-line
             return;
         }
 
-        if (Parallel::isWorker() === false) {
-            ServerManager::instance()->playwright()->stop();
-        }
-
         if (Parallel::isWorker() || Parallel::isEnabled() === false) {
             ServerManager::instance()->http()->stop();
+        }
+
+        if (Parallel::isWorker() === false) {
+            ServerManager::instance()->playwright()->stop();
         }
     }
 
