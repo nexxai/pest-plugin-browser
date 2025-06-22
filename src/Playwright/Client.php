@@ -78,7 +78,13 @@ final class Client
             $response = json_decode($responseJson, true);
 
             if (isset($response['error']['error']['message'])) {
-                throw new ExpectationFailedException($response['error']['error']['message']);
+                $message = $response['error']['error']['message'];
+
+                if (str_contains($message, 'npx playwright install')) {
+                    $message = 'Playwright was not installed. Please run [npx playwright install] to install the browsers.';
+                }
+
+                throw new ExpectationFailedException($message);
             }
 
             yield $response;
