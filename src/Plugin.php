@@ -6,6 +6,7 @@ namespace Pest\Browser;
 
 use Illuminate\Routing\UrlGenerator;
 use Pest\Browser\Playwright\Client;
+use Pest\Browser\Playwright\Playwright;
 use Pest\Browser\Support\Screenshot;
 use Pest\Contracts\Plugins\Bootable;
 use Pest\Contracts\Plugins\Terminable;
@@ -60,6 +61,8 @@ final class Plugin implements Bootable, Terminable // @pest-arch-ignore-line
         })->in($this->in());
 
         pest()->afterEach(function (): void {
+            Playwright::reset();
+
             ServerManager::instance()->http()->flush();
         })->in($this->in());
     }

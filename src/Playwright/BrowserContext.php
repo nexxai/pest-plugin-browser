@@ -10,6 +10,11 @@ namespace Pest\Browser\Playwright;
 final class BrowserContext
 {
     /**
+     * Indicates whether the browser context is closed.
+     */
+    private bool $closed = false;
+
+    /**
      * Constructs browser context.
      */
     public function __construct(
@@ -51,5 +56,27 @@ final class BrowserContext
         }
 
         return new Page($this, $pageGuid, $frameGuid, $frameUrl);
+    }
+
+    /**
+     * Closes the browser context.
+     */
+    public function close(): void
+    {
+        if ($this->closed) {
+            return;
+        }
+
+        Client::instance()->execute($this->guid, 'close');
+
+        $this->closed = true;
+    }
+
+    /**
+     * Checks if the browser context is closed.
+     */
+    public function isClosed(): bool
+    {
+        return $this->closed;
     }
 }

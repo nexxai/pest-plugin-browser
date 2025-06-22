@@ -17,6 +17,13 @@ final class Browser
     private bool $closed = false;
 
     /**
+     * The browser's contexts.
+     *
+     * @var array<int, BrowserContext>
+     */
+    private array $contexts = [];
+
+    /**
      * Constructs browser.
      */
     public function __construct(
@@ -47,6 +54,8 @@ final class Browser
 
         assert(isset($context), 'Browser context was not created successfully.');
 
+        $this->contexts[] = $context;
+
         return $context;
     }
 
@@ -63,6 +72,7 @@ final class Browser
 
         iterator_to_array($response);
 
+        $this->contexts = [];
         $this->closed = true;
     }
 
@@ -72,5 +82,21 @@ final class Browser
     public function isClosed(): bool
     {
         return $this->closed;
+    }
+
+    /**
+     * Resets the browser state.
+     */
+    public function reset(): void
+    {
+        if ($this->closed) {
+            return;
+        }
+
+        foreach ($this->contexts as $context) {
+            $context->close();
+        }
+
+        $this->contexts = [];
     }
 }

@@ -64,4 +64,14 @@ final class BrowserType
 
         $this->browser = null;
     }
+
+    /**
+     * Resets the browser type state, without closing the browser.
+     */
+    public function reset(): void
+    {
+        if ($this->browser instanceof Browser) {
+            $this->browser->reset();
+        }
+    }
 }

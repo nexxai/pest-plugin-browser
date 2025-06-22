@@ -41,7 +41,7 @@ final class Playwright
     }
 
     /**
-     * Close all browser types
+     * Close all browser pages
      */
     public static function close(): void
     {
@@ -50,6 +50,16 @@ final class Playwright
         }
 
         self::$browserTypes = [];
+    }
+
+    /**
+     * Reset playwright state, reset browser types, without closing them.
+     */
+    public static function reset(): void
+    {
+        foreach (self::$browserTypes as $browserType) {
+            $browserType->reset();
+        }
     }
 
     /**

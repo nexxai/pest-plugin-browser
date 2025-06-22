@@ -37,14 +37,6 @@ final class Page
     }
 
     /**
-     * Closes the page when the object is destroyed.
-     */
-    public function __destruct()
-    {
-        $this->close();
-    }
-
-    /**
      * Get the browser context.
      */
     public function context(): BrowserContext
