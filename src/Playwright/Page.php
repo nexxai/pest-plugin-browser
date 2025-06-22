@@ -25,7 +25,7 @@ final class Page
     private bool $closed = false;
 
     /**
-     * Constructs new page
+     * Creates a new page instance.
      */
     public function __construct(
         private Context $context,
@@ -650,7 +650,9 @@ final class Page
      */
     public function close(): void
     {
-        if ($this->context->browser()->isClosed() || $this->closed) {
+        if ($this->context->browser()->isClosed()
+            || $this->context->isClosed()
+            || $this->closed) {
             return;
         }
 

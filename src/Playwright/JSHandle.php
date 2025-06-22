@@ -18,7 +18,7 @@ final class JSHandle
     use InteractsWithPlaywright;
 
     /**
-     * Constructs new JSHandle
+     * Creates a new js handle instance.
      */
     public function __construct(
         private string $guid,

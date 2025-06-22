@@ -15,7 +15,7 @@ final class BrowserType
     private ?Browser $browser = null;
 
     /**
-     * Constructs browser type.
+     * Creates a new browser type instance.
      */
     public function __construct(
         private string $guid,

@@ -22,7 +22,7 @@ final class PlaywrightNpxServer implements PlaywrightServer
     private ?SystemProcess $systemProcess = null;
 
     /**
-     * Creates a new process instance.
+     * Creates a new playwright npx server instance.
      */
     private function __construct(
         public readonly string $baseDirectory,
@@ -35,7 +35,7 @@ final class PlaywrightNpxServer implements PlaywrightServer
     }
 
     /**
-     * Creates a new process instance with the given parameters.
+     * Creates a new playwright npx server instance with the given parameters.
      */
     public static function create(string $baseDirectory, string $command, string $host, int $port, string $until): self
     {

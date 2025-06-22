@@ -17,7 +17,7 @@ final class Locator
     use InteractsWithPlaywright;
 
     /**
-     * Constructs new locator
+     * Creates a new locator instance.
      */
     public function __construct(
         private string $frameGuid,

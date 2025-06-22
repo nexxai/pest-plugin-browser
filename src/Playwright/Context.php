@@ -15,7 +15,7 @@ final class Context
     private bool $closed = false;
 
     /**
-     * Constructs browser context.
+     * Creates a new context instance.
      */
     public function __construct(
         private Browser $browser,
@@ -63,7 +63,7 @@ final class Context
      */
     public function close(): void
     {
-        if ($this->closed) {
+        if ($this->browser->isClosed() || $this->closed) {
             return;
         }
 

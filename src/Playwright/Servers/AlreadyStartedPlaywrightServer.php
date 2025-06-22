@@ -14,7 +14,7 @@ use RuntimeException;
 final readonly class AlreadyStartedPlaywrightServer implements PlaywrightServer
 {
     /**
-     * Creates a new process instance.
+     * Creates a new already started playwright server instance.
      */
     public function __construct(
         public string $host,

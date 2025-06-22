@@ -14,7 +14,7 @@ final class Element
     use InteractsWithPlaywright;
 
     /**
-     * Constructs new element
+     * Creates a new element instance.
      */
     public function __construct(
         private string $guid,

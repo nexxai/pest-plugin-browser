@@ -24,7 +24,7 @@ final class Browser
     private array $contexts = [];
 
     /**
-     * Constructs browser.
+     * Creates a new browser instance.
      */
     public function __construct(
         private string $guid,

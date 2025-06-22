@@ -43,7 +43,7 @@ final class LaravelHttpServer implements HttpServer
     private array $connections = [];
 
     /**
-     * Create a new Laravel HTTP server instance.
+     * Creates a new laravel http server instance.
      */
     public function __construct(
         private readonly LoopInterface $loop,
