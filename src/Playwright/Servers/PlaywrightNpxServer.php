@@ -73,6 +73,27 @@ final class PlaywrightNpxServer implements PlaywrightServer
             $this->host,
             $this->port,
         );
+
+        sleep(10);
+
+        if (! $this->isRunning()) {
+            // output all process output for debugging purposes
+            $output = $this->systemProcess->getOutput();
+            dump($output);
+
+            $output = $this->systemProcess->getErrorOutput();
+            dump($output);
+
+            throw new RuntimeException(
+                sprintf('The process with arguments [%s] did not start successfully.', json_encode([
+                    'baseDirectory' => $this->baseDirectory,
+                    'command' => $this->command,
+                    'host' => $this->host,
+                    'port' => $this->port,
+                    'until' => $this->until,
+                ])),
+            );
+        }
     }
 
     /**
