@@ -92,9 +92,7 @@ final class Page
      */
     public function getAttribute(string $selector, string $attribute): ?string
     {
-        $response = $this->sendMessage('getAttribute', ['selector' => $selector, 'name' => $attribute]);
-
-        return $this->processNullableStringResponse($response);
+        return $this->locator($selector)->getAttribute($attribute);
     }
 
     /**
@@ -136,7 +134,7 @@ final class Page
      */
     public function locator(string $selector): Locator
     {
-        return new Locator($this->frameGuid, $selector);
+        return new Locator($this->frameGuid, $selector, true);
     }
 
     /**
@@ -204,8 +202,7 @@ final class Page
      */
     public function click(string $selector): self
     {
-        $response = $this->sendMessage('click', ['selector' => $selector]);
-        $this->processNavigationResponse($response);
+        $this->locatorNonStrict($selector)->click();
 
         return $this;
     }
@@ -215,8 +212,7 @@ final class Page
      */
     public function doubleClick(string $selector): self
     {
-        $response = $this->sendMessage('dblclick', ['selector' => $selector]);
-        $this->processNavigationResponse($response);
+        $this->locatorNonStrict($selector)->dblclick();
 
         return $this;
     }
@@ -236,9 +232,7 @@ final class Page
      */
     public function isEnabled(string $selector): bool
     {
-        $response = $this->sendMessage('isEnabled', ['selector' => $selector]);
-
-        return $this->processBooleanResponse($response);
+        return $this->locatorNonStrict($selector)->isEnabled();
     }
 
     /**
@@ -246,9 +240,7 @@ final class Page
      */
     public function isVisible(string $selector): bool
     {
-        $response = $this->sendMessage('isVisible', ['selector' => $selector]);
-
-        return $this->processBooleanResponse($response);
+        return $this->locatorNonStrict($selector)->isVisible();
     }
 
     /**
@@ -264,19 +256,7 @@ final class Page
      */
     public function isEditable(string $selector): bool
     {
-        try {
-            $response = $this->sendMessage('isEditable', ['selector' => $selector]);
-
-            return $this->processBooleanResponse($response);
-        } catch (RuntimeException $e) {
-            // If the element is not a form element or contenteditable, return false
-            if (str_contains($e->getMessage(), 'not an <input>, <textarea>, <select> or [contenteditable]')) {
-                return false;
-            }
-
-            // Re-throw other exceptions
-            throw $e;
-        }
+        return $this->locatorNonStrict($selector)->isEditable();
     }
 
     /**
@@ -284,7 +264,7 @@ final class Page
      */
     public function isDisabled(string $selector): bool
     {
-        return ! $this->isEnabled($selector);
+        return $this->locatorNonStrict($selector)->isDisabled();
     }
 
     /**
@@ -292,8 +272,7 @@ final class Page
      */
     public function fill(string $selector, string $value): self
     {
-        $response = $this->sendMessage('fill', ['selector' => $selector, 'value' => $value]);
-        $this->processNavigationResponse($response);
+        $this->locatorNonStrict($selector)->fill($value);
 
         return $this;
     }
@@ -303,9 +282,7 @@ final class Page
      */
     public function innerText(string $selector): string
     {
-        $response = $this->sendMessage('innerText', ['selector' => $selector]);
-
-        return $this->processStringResponse($response);
+        return $this->locatorNonStrict($selector)->innerText();
     }
 
     /**
@@ -313,9 +290,7 @@ final class Page
      */
     public function textContent(string $selector = 'html'): ?string
     {
-        $response = $this->sendMessage('textContent', ['selector' => $selector]);
-
-        return $this->processNullableStringResponse($response);
+        return $this->locatorNonStrict($selector)->textContent();
     }
 
     /**
@@ -323,9 +298,7 @@ final class Page
      */
     public function inputValue(string $selector): string
     {
-        $response = $this->sendMessage('inputValue', ['selector' => $selector]);
-
-        return $this->processStringResponse($response);
+        return $this->locatorNonStrict($selector)->inputValue();
     }
 
     /**
@@ -333,9 +306,7 @@ final class Page
      */
     public function isChecked(string $selector): bool
     {
-        $response = $this->sendMessage('isChecked', ['selector' => $selector]);
-
-        return $this->processBooleanResponse($response);
+        return $this->locatorNonStrict($selector)->isChecked();
     }
 
     /**
@@ -343,8 +314,7 @@ final class Page
      */
     public function check(string $selector): self
     {
-        $response = $this->sendMessage('check', ['selector' => $selector]);
-        $this->processNavigationResponse($response);
+        $this->locatorNonStrict($selector)->check();
 
         return $this;
     }
@@ -354,8 +324,7 @@ final class Page
      */
     public function uncheck(string $selector): self
     {
-        $response = $this->sendMessage('uncheck', ['selector' => $selector]);
-        $this->processNavigationResponse($response);
+        $this->locatorNonStrict($selector)->uncheck();
 
         return $this;
     }
@@ -376,32 +345,31 @@ final class Page
         ?int $timeout = null,
         ?bool $trial = null
     ): self {
-        $params = ['selector' => $selector];
+        $options = [];
 
         if ($force !== null) {
-            $params['force'] = $force;
+            $options['force'] = $force;
         }
         if ($modifiers !== null) {
-            $params['modifiers'] = $modifiers;
+            $options['modifiers'] = $modifiers;
         }
         if ($noWaitAfter !== null) {
-            $params['noWaitAfter'] = $noWaitAfter;
+            $options['noWaitAfter'] = $noWaitAfter;
         }
         if ($position !== null) {
-            $params['position'] = $position;
+            $options['position'] = $position;
         }
         if ($strict !== null) {
-            $params['strict'] = $strict;
+            $options['strict'] = $strict;
         }
         if ($timeout !== null) {
-            $params['timeout'] = $timeout;
+            $options['timeout'] = $timeout;
         }
         if ($trial !== null) {
-            $params['trial'] = $trial;
+            $options['trial'] = $trial;
         }
 
-        $response = $this->sendMessage('hover', $params);
-        $this->processVoidResponse($response);
+        $this->locatorNonStrict($selector)->hover($options);
 
         return $this;
     }
@@ -411,8 +379,7 @@ final class Page
      */
     public function focus(string $selector): self
     {
-        $response = $this->sendMessage('focus', ['selector' => $selector]);
-        $this->processVoidResponse($response);
+        $this->locatorNonStrict($selector)->focus();
 
         return $this;
     }
@@ -422,8 +389,7 @@ final class Page
      */
     public function press(string $selector, string $key): self
     {
-        $response = $this->sendMessage('press', ['selector' => $selector, 'key' => $key]);
-        $this->processVoidResponse($response);
+        $this->locatorNonStrict($selector)->press($key);
 
         return $this;
     }
@@ -433,8 +399,7 @@ final class Page
      */
     public function type(string $selector, string $text): self
     {
-        $response = $this->sendMessage('type', ['selector' => $selector, 'text' => $text]);
-        $this->processVoidResponse($response);
+        $this->locatorNonStrict($selector)->type($text);
 
         return $this;
     }
@@ -474,10 +439,10 @@ final class Page
      */
     public function waitForSelector(string $selector, ?array $options = null): ?Element
     {
-        $params = array_merge(['selector' => $selector], $options ?? []);
-        $response = $this->sendMessage('waitForSelector', $params);
+        $locator = $this->locatorNonStrict($selector);
+        $locator->waitFor($options);
 
-        return $this->processElementCreationResponse($response);
+        return $locator->elementHandle();
     }
 
     /**
@@ -485,8 +450,10 @@ final class Page
      */
     public function dragAndDrop(string $source, string $target): self
     {
-        $response = $this->sendMessage('dragAndDrop', ['source' => $source, 'target' => $target]);
-        $this->processVoidResponse($response);
+        $sourceLocator = $this->locatorNonStrict($source);
+        $targetLocator = $this->locatorNonStrict($target);
+
+        $sourceLocator->dragTo($targetLocator);
 
         return $this;
     }
@@ -519,33 +486,30 @@ final class Page
         ?bool $strict = null,
         ?int $timeout = null
     ): self {
-        $params = ['selector' => $selector];
+        $options = [];
 
         // Add the appropriate selection criteria - choose only one
-        if ($value !== null) {
-            $params['value'] = is_array($value) ? $value : [$value];
-        } elseif ($label !== null) {
-            $params['label'] = is_array($label) ? $label : [$label];
+        if ($label !== null) {
+            $options['label'] = is_array($label) ? $label : [$label];
         } elseif ($index !== null) {
-            $params['index'] = is_array($index) ? $index : [$index];
+            $options['index'] = is_array($index) ? $index : [$index];
         }
 
         // Add optional parameters
         if ($force !== null) {
-            $params['force'] = $force;
+            $options['force'] = $force;
         }
         if ($noWaitAfter !== null) {
-            $params['noWaitAfter'] = $noWaitAfter;
+            $options['noWaitAfter'] = $noWaitAfter;
         }
         if ($strict !== null) {
-            $params['strict'] = $strict;
+            $options['strict'] = $strict;
         }
         if ($timeout !== null) {
-            $params['timeout'] = $timeout;
+            $options['timeout'] = $timeout;
         }
 
-        $response = $this->sendMessage('selectOption', $params);
-        $this->processNavigationResponse($response);
+        $this->locatorNonStrict($selector)->selectOption($value, $options);
 
         return $this;
     }
@@ -719,6 +683,14 @@ final class Page
     public function isClosed(): bool
     {
         return $this->closed;
+    }
+
+    /**
+     * Create a non-strict locator for internal use.
+     */
+    private function locatorNonStrict(string $selector): Locator
+    {
+        return new Locator($this->frameGuid, $selector, false);
     }
 
     /**

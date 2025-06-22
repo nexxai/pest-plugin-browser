@@ -22,6 +22,7 @@ final class Locator
     public function __construct(
         private string $frameGuid,
         private string $selector,
+        private bool $strictMode = true,
     ) {
         //
     }
@@ -89,9 +90,19 @@ final class Locator
      */
     public function isEditable(): bool
     {
-        $response = $this->sendMessage('isEditable');
+        try {
+            $response = $this->sendMessage('isEditable');
 
-        return $this->processBooleanResponse($response);
+            return $this->processBooleanResponse($response);
+        } catch (RuntimeException $e) {
+            // If the element is not a form element or contenteditable, return false
+            if (str_contains($e->getMessage(), 'not an <input>, <textarea>, <select> or [contenteditable]')) {
+                return false;
+            }
+
+            // Re-throw other exceptions
+            throw $e;
+        }
     }
 
     /**
@@ -212,19 +223,39 @@ final class Locator
     /**
      * Select options by value in a select element matching the locator.
      *
-     * @param  array<int, string>|string  $values
-     * @param  array<string, mixed>|null  $options
+     * @param  array<int, string>|string|null  $values
+     * @param  array<string, mixed>|null  $options  Can include 'label', 'index', 'force', 'timeout', etc.
      * @return array<array-key, string>
      */
-    public function selectOption(array|string $values, ?array $options = null): array
+    public function selectOption(array|string|null $values = null, ?array $options = null): array
     {
         $element = $this->elementHandle();
-
         if (! $element instanceof Element) {
             throw new RuntimeException('Element not found');
         }
 
-        return $element->selectOption($values, $options);
+        $params = $options ?? [];
+
+        // Handle different selection criteria - values takes precedence if provided
+        if ($values !== null) {
+            $params['value'] = is_array($values) ? $values : [$values];
+        }
+        // Other criteria (label, index) should be provided via $options
+
+        $response = $this->sendMessage('selectOption', $params);
+        $result = $this->processArrayResponse($response);
+
+        // Ensure all values are strings for type safety
+        return array_map(function (mixed $value): string {
+            if (is_string($value)) {
+                return $value;
+            }
+            if (is_scalar($value) || $value === null) {
+                return (string) $value;
+            }
+
+            return '';
+        }, $result);
     }
 
     /**
@@ -705,6 +736,22 @@ final class Locator
     }
 
     /**
+     * Drag this element to the target locator.
+     *
+     * @param  array<string, mixed>|null  $options
+     */
+    public function dragTo(self $target, ?array $options = null): void
+    {
+        $params = array_merge([
+            'source' => $this->selector,
+            'target' => $target->selector,
+        ], $options ?? []);
+        $response = $this->sendMessage('dragAndDrop', $params);
+
+        $this->processVoidResponse($response);
+    }
+
+    /**
      * Wait for the locator to match a specific state.
      *
      * @param  array<string, mixed>|null  $options
@@ -725,7 +772,10 @@ final class Locator
      */
     private function sendMessage(string $method, array $params = []): Generator
     {
-        $defaultParams = ['selector' => $this->selector, 'strict' => true];
+        $defaultParams = ['selector' => $this->selector];
+        if (! isset($params['strict'])) {
+            $defaultParams['strict'] = $this->strictMode;
+        }
         $finalParams = array_merge($defaultParams, $params);
 
         return Client::instance()->execute($this->frameGuid, $method, $finalParams);
