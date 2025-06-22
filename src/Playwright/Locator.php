@@ -229,6 +229,11 @@ final class Locator
      */
     public function selectOption(array|string|null $values = null, ?array $options = null): array
     {
+        $element = $this->elementHandle();
+        if (! $element instanceof Element) {
+            throw new RuntimeException('Element not found');
+        }
+
         $params = $options ?? [];
 
         // Handle different selection criteria - values takes precedence if provided
@@ -238,8 +243,19 @@ final class Locator
         // Other criteria (label, index) should be provided via $options
 
         $response = $this->sendMessage('selectOption', $params);
+        $result = $this->processArrayResponse($response);
 
-        return $this->processArrayResponse($response);
+        // Ensure all values are strings for type safety
+        return array_map(function (mixed $value): string {
+            if (is_string($value)) {
+                return $value;
+            }
+            if (is_scalar($value) || $value === null) {
+                return (string) $value;
+            }
+
+            return '';
+        }, $result);
     }
 
     /**
