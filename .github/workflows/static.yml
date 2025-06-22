@@ -54,4 +54,8 @@ jobs:
 
     - name: Tests
       run: |
-        composer test:unit
+        composer test:lint
+        composer test:profanity
+        composer test:type-coverage
+        composer test:typos
+        composer test:types
