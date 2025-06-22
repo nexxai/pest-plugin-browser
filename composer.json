@@ -38,6 +38,12 @@
             "Tests\\": "tests/"
         }
     },
+    "repositories": [
+        {
+            "url": "https://github.com/valzargaming/http.git",
+            "type": "git"
+        }
+    ],
     "require-dev": {
         "laravel/pint": "^1.22.1",
         "peckphp/peck": "^0.1.3",
