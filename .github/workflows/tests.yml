@@ -47,11 +47,8 @@ jobs:
     - name: Install PHP dependencies
       run: composer update --${{ matrix.dependency-version }} --no-interaction --no-progress --ansi
 
-    - name: Install NPM dependencies
-      run: |
-        npm install
-        npm run playwright -- install chromium
+    - name: Setup
+      run: composer setup
 
     - name: Tests
-      run: |
-        ./vendor/bin/pest --bail
+      run: composer test

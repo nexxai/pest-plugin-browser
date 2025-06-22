@@ -65,6 +65,9 @@
         }
     },
     "scripts": {
+        "setup": [
+            "cd drivers/laravel && npm install && npm run build"
+        ],
         "bump:minor": [
             "composer update && composer bump",
             "npx npm-check-updates -u -t minor && npm install"
