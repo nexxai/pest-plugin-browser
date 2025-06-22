@@ -7,9 +7,12 @@ namespace Pest\Browser\Playwright;
 use Generator;
 use Pest\Browser\Playwright\Concerns\InteractsWithPlaywright;
 use Pest\Browser\ServerManager;
+use Pest\Browser\Support\ExpectedScreenshot;
+use Pest\Browser\Support\ImageDiffSlider;
 use Pest\Browser\Support\JavaScriptSerializer;
 use Pest\Browser\Support\Screenshot;
 use Pest\Browser\Support\Selector;
+use PHPUnit\Framework\AssertionFailedError;
 use RuntimeException;
 
 /**
@@ -634,6 +637,59 @@ final class Page
      */
     public function screenshot(?string $filename = null): void
     {
+        $binary = $this->screenshotBinary();
+
+        if ($binary === null) {
+            return;
+        }
+
+        Screenshot::save($binary, $filename);
+    }
+
+    public function expectScreenshot()
+    {
+        $snapshotName = ExpectedScreenshot::filename();
+        $snapshotPath = ExpectedScreenshot::path($snapshotName);
+
+        if (! file_exists($snapshotPath)) {
+            $imageBlob = $this->screenshotBinary();
+
+            ExpectedScreenshot::save($imageBlob, $snapshotName);
+        } else {
+            $imageBlob = file_get_contents($snapshotPath);
+        }
+
+        $response = Client::instance()->execute(
+            $this->guid,
+            'expectScreenshot',
+            [
+                'type' => 'png', 'fullPage' => true, 'hideCaret' => true,
+                'isNot' => false, 'expected' => base64_encode($imageBlob),
+            ]
+        );
+
+        /** @var array{result: array{diff: string|null}} $message */
+        foreach ($response as $message) {
+            if (isset($message['result']['diff'])) {
+                Screenshot::save($message['result']['diff'], 'diff'.$snapshotName);
+
+                $sliderDir = Screenshot::dir().'/.sliders';
+
+                if (is_dir($sliderDir) === false) {
+                    mkdir($sliderDir, 0755, true);
+                }
+
+                $sliderPath = $sliderDir.'/'.$snapshotName.'.html';
+
+                file_put_contents($sliderPath, ImageDiffSlider::generate($imageBlob, base64_decode($message['result']['diff']), test()->name()));
+
+                throw new AssertionFailedError('snapshot does not match the current screenshot. Check '.$sliderPath);
+            }
+        }
+    }
+
+    private function screenshotBinary(): ?string
+    {
         $response = Client::instance()->execute(
             $this->guid,
             'screenshot',
@@ -643,9 +699,11 @@ final class Page
         /** @var array{result: array{binary: string|null}} $message */
         foreach ($response as $message) {
             if (isset($message['result']['binary'])) {
-                Screenshot::save($message['result']['binary'], $filename);
+                return $message['result']['binary'];
             }
         }
+
+        return null;
     }
 
     /**
