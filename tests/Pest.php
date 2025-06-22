@@ -143,4 +143,15 @@ expect()->extend('toHaveValue', function (string $id): Expectation {
 
     return $this;
 });
+
+expect()->extend('toMatchScreenshot', function () {
+    if (! $this->value instanceof Page) {
+        throw new InvalidArgumentException('Expected value to be an Page instance');
+    }
+
+    $this->value->toMatchScreenshot();
+
+    return $this;
+});
+
 // todo: move this to Pest core end

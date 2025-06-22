@@ -7,12 +7,12 @@ namespace Pest\Browser\Playwright;
 use Generator;
 use Pest\Browser\Playwright\Concerns\InteractsWithPlaywright;
 use Pest\Browser\ServerManager;
-use Pest\Browser\Support\ExpectedScreenshot;
 use Pest\Browser\Support\ImageDiffSlider;
 use Pest\Browser\Support\JavaScriptSerializer;
 use Pest\Browser\Support\Screenshot;
 use Pest\Browser\Support\Selector;
-use PHPUnit\Framework\AssertionFailedError;
+use Pest\TestSuite;
+use PHPUnit\Framework\ExpectationFailedException;
 use RuntimeException;
 
 /**
@@ -646,64 +646,53 @@ final class Page
         Screenshot::save($binary, $filename);
     }
 
-    public function expectScreenshot()
+    /**
+     * Make a screenshot of the page and compare it with the expected one.
+     *
+     * If the screenshot does not match, it will throw an ExpectationFailedException.
+     * The diff will be saved in the screenshots directory.
+     *
+     * @throws ExpectationFailedException
+     */
+    public function toMatchScreenshot(): void
     {
-        $snapshotName = ExpectedScreenshot::filename();
-        $snapshotPath = ExpectedScreenshot::path($snapshotName);
+        $imageBlob = $this->screenshotBinary();
 
-        if (! file_exists($snapshotPath)) {
-            $imageBlob = $this->screenshotBinary();
+        try {
+            expect($imageBlob)->toMatchSnapshot();
+        } catch (ExpectationFailedException) {
+            $response = Client::instance()->execute(
+                $this->guid,
+                'expectScreenshot',
+                [
+                    'type' => 'png', 'fullPage' => true, 'hideCaret' => true,
+                    'isNot' => false, 'expected' => $imageBlob,
+                ]
+            );
 
-            ExpectedScreenshot::save($imageBlob, $snapshotName);
-        } else {
-            $imageBlob = file_get_contents($snapshotPath);
-        }
+            $snapshotName = (fn (): string => $this->getSnapshotFilename())->call(TestSuite::getInstance()->snapshots);
+            // keep only the filename without the path and extension
+            $snapshotName = pathinfo($snapshotName, PATHINFO_FILENAME);
+            /** @var array{result: array{diff: string|null}} $message */
+            foreach ($response as $message) {
+                if (isset($message['result']['diff'])) {
+                    $sliderDir = Screenshot::dir().'/.sliders';
 
-        $response = Client::instance()->execute(
-            $this->guid,
-            'expectScreenshot',
-            [
-                'type' => 'png', 'fullPage' => true, 'hideCaret' => true,
-                'isNot' => false, 'expected' => base64_encode($imageBlob),
-            ]
-        );
+                    if (is_dir($sliderDir) === false) {
+                        mkdir($sliderDir, 0755, true);
+                    }
 
-        /** @var array{result: array{diff: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['diff'])) {
-                Screenshot::save($message['result']['diff'], 'diff'.$snapshotName);
+                    $sliderPath = $sliderDir.'/'.$snapshotName.'.html';
 
-                $sliderDir = Screenshot::dir().'/.sliders';
+                    // @phpstan-ignore-next-line
+                    file_put_contents($sliderPath, ImageDiffSlider::generate($imageBlob, base64_decode($message['result']['diff']), test()->name()));
 
-                if (is_dir($sliderDir) === false) {
-                    mkdir($sliderDir, 0755, true);
+                    throw new ExpectationFailedException('snapshot does not match the current screenshot. Check '.$sliderPath);
                 }
-
-                $sliderPath = $sliderDir.'/'.$snapshotName.'.html';
-
-                file_put_contents($sliderPath, ImageDiffSlider::generate($imageBlob, base64_decode($message['result']['diff']), test()->name()));
-
-                throw new AssertionFailedError('snapshot does not match the current screenshot. Check '.$sliderPath);
             }
+
+            throw new ExpectationFailedException('No "visual" differences found, but the snapshot does not match the current screenshot.');
         }
-    }
-
-    private function screenshotBinary(): ?string
-    {
-        $response = Client::instance()->execute(
-            $this->guid,
-            'screenshot',
-            ['type' => 'png', 'fullPage' => true, 'hideCaret' => true]
-        );
-
-        /** @var array{result: array{binary: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['result']['binary'])) {
-                return $message['result']['binary'];
-            }
-        }
-
-        return null;
     }
 
     /**
@@ -730,6 +719,27 @@ final class Page
     public function isClosed(): bool
     {
         return $this->closed;
+    }
+
+    /**
+     * Screenshots the page and returns the binary data.
+     */
+    private function screenshotBinary(): ?string
+    {
+        $response = Client::instance()->execute(
+            $this->guid,
+            'screenshot',
+            ['type' => 'png', 'fullPage' => true, 'hideCaret' => true]
+        );
+
+        /** @var array{result: array{binary: string|null}} $message */
+        foreach ($response as $message) {
+            if (isset($message['result']['binary'])) {
+                return $message['result']['binary'];
+            }
+        }
+
+        return null;
     }
 
     /**
