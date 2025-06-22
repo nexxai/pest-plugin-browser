@@ -22,6 +22,7 @@ final class Locator
     public function __construct(
         private string $frameGuid,
         private string $selector,
+        private bool $strictMode = true,
     ) {
         //
     }
@@ -725,7 +726,10 @@ final class Locator
      */
     private function sendMessage(string $method, array $params = []): Generator
     {
-        $defaultParams = ['selector' => $this->selector, 'strict' => true];
+        $defaultParams = ['selector' => $this->selector];
+        if (! isset($params['strict'])) {
+            $defaultParams['strict'] = $this->strictMode;
+        }
         $finalParams = array_merge($defaultParams, $params);
 
         return Client::instance()->execute($this->frameGuid, $method, $finalParams);
