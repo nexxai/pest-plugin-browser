@@ -186,6 +186,11 @@
             Click Me
         </button>
 
+        <!-- Double Click Target -->
+        <button id="double-click-target" type="button" class="bg-indigo-500 text-white p-2 rounded mt-2" ondblclick="this.innerHTML = 'Double Clicked!'">
+            Double Click Me
+        </button>
+
         <!-- Drag and Drop -->
         <div class="flex space-x-4 mt-4">
             <div id="draggable" draggable="true" class="p-4 bg-yellow-300 border rounded cursor-move">
