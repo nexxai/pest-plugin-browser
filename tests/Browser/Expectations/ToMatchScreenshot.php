@@ -8,8 +8,8 @@ use PHPUnit\Framework\ExpectationFailedException;
 it('does match a screenshot', function (): void {
     $page = page()->goto('/');
 
-    expect($page)->toMatchScreenshot(showDiff: true);
-})->skip();
+    expect($page)->toMatchScreenshot();
+});
 
 it('does not match a screenshot', function (): void {
     Route::get('screenshot-mismatch', fn (): string => 'pest');
