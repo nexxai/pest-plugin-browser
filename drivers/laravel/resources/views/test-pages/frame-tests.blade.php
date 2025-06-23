@@ -187,7 +187,7 @@
         </button>
 
         <!-- Double Click Target -->
-        <button id="double-click-target" type="button" class="bg-indigo-500 text-white p-2 rounded mt-2" ondblclick="this.innerHTML = 'Double Clicked!'">
+        <button id="double-click-target" type="button" class="bg-indigo-500 text-white p-2 rounded mt-2">
             Double Click Me
         </button>
 
@@ -345,6 +345,21 @@
     document.getElementById('keyboard-input').addEventListener('keydown', function(e) {
         trackKeyPress(e.key, e.code);
     });
+
+    // Double-click target: prevent single-click interference
+    const doubleClickTarget = document.getElementById('double-click-target');
+    if (doubleClickTarget) {
+        // Add click event to prevent accidental single-click changes
+        doubleClickTarget.addEventListener('click', function(e) {
+            // Only respond to double-click, ignore single clicks
+            e.preventDefault();
+        });
+
+        // Ensure double-click event works properly
+        doubleClickTarget.addEventListener('dblclick', function(e) {
+            this.innerHTML = 'Double Clicked!';
+        });
+    }
 
     // Drag and drop functionality
     document.getElementById('draggable').addEventListener('dragstart', function(e) {
