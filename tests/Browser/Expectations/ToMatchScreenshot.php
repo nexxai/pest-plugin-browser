@@ -12,9 +12,7 @@ it('does match a screenshot', function (): void {
 });
 
 it('does not match a screenshot', function (): void {
-    Route::get('screenshot-mismatch', function () {
-        return 'pest';
-    });
+    Route::get('screenshot-mismatch', fn (): string => 'pest');
 
     $page = page()->goto('screenshot-mismatch');
 

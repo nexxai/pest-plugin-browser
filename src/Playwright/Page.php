@@ -650,7 +650,7 @@ final class Page
                     $diffImage = $showDiff ? $message['result']['diff'] : $actualImageBlob;
 
                     // @phpstan-ignore-next-line
-                    file_put_contents($sliderPath, ImageDiffSlider::generate(base64_decode($expectedImageBlob), base64_decode($diffImage), test()->name()));
+                    file_put_contents($sliderPath, ImageDiffSlider::generate(base64_decode($expectedImageBlob), base64_decode((string) $diffImage), test()->name()));
 
                     throw new ExpectationFailedException('snapshot does not match the current screenshot. Check '.$sliderPath);
                 }
