@@ -166,7 +166,6 @@ expect()->intercept(
     Locator::class,
     function (): ExpectationMixin {
         /** @var ExpectationMixin<Locator> $this */
-
         expect($this->value->textContent())->toBe('');
 
         return $this;
