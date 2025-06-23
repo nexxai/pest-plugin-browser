@@ -183,13 +183,13 @@ expect()->extend('toHaveValue', function (string $id): Expectation {
     return $this;
 });
 
-expect()->extend('toMatchScreenshot', function () {
+expect()->extend('toMatchScreenshot', function (bool $showDiff = false) {
     /** @var ExpectationMixin<Page> $this */
     if (! $this->value instanceof Page) {
         throw new InvalidArgumentException('Expected value to be an Page instance');
     }
 
-    $this->value->toMatchScreenshot();
+    $this->value->toMatchScreenshot($showDiff);
 
     return $this;
 });

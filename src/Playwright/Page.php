@@ -617,23 +617,24 @@ final class Page
      *
      * @throws ExpectationFailedException
      */
-    public function toMatchScreenshot(): void
+    public function toMatchScreenshot(bool $showDiff = false): void
     {
-        $imageBlob = $this->screenshotBinary();
+        $actualImageBlob = $this->screenshotBinary();
 
         try {
-            expect($imageBlob)->toMatchSnapshot();
+            expect($actualImageBlob)->toMatchSnapshot();
         } catch (ExpectationFailedException) {
+            [$snapshotName, $expectedImageBlob] = TestSuite::getInstance()->snapshots->get();
+
             $response = Client::instance()->execute(
                 $this->guid,
                 'expectScreenshot',
                 [
                     'type' => 'png', 'fullPage' => true, 'hideCaret' => true,
-                    'isNot' => false, 'expected' => $imageBlob,
+                    'isNot' => false, 'expected' => $expectedImageBlob,
                 ]
             );
 
-            $snapshotName = (fn (): string => $this->getSnapshotFilename())->call(TestSuite::getInstance()->snapshots);
             // keep only the filename without the path and extension
             $snapshotName = pathinfo($snapshotName, PATHINFO_FILENAME);
             /** @var array{result: array{diff: string|null}} $message */
@@ -646,9 +647,10 @@ final class Page
                     }
 
                     $sliderPath = $sliderDir.'/'.$snapshotName.'.html';
+                    $diffImage = $showDiff ? $message['result']['diff'] : $actualImageBlob;
 
                     // @phpstan-ignore-next-line
-                    file_put_contents($sliderPath, ImageDiffSlider::generate($imageBlob, base64_decode($message['result']['diff']), test()->name()));
+                    file_put_contents($sliderPath, ImageDiffSlider::generate(base64_decode($expectedImageBlob), base64_decode((string) $diffImage), test()->name()));
 
                     throw new ExpectationFailedException('snapshot does not match the current screenshot. Check '.$sliderPath);
                 }
