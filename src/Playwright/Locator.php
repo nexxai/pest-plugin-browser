@@ -512,7 +512,6 @@ final readonly class Locator
      */
     public function elementHandle(): ?Element
     {
-
         $response = $this->sendMessage('querySelector');
 
         return $this->processElementCreationResponse($response);
