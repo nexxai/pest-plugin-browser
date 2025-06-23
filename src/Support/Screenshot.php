@@ -71,11 +71,11 @@ final class Screenshot
 
             if (is_array($files)) {
                 foreach ($files as $file) {
-                    unlink($file);
+                    @unlink($file);
                 }
             }
 
-            rmdir($dir);
+            @rmdir($dir);
         }
     }
 }
