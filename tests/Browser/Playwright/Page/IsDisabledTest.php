@@ -11,11 +11,10 @@ it('returns true for disabled elements', function (): void {
 it('returns false for enabled elements', function (): void {
     $page = page('/test/frame-tests');
     expect($page->isDisabled('#enabled-button'))->toBeFalse();
-    expect($page->isDisabled('input[type="text"]'))->toBeFalse();
+    expect($page->isDisabled('async-button'))->toBeFalse();
 });
 
 it('returns false for elements that cannot be disabled', function (): void {
     $page = page('/test/frame-tests');
-    expect($page->isDisabled('div'))->toBeFalse();
-    expect($page->isDisabled('span'))->toBeFalse();
+    expect($page->isDisabled('content-section'))->toBeFalse();
 });

@@ -7,6 +7,20 @@ namespace Pest\Browser\Support;
 final class Selector
 {
     /**
+     * Check if the selector is a selector.
+     */
+    public static function isExplicit(string $selector): bool
+    {
+        foreach (['#', ',', '.', '[', ':', 'internal:'] as $s) {
+            if (str_contains($selector, $s)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Get selector by attribute text.
      */
     public static function getByAttributeTextSelector(string $attrName, string $text, bool $exact = false): string

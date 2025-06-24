@@ -29,7 +29,8 @@
             "filepath",
             "browsable",
             "dropdown",
-            "textarea"
+            "textarea",
+            "webpage"
         ],
         "paths": []
     }

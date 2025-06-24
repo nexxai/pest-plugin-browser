@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Pest\Browser;
 
 use Illuminate\Routing\UrlGenerator;
+use Pest\Browser\Api\Webpage;
 use Pest\Browser\Playwright\Client;
-use Pest\Browser\Playwright\Page;
+use Pest\Browser\Playwright\Playwright;
 
 /**
  * @internal
@@ -44,19 +45,16 @@ trait Browsable
      *
      * @param  array<string, mixed>  $options
      */
-    public function visit(string $url, array $options = []): Page
+    public function visit(?string $url = null, array $options = []): Webpage
     {
-        return $this->page($url, $options);
-    }
+        $browser = Playwright::chromium()->launch();
 
-    /**
-     * Browse to the given URL.
-     *
-     * @param  string|null  $url  The URL to visit, or null to start a new page without navigating.
-     * @param  array<string, mixed>  $options  Options for the page, e.g. ['hasTouch' => true]
-     */
-    public function page(?string $url = null, array $options = []): Page
-    {
-        return page($url, $options);
+        $page = $browser->newContext($options)->newPage();
+
+        if ($url !== null) {
+            $page->goto($url, $options);
+        }
+
+        return new Webpage($page);
     }
 }

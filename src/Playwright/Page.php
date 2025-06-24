@@ -19,8 +19,7 @@ use RuntimeException;
  */
 final class Page
 {
-    use Concerns\InteractsWithPlaywright,
-        Concerns\MakesAssertions;
+    use Concerns\InteractsWithPlaywright;
 
     /**
      * Whether the page has been closed.
@@ -91,7 +90,7 @@ final class Page
      */
     public function getAttribute(string $selector, string $attribute): ?string
     {
-        return $this->locator($selector)->getAttribute($attribute);
+        return $this->locatorForFormat($selector)->getAttribute($attribute);
     }
 
     /**
@@ -137,15 +136,31 @@ final class Page
     }
 
     /**
+     * Create a locator for the specified selector, without strict matching.
+     */
+    public function locatorForFormat(string $selector): Locator
+    {
+        if (Selector::isExplicit($selector) === false) {
+            $selector = $selector.', #'.$selector;
+        }
+
+        return new Locator(
+            $this->frameGuid,
+            $selector,
+            true
+        );
+    }
+
+    /**
      * Create a locator for typing into input, textarea, or select elements.
      */
     public function locatorForTyping(string $selector): Locator
     {
-        return new Locator(
-            $this->frameGuid,
-            'input[name="'.$selector.'"], textarea[name="'.$selector.'"], select[name="'.$selector.'"]',
-            true
-        );
+        if (Selector::isExplicit($selector) === false) {
+            $selector = 'input[name="'.$selector.'"], textarea[name="'.$selector.'"], select[name="'.$selector.'"], #'.$selector;
+        }
+
+        return new Locator($this->frameGuid, $selector, true);
     }
 
     /**
@@ -153,11 +168,11 @@ final class Page
      */
     public function locatorForButtonPress(string $selector): Locator
     {
-        return new Locator(
-            $this->frameGuid,
-            'button:has-text("'.$selector.'"), input[type="submit"][value="'.$selector.'"], input[type="button"][value="'.$selector.'"]',
-            true
-        );
+        if (Selector::isExplicit($selector) === false) {
+            $selector = 'button:has-text("'.$selector.'"), input[type="submit"][value="'.$selector.'"], input[type="button"][value="'.$selector.'"], #'.$selector;
+        }
+
+        return new Locator($this->frameGuid, $selector, true);
     }
 
     /**
@@ -165,11 +180,11 @@ final class Page
      */
     public function locatorForField(string $field): Locator
     {
-        return new Locator(
-            $this->frameGuid,
-            "input[name='{$field}'], textarea[name='{$field}'], select[name='{$field}'], button[name='{$field}'], #{$field}",
-            true
-        );
+        if (Selector::isExplicit($field) === false) {
+            $field = "input[name='{$field}'], textarea[name='{$field}'], select[name='{$field}'], button[name='{$field}'], #{$field}";
+        }
+
+        return new Locator($this->frameGuid, $field, true);
     }
 
     /**
@@ -177,11 +192,11 @@ final class Page
      */
     public function locatorForSelection(string $field): Locator
     {
-        return new Locator(
-            $this->frameGuid,
-            "select[name='{$field}'], #{$field}",
-            true
-        );
+        if (Selector::isExplicit($field) === false) {
+            $field = "select[name='{$field}'], #{$field}";
+        }
+
+        return new Locator($this->frameGuid, $field, true);
     }
 
     /**
@@ -189,11 +204,11 @@ final class Page
      */
     public function locatorForRadioSelection(string $field, string $value): Locator
     {
-        return new Locator(
-            $this->frameGuid,
-            "input[type=radio][name='{$field}'][value='{$value}'], #{$field}",
-            true
-        );
+        if (Selector::isExplicit($field) === false) {
+            $field = "input[type=radio][name='{$field}'][value='{$value}'], #{$field}";
+        }
+
+        return new Locator($this->frameGuid, $field, true);
     }
 
     /**
@@ -201,17 +216,17 @@ final class Page
      */
     public function locatorForChecking(string $field, ?string $value = null): Locator
     {
-        $selector = 'input[type=checkbox][name="'.$field.'"]';
+        if (Selector::isExplicit($field) === false) {
+            $field = 'input[type=checkbox][name="'.$field.'"]';
 
-        if ($value !== null) {
-            $selector .= "[value='{$value}']";
+            if ($value !== null) {
+                $field .= "[value='{$value}']";
+            }
+
+            $field = $field.', #'.$field;
         }
 
-        return new Locator(
-            $this->frameGuid,
-            $selector.', #'.$field,
-            true
-        );
+        return new Locator($this->frameGuid, $field, true);
     }
 
     /**
@@ -219,11 +234,32 @@ final class Page
      */
     public function locatorForAttachment(string $field): Locator
     {
-        return new Locator(
-            $this->frameGuid,
-            "input[type=file][name='{$field}'], #{$field}",
-            true
-        );
+        if (Selector::isExplicit($field) === false) {
+            $field = "input[type=file][name='{$field}'], #{$field}";
+        }
+
+        return new Locator($this->frameGuid, $field, true);
+    }
+
+    /**
+     * Create a locator for select options with the given values.
+     *
+     * @param  array<int, string>  $values
+     */
+    public function locatorForSelectOptions(string $field, array $values): Locator
+    {
+        if (Selector::isExplicit($field) === false) {
+            $field = "select[name='{$field}']";
+        }
+
+        $selectors = [];
+        foreach ($values as $value) {
+            $selectors[] = "$field option[value='{$value}'], #{$field} option[value='{$value}']";
+        }
+
+        $selector = implode(', ', $selectors);
+
+        return new Locator($this->frameGuid, $selector, true);
     }
 
     /**
@@ -291,7 +327,7 @@ final class Page
      */
     public function click(string $selector): self
     {
-        $this->locatorNonStrict($selector)->click();
+        $this->locatorForFormat($selector)->click();
 
         return $this;
     }
@@ -301,7 +337,7 @@ final class Page
      */
     public function doubleClick(string $selector): self
     {
-        $this->locatorNonStrict($selector)->dblclick();
+        $this->locatorForFormat($selector)->dblclick();
 
         return $this;
     }
@@ -321,7 +357,7 @@ final class Page
      */
     public function isEnabled(string $selector): bool
     {
-        return $this->locatorNonStrict($selector)->isEnabled();
+        return $this->locatorForFormat($selector)->isEnabled();
     }
 
     /**
@@ -329,7 +365,7 @@ final class Page
      */
     public function isVisible(string $selector): bool
     {
-        return $this->locatorNonStrict($selector)->isVisible();
+        return $this->locatorForFormat($selector)->isVisible();
     }
 
     /**
@@ -345,7 +381,7 @@ final class Page
      */
     public function isEditable(string $selector): bool
     {
-        return $this->locatorNonStrict($selector)->isEditable();
+        return $this->locatorForFormat($selector)->isEditable();
     }
 
     /**
@@ -353,7 +389,7 @@ final class Page
      */
     public function isDisabled(string $selector): bool
     {
-        return $this->locatorNonStrict($selector)->isDisabled();
+        return $this->locatorForFormat($selector)->isDisabled();
     }
 
     /**
@@ -361,7 +397,7 @@ final class Page
      */
     public function fill(string $selector, string $value): self
     {
-        $this->locatorNonStrict($selector)->fill($value);
+        $this->locatorForFormat($selector)->fill($value);
 
         return $this;
     }
@@ -371,7 +407,7 @@ final class Page
      */
     public function innerText(string $selector): string
     {
-        return $this->locatorNonStrict($selector)->innerText();
+        return $this->locatorForFormat($selector)->innerText();
     }
 
     /**
@@ -379,7 +415,7 @@ final class Page
      */
     public function textContent(string $selector = 'html'): ?string
     {
-        return $this->locatorNonStrict($selector)->textContent();
+        return $this->locatorForFormat($selector)->textContent();
     }
 
     /**
@@ -387,7 +423,7 @@ final class Page
      */
     public function inputValue(string $selector): string
     {
-        return $this->locatorNonStrict($selector)->inputValue();
+        return $this->locatorForFormat($selector)->inputValue();
     }
 
     /**
@@ -395,7 +431,7 @@ final class Page
      */
     public function isChecked(string $selector): bool
     {
-        return $this->locatorNonStrict($selector)->isChecked();
+        return $this->locatorForFormat($selector)->isChecked();
     }
 
     /**
@@ -403,7 +439,7 @@ final class Page
      */
     public function check(string $selector): self
     {
-        $this->locatorNonStrict($selector)->check();
+        $this->locatorForFormat($selector)->check();
 
         return $this;
     }
@@ -413,7 +449,7 @@ final class Page
      */
     public function uncheck(string $selector): self
     {
-        $this->locatorNonStrict($selector)->uncheck();
+        $this->locatorForFormat($selector)->uncheck();
 
         return $this;
     }
@@ -458,7 +494,7 @@ final class Page
             $options['trial'] = $trial;
         }
 
-        $this->locatorNonStrict($selector)->hover($options);
+        $this->locatorForFormat($selector)->hover($options);
 
         return $this;
     }
@@ -468,7 +504,7 @@ final class Page
      */
     public function focus(string $selector): self
     {
-        $this->locatorNonStrict($selector)->focus();
+        $this->locatorForFormat($selector)->focus();
 
         return $this;
     }
@@ -478,7 +514,7 @@ final class Page
      */
     public function press(string $selector, string $key): self
     {
-        $this->locatorNonStrict($selector)->press($key);
+        $this->locatorForFormat($selector)->press($key);
 
         return $this;
     }
@@ -488,7 +524,7 @@ final class Page
      */
     public function type(string $selector, string $text): self
     {
-        $this->locatorNonStrict($selector)->type($text);
+        $this->locatorForFormat($selector)->type($text);
 
         return $this;
     }
@@ -528,7 +564,7 @@ final class Page
      */
     public function waitForSelector(string $selector, ?array $options = null): ?Element
     {
-        $locator = $this->locatorNonStrict($selector);
+        $locator = $this->locatorForFormat($selector);
         $locator->waitFor($options);
 
         return $locator->elementHandle();
@@ -539,8 +575,8 @@ final class Page
      */
     public function dragAndDrop(string $source, string $target): self
     {
-        $sourceLocator = $this->locatorNonStrict($source);
-        $targetLocator = $this->locatorNonStrict($target);
+        $sourceLocator = $this->locatorForFormat($source);
+        $targetLocator = $this->locatorForFormat($target);
 
         $sourceLocator->dragTo($targetLocator);
 
@@ -598,7 +634,7 @@ final class Page
             $options['timeout'] = $timeout;
         }
 
-        $this->locatorNonStrict($selector)->selectOption($value, $options);
+        $this->locatorForFormat($selector)->selectOption($value, $options);
 
         return $this;
     }
@@ -774,14 +810,6 @@ final class Page
     public function isClosed(): bool
     {
         return $this->closed;
-    }
-
-    /**
-     * Create a non-strict locator for internal use.
-     */
-    private function locatorNonStrict(string $selector): Locator
-    {
-        return new Locator($this->frameGuid, $selector, false);
     }
 
     /**
