@@ -126,18 +126,6 @@ trait InteractsWithElements
     }
 
     /**
-     * Select the given value of a select element.
-     */
-    public function select(string $field, string $value): Webpage
-    {
-        $this->guessLocator($field)->selectOption($value, [
-            'value' => $value,
-        ]);
-
-        return $this;
-    }
-
-    /**
      * Attach the given file to the field.
      */
     public function attach(string $field, string $path): Webpage

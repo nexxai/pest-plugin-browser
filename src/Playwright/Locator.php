@@ -46,16 +46,6 @@ final readonly class Locator
     }
 
     /**
-     * Check if element matching the locator is focused.
-     */
-    public function isFocused(): bool
-    {
-        $response = $this->sendMessage('isFocused');
-
-        return $this->processBooleanResponse($response);
-    }
-
-    /**
      * Check if element matching the locator is checked.
      */
     public function isChecked(): bool

@@ -118,15 +118,12 @@ trait MakesAssertions
      */
     public function assertScript(string $expression, mixed $expected = true): Webpage
     {
-        // For simple expressions without comparison operators, we'll create a function that returns the value
-        // This avoids issues with adding 'return' statements directly to expressions
         if (! Str::contains($expression, ['===', '!==', '==', '!=', '>', '<', '>=', '<=', '&&', '||']) && ! Str::startsWith($expression, 'return ') && ! Str::startsWith($expression, 'function')) {
             $expression = "function() { return {$expression}; }";
         }
 
         $result = $this->page->evaluate($expression);
 
-        // Format expected value for display
         if (is_bool($expected)) {
             $expectedStr = $expected ? 'true' : 'false';
         } elseif (is_string($expected)) {

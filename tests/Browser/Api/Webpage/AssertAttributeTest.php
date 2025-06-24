@@ -71,6 +71,22 @@ it('may fail when asserting element attribute does not contain a value but it do
     $page->assertAttributeDoesntContain('#content', 'class', 'main-content');
 })->throws(ExpectationFailedException::class);
 
+it('may assert element attribute does not contain a value when attribute is missing', function (): void {
+    Route::get('/', fn (): string => '<div id="content">Hello World</div>');
+
+    $page = visit('/');
+
+    // This should pass because the attribute doesn't exist (null)
+    $result = $page->assertAttributeDoesntContain('#content', 'data-role', 'any-value');
+
+    // Verify that the method returns the page instance for method chaining
+    expect($result)->toBe($page);
+
+    // Also verify that the attribute is actually null
+    $attributeValue = $page->attribute('#content', 'data-role');
+    expect($attributeValue)->toBeNull();
+});
+
 it('may assert element has a specific aria attribute value', function (): void {
     Route::get('/', fn (): string => '<div id="content" aria-label="Main content">Hello World</div>');
 

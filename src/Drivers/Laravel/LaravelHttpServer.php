@@ -27,6 +27,9 @@ use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\Mime\MimeTypes;
 use Throwable;
 
+/**
+ * @codeCoverageIgnore
+ */
 final class LaravelHttpServer implements HttpServer
 {
     /**
@@ -59,7 +62,7 @@ final class LaravelHttpServer implements HttpServer
      */
     public function __destruct()
     {
-        $this->stop();
+        $this->stop(); // @codeCoverageIgnore
     }
 
     /**
@@ -127,6 +130,7 @@ final class LaravelHttpServer implements HttpServer
      */
     public function stop(): void
     {
+        // @codeCoverageIgnoreStart
         if ($this->socket instanceof SocketServer) {
             $this->flush();
 

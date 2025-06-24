@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Pest\Browser\Api\Support;
+namespace Pest\Browser\Support;
 
 use Pest\Browser\Playwright\Locator;
 use Pest\Browser\Playwright\Page;
-use Pest\Browser\Support\Selector;
 use PHPUnit\Framework\ExpectationFailedException;
 
 /**
