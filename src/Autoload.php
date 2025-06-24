@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Pest\Browser\Browser;
+use Pest\Browser\Browsable;
 use Pest\Browser\Playwright\Locator;
 use Pest\Browser\Playwright\Page;
 use Pest\Browser\Playwright\Playwright;
@@ -10,7 +10,19 @@ use Pest\Expectation;
 use Pest\Mixins\Expectation as ExpectationMixin;
 use Pest\Plugin;
 
-Plugin::uses(Browser::class);
+Plugin::uses(Browsable::class);
+
+if (! function_exists('visit')) {
+    /**
+     * Browse to the given URL.
+     *
+     * @param  array<string, mixed>  $options
+     */
+    function visit(string $url, array $options = []): Page
+    {
+        return page($url, $options);
+    }
+}
 
 if (! function_exists('page')) {
     /**

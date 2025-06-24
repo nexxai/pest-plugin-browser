@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pest\Browser\Playwright;
 
 use Generator;
-use Pest\Browser\Playwright\Concerns\InteractsWithPlaywright;
 use Pest\Browser\ServerManager;
 use Pest\Browser\Support\ImageDiffSlider;
 use Pest\Browser\Support\JavaScriptSerializer;
@@ -20,7 +19,8 @@ use RuntimeException;
  */
 final class Page
 {
-    use InteractsWithPlaywright;
+    use Concerns\InteractsWithPlaywright,
+        Concerns\MakesAssertions;
 
     /**
      * Whether the page has been closed.
@@ -134,6 +134,96 @@ final class Page
     public function locator(string $selector): Locator
     {
         return new Locator($this->frameGuid, $selector, true);
+    }
+
+    /**
+     * Create a locator for typing into input, textarea, or select elements.
+     */
+    public function locatorForTyping(string $selector): Locator
+    {
+        return new Locator(
+            $this->frameGuid,
+            'input[name="'.$selector.'"], textarea[name="'.$selector.'"], select[name="'.$selector.'"]',
+            true
+        );
+    }
+
+    /**
+     * Create a locator for pressing buttons.
+     */
+    public function locatorForButtonPress(string $selector): Locator
+    {
+        return new Locator(
+            $this->frameGuid,
+            'button:has-text("'.$selector.'"), input[type="submit"][value="'.$selector.'"], input[type="button"][value="'.$selector.'"]',
+            true
+        );
+    }
+
+    /**
+     * Create a locator for a given field.
+     */
+    public function locatorForField(string $field): Locator
+    {
+        return new Locator(
+            $this->frameGuid,
+            "input[name='{$field}'], textarea[name='{$field}'], select[name='{$field}'], button[name='{$field}'], #{$field}",
+            true
+        );
+    }
+
+    /**
+     * Create a locator for a given select field.
+     */
+    public function locatorForSelection(string $field): Locator
+    {
+        return new Locator(
+            $this->frameGuid,
+            "select[name='{$field}'], #{$field}",
+            true
+        );
+    }
+
+    /**
+     * Create a locator for a given radio field.`
+     */
+    public function locatorForRadioSelection(string $field, string $value): Locator
+    {
+        return new Locator(
+            $this->frameGuid,
+            "input[type=radio][name='{$field}'][value='{$value}'], #{$field}",
+            true
+        );
+    }
+
+    /**
+     * Create a locator for a given checkbox field.
+     */
+    public function locatorForChecking(string $field, ?string $value = null): Locator
+    {
+        $selector = 'input[type=checkbox][name="'.$field.'"]';
+
+        if ($value !== null) {
+            $selector .= "[value='{$value}']";
+        }
+
+        return new Locator(
+            $this->frameGuid,
+            $selector.', #'.$field,
+            true
+        );
+    }
+
+    /**
+     * Create a locator for a given file input field.
+     */
+    public function locatorForAttachment(string $field): Locator
+    {
+        return new Locator(
+            $this->frameGuid,
+            "input[type=file][name='{$field}'], #{$field}",
+            true
+        );
     }
 
     /**

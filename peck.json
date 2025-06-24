@@ -26,7 +26,10 @@
             "deserialization",
             "npx",
             "tcp",
-            "filepath"
+            "filepath",
+            "browsable",
+            "dropdown",
+            "textarea"
         ],
         "paths": []
     }

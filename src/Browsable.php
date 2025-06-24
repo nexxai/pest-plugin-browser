@@ -11,7 +11,7 @@ use Pest\Browser\Playwright\Page;
 /**
  * @internal
  */
-trait Browser
+trait Browsable
 {
     /**
      * Marks the test as a browser test.
@@ -40,9 +40,19 @@ trait Browser
     }
 
     /**
-     * gets the page instance for given URL.
+     * Browse to the given URL.
      *
-     * @param  string|null  $url  The URL to visit
+     * @param  array<string, mixed>  $options
+     */
+    public function visit(string $url, array $options = []): Page
+    {
+        return $this->page($url, $options);
+    }
+
+    /**
+     * Browse to the given URL.
+     *
+     * @param  string|null  $url  The URL to visit, or null to start a new page without navigating.
      * @param  array<string, mixed>  $options  Options for the page, e.g. ['hasTouch' => true]
      */
     public function page(?string $url = null, array $options = []): Page
