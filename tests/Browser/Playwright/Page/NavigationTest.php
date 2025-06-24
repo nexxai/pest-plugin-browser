@@ -29,9 +29,9 @@ it('navigates back in browser history', function (): void {
 
 it('reloads the current page', function (): void {
     $page = page('/test/frame-tests');
-    $page->fill('#test-input', 'test data');
-    expect($page->inputValue('#test-input'))->toBe('test data');
+    $page->locator('#test-input')->fill('test data');
+    expect($page->locator('#test-input')->inputValue())->toBe('test data');
 
     $page->reload();
-    expect($page->inputValue('#test-input'))->toBe('');
+    expect($page->locator('#test-input')->inputValue())->toBe('');
 });

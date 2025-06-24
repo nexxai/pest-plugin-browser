@@ -86,14 +86,6 @@ final class Page
     }
 
     /**
-     * Get the value of an attribute of the first element matching the selector within the page.
-     */
-    public function getAttribute(string $selector, string $attribute): ?string
-    {
-        return $this->locatorForFormat($selector)->getAttribute($attribute);
-    }
-
-    /**
      * Finds an element matching the specified selector.
      *
      * @deprecated Use locator($selector)->elementHandle() instead for Element compatibility, or use locator($selector) for Locator-first approach
@@ -132,133 +124,6 @@ final class Page
      */
     public function locator(string $selector): Locator
     {
-        return new Locator($this->frameGuid, $selector, true);
-    }
-
-    /**
-     * Create a locator for the specified selector, without strict matching.
-     */
-    public function locatorForFormat(string $selector): Locator
-    {
-        if (Selector::isExplicit($selector) === false) {
-            $selector = $selector.', #'.$selector;
-        }
-
-        return new Locator(
-            $this->frameGuid,
-            $selector,
-            true
-        );
-    }
-
-    /**
-     * Create a locator for typing into input, textarea, or select elements.
-     */
-    public function locatorForTyping(string $selector): Locator
-    {
-        if (Selector::isExplicit($selector) === false) {
-            $selector = 'input[name="'.$selector.'"], textarea[name="'.$selector.'"], select[name="'.$selector.'"], #'.$selector;
-        }
-
-        return new Locator($this->frameGuid, $selector, true);
-    }
-
-    /**
-     * Create a locator for pressing buttons.
-     */
-    public function locatorForButtonPress(string $selector): Locator
-    {
-        if (Selector::isExplicit($selector) === false) {
-            $selector = 'button:has-text("'.$selector.'"), input[type="submit"][value="'.$selector.'"], input[type="button"][value="'.$selector.'"], #'.$selector;
-        }
-
-        return new Locator($this->frameGuid, $selector, true);
-    }
-
-    /**
-     * Create a locator for a given field.
-     */
-    public function locatorForField(string $field): Locator
-    {
-        if (Selector::isExplicit($field) === false) {
-            $field = "input[name='{$field}'], textarea[name='{$field}'], select[name='{$field}'], button[name='{$field}'], #{$field}";
-        }
-
-        return new Locator($this->frameGuid, $field, true);
-    }
-
-    /**
-     * Create a locator for a given select field.
-     */
-    public function locatorForSelection(string $field): Locator
-    {
-        if (Selector::isExplicit($field) === false) {
-            $field = "select[name='{$field}'], #{$field}";
-        }
-
-        return new Locator($this->frameGuid, $field, true);
-    }
-
-    /**
-     * Create a locator for a given radio field.`
-     */
-    public function locatorForRadioSelection(string $field, string $value): Locator
-    {
-        if (Selector::isExplicit($field) === false) {
-            $field = "input[type=radio][name='{$field}'][value='{$value}'], #{$field}";
-        }
-
-        return new Locator($this->frameGuid, $field, true);
-    }
-
-    /**
-     * Create a locator for a given checkbox field.
-     */
-    public function locatorForChecking(string $field, ?string $value = null): Locator
-    {
-        if (Selector::isExplicit($field) === false) {
-            $field = 'input[type=checkbox][name="'.$field.'"]';
-
-            if ($value !== null) {
-                $field .= "[value='{$value}']";
-            }
-
-            $field = $field.', #'.$field;
-        }
-
-        return new Locator($this->frameGuid, $field, true);
-    }
-
-    /**
-     * Create a locator for a given file input field.
-     */
-    public function locatorForAttachment(string $field): Locator
-    {
-        if (Selector::isExplicit($field) === false) {
-            $field = "input[type=file][name='{$field}'], #{$field}";
-        }
-
-        return new Locator($this->frameGuid, $field, true);
-    }
-
-    /**
-     * Create a locator for select options with the given values.
-     *
-     * @param  array<int, string>  $values
-     */
-    public function locatorForSelectOptions(string $field, array $values): Locator
-    {
-        if (Selector::isExplicit($field) === false) {
-            $field = "select[name='{$field}']";
-        }
-
-        $selectors = [];
-        foreach ($values as $value) {
-            $selectors[] = "$field option[value='{$value}'], #{$field} option[value='{$value}']";
-        }
-
-        $selector = implode(', ', $selectors);
-
         return new Locator($this->frameGuid, $selector, true);
     }
 
@@ -323,23 +188,19 @@ final class Page
     }
 
     /**
-     * Clicks the element matching the specified selector.
+     * Create a locator that matches elements by given ID attribute.
      */
-    public function click(string $selector): self
+    public function getById(string $id): Locator
     {
-        $this->locatorForFormat($selector)->click();
-
-        return $this;
+        return $this->locator(Selector::getByIdSelector($id));
     }
 
     /**
-     * Double-clicks the element matching the specified selector.
+     * Create a locator that matches elements by given name attribute.
      */
-    public function doubleClick(string $selector): self
+    public function getByName(string $name): Locator
     {
-        $this->locatorForFormat($selector)->dblclick();
-
-        return $this;
+        return $this->locator(Selector::getByNameSelector($name));
     }
 
     /**
@@ -353,180 +214,11 @@ final class Page
     }
 
     /**
-     * Returns whether the element is enabled.
+     * Gets the text content of the body element.
      */
-    public function isEnabled(string $selector): bool
+    public function textContent(): ?string
     {
-        return $this->locatorForFormat($selector)->isEnabled();
-    }
-
-    /**
-     * Returns whether the element is visible.
-     */
-    public function isVisible(string $selector): bool
-    {
-        return $this->locatorForFormat($selector)->isVisible();
-    }
-
-    /**
-     * Returns whether the element is hidden.
-     */
-    public function isHidden(string $selector): bool
-    {
-        return ! $this->isVisible($selector);
-    }
-
-    /**
-     * Returns whether the element is editable.
-     */
-    public function isEditable(string $selector): bool
-    {
-        return $this->locatorForFormat($selector)->isEditable();
-    }
-
-    /**
-     * Returns whether the element is disabled.
-     */
-    public function isDisabled(string $selector): bool
-    {
-        return $this->locatorForFormat($selector)->isDisabled();
-    }
-
-    /**
-     * Fills a form field with the given value.
-     */
-    public function fill(string $selector, string $value): self
-    {
-        $this->locatorForFormat($selector)->fill($value);
-
-        return $this;
-    }
-
-    /**
-     * Returns element's inner text.
-     */
-    public function innerText(string $selector): string
-    {
-        return $this->locatorForFormat($selector)->innerText();
-    }
-
-    /**
-     * Returns element's text content.
-     */
-    public function textContent(string $selector = 'html'): ?string
-    {
-        return $this->locatorForFormat($selector)->textContent();
-    }
-
-    /**
-     * Returns the input value for input elements.
-     */
-    public function inputValue(string $selector): string
-    {
-        return $this->locatorForFormat($selector)->inputValue();
-    }
-
-    /**
-     * Checks whether the element is checked (for checkboxes and radio buttons).
-     */
-    public function isChecked(string $selector): bool
-    {
-        return $this->locatorForFormat($selector)->isChecked();
-    }
-
-    /**
-     * Checks the element (for checkboxes and radio buttons).
-     */
-    public function check(string $selector): self
-    {
-        $this->locatorForFormat($selector)->check();
-
-        return $this;
-    }
-
-    /**
-     * Unchecks the element (for checkboxes and radio buttons).
-     */
-    public function uncheck(string $selector): self
-    {
-        $this->locatorForFormat($selector)->uncheck();
-
-        return $this;
-    }
-
-    /**
-     * Hovers over the element matching the specified selector.
-     *
-     * @param  array<int, string>|null  $modifiers
-     * @param  array<int, int>|null  $position
-     */
-    public function hover(
-        string $selector,
-        ?bool $force = null,
-        ?array $modifiers = null,
-        ?bool $noWaitAfter = null,
-        ?array $position = null,
-        ?bool $strict = null,
-        ?int $timeout = null,
-        ?bool $trial = null
-    ): self {
-        $options = [];
-
-        if ($force !== null) {
-            $options['force'] = $force;
-        }
-        if ($modifiers !== null) {
-            $options['modifiers'] = $modifiers;
-        }
-        if ($noWaitAfter !== null) {
-            $options['noWaitAfter'] = $noWaitAfter;
-        }
-        if ($position !== null) {
-            $options['position'] = $position;
-        }
-        if ($strict !== null) {
-            $options['strict'] = $strict;
-        }
-        if ($timeout !== null) {
-            $options['timeout'] = $timeout;
-        }
-        if ($trial !== null) {
-            $options['trial'] = $trial;
-        }
-
-        $this->locatorForFormat($selector)->hover($options);
-
-        return $this;
-    }
-
-    /**
-     * Focuses the element matching the specified selector.
-     */
-    public function focus(string $selector): self
-    {
-        $this->locatorForFormat($selector)->focus();
-
-        return $this;
-    }
-
-    /**
-     * Presses a key on the element matching the specified selector.
-     */
-    public function press(string $selector, string $key): self
-    {
-        $this->locatorForFormat($selector)->press($key);
-
-        return $this;
-    }
-
-    /**
-     * Types text into the element matching the specified selector.
-     */
-    public function type(string $selector, string $text): self
-    {
-        $this->locatorForFormat($selector)->type($text);
-
-        return $this;
+        return $this->locator('body')->textContent();
     }
 
     /**
@@ -564,23 +256,10 @@ final class Page
      */
     public function waitForSelector(string $selector, ?array $options = null): ?Element
     {
-        $locator = $this->locatorForFormat($selector);
+        $locator = $this->locator($selector);
         $locator->waitFor($options);
 
         return $locator->elementHandle();
-    }
-
-    /**
-     * Performs drag and drop operation.
-     */
-    public function dragAndDrop(string $source, string $target): self
-    {
-        $sourceLocator = $this->locatorForFormat($source);
-        $targetLocator = $this->locatorForFormat($target);
-
-        $sourceLocator->dragTo($targetLocator);
-
-        return $this;
     }
 
     /**
@@ -590,51 +269,6 @@ final class Page
     {
         $response = $this->sendMessage('setContent', ['html' => $html]);
         $this->processVoidResponse($response);
-
-        return $this;
-    }
-
-    /**
-     * Selects option(s) in a select element.
-     *
-     * @param  array<int, string>|string|null  $value
-     * @param  array<int, string>|string|null  $label
-     * @param  array<int, int>|int|null  $index
-     */
-    public function selectOption(
-        string $selector,
-        array|string|null $value = null,
-        array|string|null $label = null,
-        array|int|null $index = null,
-        ?bool $force = null,
-        ?bool $noWaitAfter = null,
-        ?bool $strict = null,
-        ?int $timeout = null
-    ): self {
-        $options = [];
-
-        // Add the appropriate selection criteria - choose only one
-        if ($label !== null) {
-            $options['label'] = is_array($label) ? $label : [$label];
-        } elseif ($index !== null) {
-            $options['index'] = is_array($index) ? $index : [$index];
-        }
-
-        // Add optional parameters
-        if ($force !== null) {
-            $options['force'] = $force;
-        }
-        if ($noWaitAfter !== null) {
-            $options['noWaitAfter'] = $noWaitAfter;
-        }
-        if ($strict !== null) {
-            $options['strict'] = $strict;
-        }
-        if ($timeout !== null) {
-            $options['timeout'] = $timeout;
-        }
-
-        $this->locatorForFormat($selector)->selectOption($value, $options);
 
         return $this;
     }

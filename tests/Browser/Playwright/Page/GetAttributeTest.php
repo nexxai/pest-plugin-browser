@@ -6,10 +6,10 @@ it('gets attribute value from element', function (): void {
     $page = page('/test/frame-tests');
     $page->waitForSelector('#test-input');
 
-    $placeholder = $page->getAttribute('#test-input', 'placeholder');
+    $placeholder = $page->locator('#test-input')->getAttribute('placeholder');
     expect($placeholder)->toBe('Enter text here');
 
-    $id = $page->getAttribute('#test-input', 'id');
+    $id = $page->locator('#test-input')->getAttribute('id');
     expect($id)->toBe('test-input');
 });
 
@@ -17,6 +17,6 @@ it('returns null for non-existent attribute', function (): void {
     $page = page('/test/frame-tests');
     $page->waitForSelector('#test-input');
 
-    $nonExistent = $page->getAttribute('#test-input', 'non-existent-attr');
+    $nonExistent = $page->locator('#test-input')->getAttribute('non-existent-attr');
     expect($nonExistent)->toBeNull();
 });

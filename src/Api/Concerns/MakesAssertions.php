@@ -59,7 +59,7 @@ trait MakesAssertions
      */
     public function assertSeeIn(string $selector, string $text): Webpage
     {
-        $locator = $this->page->locatorForFormat($selector);
+        $locator = $this->guessLocator($selector);
 
         expect($locator->getByText($text)->isVisible())->toBeTrue("Expected to see text '{$text}' within element '{$selector}', but it was not found or not visible.");
 
@@ -71,7 +71,7 @@ trait MakesAssertions
      */
     public function assertDontSeeIn(string $selector, string $text): Webpage
     {
-        $locator = $this->page->locatorForFormat($selector);
+        $locator = $this->guessLocator($selector);
 
         expect($locator->getByText($text)->count())->toBe(0, "Expected not to see text '{$text}' within element '{$selector}', but it was found.");
 
@@ -83,7 +83,7 @@ trait MakesAssertions
      */
     public function assertSeeAnythingIn(string $selector): Webpage
     {
-        $text = $this->page->locatorForFormat($selector)->textContent();
+        $text = $this->guessLocator($selector)->textContent();
 
         expect($text)->not->toBeEmpty("Expected element '{$selector}' to contain some text, but it was empty.");
 
@@ -95,7 +95,7 @@ trait MakesAssertions
      */
     public function assertSeeNothingIn(string $selector): Webpage
     {
-        $text = $this->page->locatorForFormat($selector)->textContent();
+        $text = $this->guessLocator($selector)->textContent();
 
         expect($text)->toBeEmpty("Expected element '{$selector}' to be empty, but it contained text: '{$text}'.");
 
@@ -107,7 +107,7 @@ trait MakesAssertions
      */
     public function assertCount(string $selector, int $expected): Webpage
     {
-        $count = $this->page->locatorForFormat($selector)->count();
+        $count = $this->guessLocator($selector)->count();
         expect($count)->toBe($expected, "Expected to find {$expected} elements matching '{$selector}', but found {$count}.");
 
         return $this;
@@ -182,7 +182,7 @@ trait MakesAssertions
      */
     public function assertSeeLink(string $link): Webpage
     {
-        $locator = $this->page->locatorForFormat("a:has-text('{$link}')");
+        $locator = $this->guessLocator($link);
 
         expect($locator->isVisible())->toBeTrue("Expected to see link with text '{$link}', but it was not found or not visible.");
 
@@ -194,61 +194,9 @@ trait MakesAssertions
      */
     public function assertDontSeeLink(string $link): Webpage
     {
-        $locator = $this->page->locatorForFormat("a:has-text('{$link}')");
+        $locator = $this->guessLocator($link);
 
         expect($locator->count())->toBe(0, "Expected not to see link with text '{$link}', but it was found.");
-
-        return $this;
-    }
-
-    /**
-     * Assert that the given input field has the given value.
-     */
-    public function assertInputValue(string $field, string $value): Webpage
-    {
-        $locator = $this->page->locatorForTyping($field);
-        $actual = $locator->inputValue();
-
-        expect($actual)->toBe($value, "Expected input field '{$field}' to have value '{$value}', but found '{$actual}'.");
-
-        return $this;
-    }
-
-    /**
-     * Assert that the given input field does not have the given value.
-     */
-    public function assertInputValueIsNot(string $field, string $value): Webpage
-    {
-        $locator = $this->page->locatorForTyping($field);
-        $actual = $locator->inputValue();
-
-        expect($actual)->not->toBe($value, "Expected input field '{$field}' not to have value '{$value}', but it did.");
-
-        return $this;
-    }
-
-    /**
-     * Assert that the given input field is present.
-     */
-    public function assertInputPresent(string $field): Webpage
-    {
-        $locator = $this->page->locatorForTyping($field);
-        $count = $locator->count();
-
-        expect($count)->toBeGreaterThan(0, "Expected input field '{$field}' to be present, but it was not found.");
-
-        return $this;
-    }
-
-    /**
-     * Assert that the given input field is not visible.
-     */
-    public function assertInputMissing(string $field): Webpage
-    {
-        $locator = $this->page->locatorForTyping($field);
-        $count = $locator->count();
-
-        expect($count)->toBe(0, "Expected input field '{$field}' to be missing, but it was found.");
 
         return $this;
     }
@@ -259,7 +207,7 @@ trait MakesAssertions
     public function assertChecked(string $field, ?string $value = null): Webpage
     {
         $valueDescription = $value !== null ? " with value '{$value}'" : '';
-        expect($this->page->locatorForChecking($field, $value)->isChecked())->toBeTrue("Expected checkbox '{$field}'{$valueDescription} to be checked, but it was not.");
+        expect($this->guessLocator($field, $value)->isChecked())->toBeTrue("Expected checkbox '{$field}'{$valueDescription} to be checked, but it was not.");
 
         return $this;
     }
@@ -270,7 +218,7 @@ trait MakesAssertions
     public function assertNotChecked(string $field, ?string $value = null): Webpage
     {
         $valueDescription = $value !== null ? " with value '{$value}'" : '';
-        expect($this->page->locatorForChecking($field, $value)->isChecked())->toBeFalse("Expected checkbox '{$field}'{$valueDescription} not to be checked, but it was.");
+        expect($this->guessLocator($field, $value)->isChecked())->toBeFalse("Expected checkbox '{$field}'{$valueDescription} not to be checked, but it was.");
 
         return $this;
     }
@@ -282,7 +230,7 @@ trait MakesAssertions
     {
         $this->assertNotChecked($field, $value);
 
-        $selector = $this->page->locatorForChecking($field, $value)->selector();
+        $selector = $this->guessLocator($field, $value)->selector();
         $escapedSelector = json_encode($selector);
 
         $isIndeterminate = $this->page->evaluate("
@@ -303,7 +251,7 @@ trait MakesAssertions
      */
     public function assertRadioSelected(string $field, string $value): Webpage
     {
-        expect($this->page->locatorForRadioSelection($field, $value)->isChecked())->toBeTrue("Expected radio button '{$field}' with value '{$value}' to be selected, but it was not.");
+        expect($this->guessLocator($field, $value)->isChecked())->toBeTrue("Expected radio button '{$field}' with value '{$value}' to be selected, but it was not.");
 
         return $this;
     }
@@ -314,22 +262,25 @@ trait MakesAssertions
     public function assertRadioNotSelected(string $field, ?string $value = null): Webpage
     {
         if ($value !== null) {
-            expect($this->page->locatorForRadioSelection($field, $value)->isChecked())->toBeFalse("Expected radio button '{$field}' with value '{$value}' not to be selected, but it was.");
-        } else {
-            $selector = "input[type='radio'][name='{$field}']";
-            $count = $this->page->locatorForFormat($selector)->count();
+            expect($this->guessLocator($field, $value)->isChecked())->toBeFalse("Expected radio button '{$field}' with value '{$value}' not to be selected, but it was.");
 
-            $anyChecked = false;
-            for ($i = 0; $i < $count; $i++) {
-                $radio = $this->page->locatorForFormat($selector)->nth($i);
-                if ($radio->isChecked()) {
-                    $anyChecked = true;
-                    break;
-                }
-            }
-
-            expect($anyChecked)->toBeFalse("Expected no radio buttons in group '{$field}' to be selected, but at least one was selected.");
+            return $this;
         }
+
+        $locator = $this->guessLocator($field);
+
+        $count = $locator->count();
+
+        $anyChecked = false;
+        for ($i = 0; $i < $count; $i++) {
+            $radio = $locator->nth($i);
+            if ($radio->isChecked()) {
+                $anyChecked = true;
+                break;
+            }
+        }
+
+        expect($anyChecked)->toBeFalse("Expected no radio buttons in group '{$field}' to be selected, but at least one was selected.");
 
         return $this;
     }
@@ -339,7 +290,7 @@ trait MakesAssertions
      */
     public function assertSelected(string $field, string $value): Webpage
     {
-        $locator = $this->page->locatorForSelection($field);
+        $locator = $this->guessLocator($field);
         $actual = $locator->inputValue();
 
         expect($actual)->toBe($value, "Expected dropdown '{$field}' to have value '{$value}' selected, but found '{$actual}'.");
@@ -352,7 +303,7 @@ trait MakesAssertions
      */
     public function assertNotSelected(string $field, string $value): Webpage
     {
-        $locator = $this->page->locatorForSelection($field);
+        $locator = $this->guessLocator($field);
         $actual = $locator->inputValue();
 
         expect($actual)->not->toBe($value, "Expected dropdown '{$field}' not to have value '{$value}' selected, but it was.");
@@ -361,88 +312,13 @@ trait MakesAssertions
     }
 
     /**
-     * Assert that the given array of values is available to be selected.
-     *
-     * @param  array<int, string>  $values
-     */
-    public function assertSelectHasOptions(string $field, array $values): Webpage
-    {
-        // Get all available options
-        $allOptions = $this->page->evaluate("
-            () => {
-                const select = document.querySelector('select[name=\"{$field}\"]') || document.getElementById('{$field}');
-                return select ? Array.from(select.options).map(option => option.value) : [];
-            }
-        ");
-
-        // Ensure $allOptions is an array
-        assert(is_array($allOptions), 'Expected $allOptions to be an array');
-
-        // Check each value using the locator
-        foreach ($values as $value) {
-            $optionLocator = $this->page->locatorForSelectOptions($field, [$value]);
-            $count = $optionLocator->count();
-
-            $message = "Expected dropdown '{$field}' to have option with value '{$value}', but it was not found. Available options: ".implode(', ', $allOptions);
-            expect($count)->toBeGreaterThan(0, $message);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Assert that the given array of values is not available to be selected.
-     *
-     * @param  array<int, string>  $values
-     */
-    public function assertSelectMissingOptions(string $field, array $values): Webpage
-    {
-        // Get all available options
-        $allOptions = $this->page->evaluate("
-            () => {
-                const select = document.querySelector('select[name=\"{$field}\"]') || document.getElementById('{$field}');
-                return select ? Array.from(select.options).map(option => option.value) : [];
-            }
-        ");
-
-        // Ensure $allOptions is an array
-        assert(is_array($allOptions), 'Expected $allOptions to be an array');
-
-        // Check each value using the locator
-        foreach ($values as $value) {
-            $optionLocator = $this->page->locatorForSelectOptions($field, [$value]);
-            $count = $optionLocator->count();
-
-            $message = "Expected dropdown '{$field}' not to have option with value '{$value}', but it was found. Available options: ".implode(', ', $allOptions);
-            expect($count)->toBe(0, $message);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Assert that the given value is available to be selected on the given field.
-     */
-    public function assertSelectHasOption(string $field, string $value): Webpage
-    {
-        return $this->assertSelectHasOptions($field, [$value]);
-    }
-
-    /**
-     * Assert that the given value is not available to be selected.
-     */
-    public function assertSelectMissingOption(string $field, string $value): Webpage
-    {
-        return $this->assertSelectMissingOptions($field, [$value]);
-    }
-
-    /**
      * Assert that the element matching the given selector has the given value.
      */
-    public function assertValue(string $selector, string $value): Webpage
+    public function assertValue(string $field, string $value): Webpage
     {
-        $actual = $this->page->locatorForFormat($selector)->inputValue();
-        expect($actual)->toBe($value, "Expected element '{$selector}' to have value '{$value}', but found '{$actual}'.");
+        $locator = $this->guessLocator($field);
+
+        expect($actual = $locator->inputValue())->toBe($value, "Expected element '{$field}' to have value '{$value}', but found '{$actual}'.");
 
         return $this;
     }
@@ -452,7 +328,7 @@ trait MakesAssertions
      */
     public function assertValueIsNot(string $selector, string $value): Webpage
     {
-        $actual = $this->page->locatorForFormat($selector)->inputValue();
+        $actual = $this->guessLocator($selector)->inputValue();
         expect($actual)->not->toBe($value, "Expected element '{$selector}' not to have value '{$value}', but it did.");
 
         return $this;
@@ -463,7 +339,7 @@ trait MakesAssertions
      */
     public function assertAttribute(string $selector, string $attribute, string $value): Webpage
     {
-        $actual = $this->page->locatorForFormat($selector)->getAttribute($attribute);
+        $actual = $this->guessLocator($selector)->getAttribute($attribute);
         expect($actual)->toBe($value, "Expected element '{$selector}' to have attribute '{$attribute}' with value '{$value}', but found '{$actual}'.");
 
         return $this;
@@ -474,7 +350,7 @@ trait MakesAssertions
      */
     public function assertAttributeMissing(string $selector, string $attribute): Webpage
     {
-        $actual = $this->page->locatorForFormat($selector)->getAttribute($attribute);
+        $actual = $this->guessLocator($selector)->getAttribute($attribute);
         expect($actual)->toBeNull("Expected element '{$selector}' not to have attribute '{$attribute}', but it had value '{$actual}'.");
 
         return $this;
@@ -485,7 +361,7 @@ trait MakesAssertions
      */
     public function assertAttributeContains(string $selector, string $attribute, string $value): Webpage
     {
-        $attributeValue = $this->page->locatorForFormat($selector)->getAttribute($attribute);
+        $attributeValue = $this->guessLocator($selector)->getAttribute($attribute);
 
         expect($attributeValue)->not->toBeNull("Expected element '{$selector}' to have attribute '{$attribute}', but it was not found.");
 
@@ -500,7 +376,7 @@ trait MakesAssertions
      */
     public function assertAttributeDoesntContain(string $selector, string $attribute, string $value): Webpage
     {
-        $attributeValue = $this->page->locatorForFormat($selector)->getAttribute($attribute);
+        $attributeValue = $this->guessLocator($selector)->getAttribute($attribute);
 
         if ($attributeValue === null) {
             return $this;
@@ -533,7 +409,9 @@ trait MakesAssertions
      */
     public function assertVisible(string $selector): Webpage
     {
-        expect($this->page->isVisible($selector))->toBeTrue("Expected element '{$selector}' to be visible, but it was not.");
+        $locator = $this->guessLocator($selector);
+
+        expect($locator->isVisible())->toBeTrue("Expected element '{$selector}' to be visible, but it was not.");
 
         return $this;
     }
@@ -543,7 +421,7 @@ trait MakesAssertions
      */
     public function assertPresent(string $selector): Webpage
     {
-        $count = $this->page->locatorForFormat($selector)->count();
+        $count = $this->guessLocator($selector)->count();
         expect($count)->toBeGreaterThan(0, "Expected element '{$selector}' to be present in the DOM, but it was not found.");
 
         return $this;
@@ -554,7 +432,7 @@ trait MakesAssertions
      */
     public function assertNotPresent(string $selector): Webpage
     {
-        $count = $this->page->locatorForFormat($selector)->count();
+        $count = $this->guessLocator($selector)->count();
         expect($count)->toBe(0, "Expected element '{$selector}' not to be present in the DOM, but it was found.");
 
         return $this;
@@ -565,7 +443,9 @@ trait MakesAssertions
      */
     public function assertMissing(string $selector): Webpage
     {
-        expect($this->page->isVisible($selector))->toBeFalse("Expected element '{$selector}' not to be visible, but it was.");
+        $locator = $this->guessLocator($selector);
+
+        expect($locator->isVisible())->toBeFalse("Expected element '{$selector}' not to be visible, but it was.");
 
         return $this;
     }
@@ -575,7 +455,7 @@ trait MakesAssertions
      */
     public function assertEnabled(string $field): Webpage
     {
-        expect($this->page->locatorForField($field)->isEnabled())->toBeTrue("Expected field '{$field}' to be enabled, but it was disabled.");
+        expect($this->guessLocator($field)->isEnabled())->toBeTrue("Expected field '{$field}' to be enabled, but it was disabled.");
 
         return $this;
     }
@@ -585,7 +465,7 @@ trait MakesAssertions
      */
     public function assertDisabled(string $field): Webpage
     {
-        expect($this->page->locatorForField($field)->isDisabled())->toBeTrue("Expected field '{$field}' to be disabled, but it was enabled.");
+        expect($this->guessLocator($field)->isDisabled())->toBeTrue("Expected field '{$field}' to be disabled, but it was enabled.");
 
         return $this;
     }
@@ -595,7 +475,7 @@ trait MakesAssertions
      */
     public function assertButtonEnabled(string $button): Webpage
     {
-        $selector = $this->page->locatorForButtonPress($button);
+        $selector = $this->guessLocator($button);
 
         expect($selector->isEnabled())->toBeTrue("Expected button '{$button}' to be enabled, but it was disabled.");
 
@@ -607,7 +487,7 @@ trait MakesAssertions
      */
     public function assertButtonDisabled(string $button): Webpage
     {
-        $selector = $this->page->locatorForButtonPress($button);
+        $selector = $this->guessLocator($button);
 
         expect($selector->isDisabled())->toBeTrue("Expected button '{$button}' to be disabled, but it was enabled.");
 

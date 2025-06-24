@@ -21,7 +21,10 @@ it('may fail when asserting checkbox is checked but it is not', function (): voi
 })->throws(ExpectationFailedException::class);
 
 it('may assert checkbox with specific value is checked', function (): void {
-    Route::get('/', fn (): string => '<input type="checkbox" name="color" value="red" checked><input type="checkbox" name="color" value="blue">');
+    Route::get('/', fn (): string => '
+        <input type="checkbox" name="color" value="red" checked>
+        <input type="checkbox" name="color" value="blue">
+    ');
 
     $page = visit('/');
 
