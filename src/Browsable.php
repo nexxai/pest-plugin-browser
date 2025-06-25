@@ -43,6 +43,7 @@ trait Browsable
             $http->setOriginalAssetUrl($urlGenerator->asset(''));
 
             $urlGenerator->useOrigin($url);
+            $urlGenerator->useAssetOrigin($url);
             $urlGenerator->forceScheme('http');
         }
     }
