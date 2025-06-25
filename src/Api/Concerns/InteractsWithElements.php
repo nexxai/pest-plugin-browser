@@ -7,6 +7,7 @@ namespace Pest\Browser\Api\Concerns;
 use Pest\Browser\Api\Webpage;
 use React\EventLoop\Loop;
 
+use function React\Async\async;
 use function React\Async\await;
 use function React\Promise\Timer\sleep;
 
@@ -176,11 +177,11 @@ trait InteractsWithElements
      */
     public function pause(int|float $seconds): void
     {
-        Loop::get()->futureTick(function () use ($seconds): void {
+        Loop::get()->futureTick(async(function () use ($seconds): void {
             await(sleep($seconds));
 
             Loop::stop();
-        });
+        }));
 
         Loop::run();
     }
