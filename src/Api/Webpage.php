@@ -6,6 +6,7 @@ namespace Pest\Browser\Api;
 
 use Pest\Browser\Playwright\Locator;
 use Pest\Browser\Playwright\Page;
+use Pest\Browser\Support\GuessLocator;
 
 final readonly class Webpage
 {
@@ -67,6 +68,6 @@ final readonly class Webpage
      */
     private function guessLocator(string $selector, ?string $value = null): Locator
     {
-        return (new \Pest\Browser\Support\GuessLocator($this->page))->for($selector, $value);
+        return (new GuessLocator($this->page))->for($selector, $value);
     }
 }
