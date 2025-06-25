@@ -59,7 +59,7 @@ final class Context
             }
         }
 
-        return new Page($this, $pageGuid, $frameGuid, $frameUrl);
+        return new Page($this, $pageGuid, $frameGuid);
     }
 
     /**

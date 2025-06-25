@@ -210,8 +210,3 @@ it('may fail when asserting URL does not have query string parameter but it does
 
     $page->assertQueryStringMissing('param');
 })->throws(ExpectationFailedException::class);
-
-// Skip route tests as they require a more complex setup
-it('may assert URL has expected route')->skip();
-
-it('may fail when asserting URL has expected route but it does not')->skip();

@@ -38,7 +38,6 @@ final class Page
         private readonly Context $context,
         private readonly string $guid,
         private readonly string $frameGuid,
-        private string $url = '',
     ) {
         //
     }
@@ -56,7 +55,11 @@ final class Page
      */
     public function url(): string
     {
-        return $this->url;
+        $url = $this->evaluate('() => window.location.href');
+
+        assert(is_string($url), 'Expected URL to be a string, got: '.gettype($url));
+
+        return $url;
     }
 
     /**
@@ -92,7 +95,7 @@ final class Page
             ...$options,
         ]);
 
-        $this->processNavigationResponse($response);
+        $this->processVoidResponse($response);
 
         $this->waitForSelector('body', ['state' => 'attached']);
 
@@ -351,8 +354,8 @@ final class Page
      */
     public function forward(): self
     {
-        $response = $this->sendMessage('goForward');
-        $this->processNavigationResponse($response);
+        $this->sendMessage('goForward');
+        $this->processNavigationResponse();
 
         return $this;
     }
@@ -362,8 +365,8 @@ final class Page
      */
     public function back(): self
     {
-        $response = $this->sendMessage('goBack');
-        $this->processNavigationResponse($response);
+        $this->sendMessage('goBack');
+        $this->processNavigationResponse();
 
         return $this;
     }
@@ -373,8 +376,8 @@ final class Page
      */
     public function reload(): self
     {
-        $response = $this->sendMessage('reload', ['waitUntil' => 'load']);
-        $this->processNavigationResponse($response);
+        $this->sendMessage('reload', ['waitUntil' => 'load']);
+        $this->processNavigationResponse();
 
         return $this;
     }
@@ -493,14 +496,8 @@ final class Page
     /**
      * Override processNavigationResponse for Page specific behavior
      */
-    private function processNavigationResponse(Generator $response): void
+    private function processNavigationResponse(): void
     {
-        /** @var array{method: string|null, params: array{url: string|null}} $message */
-        foreach ($response as $message) {
-            if (isset($message['method']) && $message['method'] === 'navigated') {
-                $this->url = $message['params']['url'] ?? '';
-            }
-        }
     }
 
     /**
