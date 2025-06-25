@@ -9,6 +9,8 @@ namespace Pest\Browser\Playwright;
  */
 final class Context
 {
+    use Concerns\InteractsWithPlaywright;
+
     /**
      * Indicates whether the browser context is closed.
      */
@@ -67,7 +69,8 @@ final class Context
             return;
         }
 
-        Client::instance()->execute($this->guid, 'close');
+        $response = $this->sendMessage('close');
+        $this->processVoidResponse($response);
 
         $this->closed = true;
     }

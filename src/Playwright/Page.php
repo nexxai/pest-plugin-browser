@@ -456,7 +456,6 @@ final class Page
         }
 
         $response = $this->sendMessage('close');
-
         $this->processVoidResponse($response);
 
         $this->closed = true;
