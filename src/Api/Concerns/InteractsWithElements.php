@@ -174,7 +174,7 @@ trait InteractsWithElements
     /**
      * Pause for the given number of seconds.
      */
-    private function pause(int|float $seconds): void
+    public function pause(int|float $seconds): void
     {
         Loop::get()->futureTick(function () use ($seconds): void {
             await(sleep($seconds));
