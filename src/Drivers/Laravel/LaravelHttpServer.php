@@ -47,6 +47,11 @@ final class LaravelHttpServer implements HttpServer
     private array $connections = [];
 
     /**
+     * The original asset URL, if set.
+     */
+    private ?string $originalAssetUrl = null;
+
+    /**
      * Creates a new laravel http server instance.
      */
     public function __construct(
@@ -175,6 +180,14 @@ final class LaravelHttpServer implements HttpServer
     }
 
     /**
+     * Sets the original asset URL.
+     */
+    public function setOriginalAssetUrl(string $url): void
+    {
+        $this->originalAssetUrl = mb_rtrim($url, '/');
+    }
+
+    /**
      * Handle the incoming request and return a response.
      *
      * @return PromiseInterface<Response>
@@ -230,7 +243,7 @@ final class LaravelHttpServer implements HttpServer
     private function asset(string $filepath): PromiseInterface
     {
         // @phpstan-ignore-next-line
-        return new Promise(static function (callable $resolve) use ($filepath): void {
+        return new Promise(function (callable $resolve) use ($filepath): void {
             $file = fopen($filepath, 'r');
 
             if ($file === false) {
@@ -239,15 +252,44 @@ final class LaravelHttpServer implements HttpServer
                 return;
             }
 
-            $contentType = (new MimeTypes())->guessMimeType($filepath);
+            $mimeTypes = new MimeTypes();
+            $contentType = $mimeTypes->getMimeTypes(pathinfo($filepath, PATHINFO_EXTENSION));
 
-            if ($contentType === null) {
-                $contentType = 'application/octet-stream';
+            $contentType = $contentType[0] ?? 'application/octet-stream';
+
+            if (str_ends_with($filepath, '.js')) {
+                $temporaryStream = fopen('php://temp', 'r+');
+                assert($temporaryStream !== false, 'Failed to open temporary stream.');
+
+                // @phpstan-ignore-next-line
+                $temporaryContent = fread($file, (int) filesize($filepath));
+
+                assert($temporaryContent !== false, 'Failed to open temporary stream.');
+
+                $content = $this->rewriteAssetUrl($temporaryContent);
+
+                fwrite($temporaryStream, $content);
+
+                rewind($temporaryStream);
+
+                $file = $temporaryStream;
             }
 
             $resolve(new Response(200, [
                 'Content-Type' => $contentType,
             ], new ReadableResourceStream($file)));
         });
+    }
+
+    /**
+     * Rewrite the asset URL in the given content.
+     */
+    private function rewriteAssetUrl(string $content): string
+    {
+        if ($this->originalAssetUrl === null) {
+            return $content;
+        }
+
+        return str_replace($this->originalAssetUrl, $this->url(), $content);
     }
 }

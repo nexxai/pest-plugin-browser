@@ -31,6 +31,22 @@ final readonly class Webpage
     }
 
     /**
+     * Gets the page's content.
+     */
+    public function content(): string
+    {
+        return $this->page->content();
+    }
+
+    /**
+     * Gets the page's URL.
+     */
+    public function url(): string
+    {
+        return $this->page->url();
+    }
+
+    /**
      * Executes a script in the context of the page.
      */
     public function script(string $content): mixed

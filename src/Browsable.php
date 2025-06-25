@@ -25,9 +25,11 @@ trait Browsable
             ServerManager::instance()->playwright()->url(),
         );
 
-        ServerManager::instance()->http()->start();
+        $http = ServerManager::instance()->http();
 
-        $url = ServerManager::instance()->http()->url();
+        $http->start();
+
+        $url = $http->url();
 
         config(['app.url' => $url]);
 
@@ -37,6 +39,8 @@ trait Browsable
             $urlGenerator = app('url');
 
             assert($urlGenerator instanceof UrlGenerator);
+
+            $http->setOriginalAssetUrl($urlGenerator->asset(''));
 
             $urlGenerator->useOrigin($url);
             $urlGenerator->forceScheme('http');
