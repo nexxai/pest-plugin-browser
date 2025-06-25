@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pest\Browser\Api\Concerns;
 
 use Pest\Browser\Api\Webpage;
-use Pest\Browser\Execution;
 
 /**
  * @mixin Webpage
@@ -64,6 +63,18 @@ trait InteractsWithElements
     public function type(string $field, string $value): Webpage
     {
         $this->guessLocator($field)->fill($value);
+
+        return $this;
+    }
+
+    /**
+     * Select the given value in the given field.
+     *
+     * @param  array<int, string>|string  $value
+     */
+    public function select(string $field, array|string $option): Webpage
+    {
+        $this->guessLocator($field)->selectOption($option);
 
         return $this;
     }
@@ -150,9 +161,7 @@ trait InteractsWithElements
         $locator = $this->guessLocator($button);
         $locator->click();
 
-        $this->pause($seconds);
-
-        return $this;
+        return $this->wait($seconds);
     }
 
     /**
@@ -164,16 +173,6 @@ trait InteractsWithElements
         $toLocator = $this->guessLocator($to);
 
         $fromLocator->dragTo($toLocator);
-
-        return $this;
-    }
-
-    /**
-     * Pause for the given number of seconds.
-     */
-    public function pause(int|float $seconds): Webpage
-    {
-        Execution::instance()->pause($seconds);
 
         return $this;
     }

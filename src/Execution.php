@@ -18,7 +18,7 @@ final class Execution
     /**
      * Either the current context
      */
-    private bool $paused = false;
+    private bool $waiting = false;
 
     /**
      * The current context instance, or null if not set.
@@ -40,9 +40,9 @@ final class Execution
     /**
      * Pauses the execution.
      */
-    public function pause(int|float $seconds = 1): void
+    public function wait(int|float $seconds = 1): void
     {
-        $this->paused = true;
+        $this->waiting = true;
 
         try {
             Loop::get()->futureTick(async(function () use ($seconds): void {
@@ -53,16 +53,16 @@ final class Execution
 
             Loop::run();
         } finally {
-            $this->paused = false;
+            $this->waiting = false;
         }
     }
 
     /**
      * Checks if the execution is paused.
      */
-    public function isPaused(): bool
+    public function isWaiting(): bool
     {
-        return $this->paused;
+        return $this->waiting;
     }
 
     /**
@@ -71,7 +71,7 @@ final class Execution
     public function tick(): void
     {
         Loop::get()->futureTick(async(function (): void {
-            if ($this->paused) {
+            if ($this->waiting) {
                 return;
             }
 

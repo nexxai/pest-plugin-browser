@@ -29,6 +29,7 @@ use Symfony\Component\Mime\MimeTypes;
 use Throwable;
 
 /**
+ * @internal
  * @codeCoverageIgnore
  */
 final class LaravelHttpServer implements HttpServer
@@ -240,7 +241,7 @@ final class LaravelHttpServer implements HttpServer
                 }
             }
 
-            if (Execution::instance()->isPaused() === false) {
+            if (Execution::instance()->isWaiting() === false) {
                 $this->loop->futureTick(fn () => $this->loop->stop());
             }
 

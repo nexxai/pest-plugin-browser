@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Api;
 
+use Pest\Browser\Execution;
 use Pest\Browser\Playwright\Locator;
 use Pest\Browser\Playwright\Page;
 use Pest\Browser\Support\GuessLocator;
@@ -82,6 +83,16 @@ final readonly class Webpage
     public function value(string $selector): string
     {
         return $this->guessLocator($selector)->inputValue();
+    }
+
+    /**
+     * Pause for the given number of seconds.
+     */
+    public function wait(int|float $seconds): self
+    {
+        Execution::instance()->wait($seconds);
+
+        return $this;
     }
 
     /**

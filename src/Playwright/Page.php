@@ -311,7 +311,7 @@ final class Page
 
             $this->resetAssertions($originalCount);
 
-            Execution::instance()->pause(0.01);
+            Execution::instance()->wait(0.01);
         }
 
         return $callback();
