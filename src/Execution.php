@@ -64,4 +64,20 @@ final class Execution
     {
         return $this->paused;
     }
+
+    /**
+     * Ticks the execution.
+     */
+    public function tick(): void
+    {
+        Loop::get()->futureTick(async(function (): void {
+            if ($this->paused) {
+                return;
+            }
+
+            Loop::stop();
+        }));
+
+        Loop::run();
+    }
 }

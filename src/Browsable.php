@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Pest\Browser;
 
 use Illuminate\Routing\UrlGenerator;
-use Pest\Browser\Api\Webpage;
+use Pest\Browser\Api\AwaitableWebpage;
 use Pest\Browser\Playwright\Client;
 use Pest\Browser\Playwright\Playwright;
 
@@ -53,7 +53,7 @@ trait Browsable
      *
      * @param  array<string, mixed>  $options
      */
-    public function visit(?string $url = null, array $options = []): Webpage
+    public function visit(?string $url = null, array $options = []): AwaitableWebpage
     {
         $browser = Playwright::chromium()->launch();
 
@@ -63,6 +63,6 @@ trait Browsable
             $page->goto($url, $options);
         }
 
-        return new Webpage($page);
+        return new AwaitableWebpage($page);
     }
 }

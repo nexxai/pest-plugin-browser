@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Pest\Browser\Api\Webpage;
+use Pest\Browser\Api\AwaitableWebpage;
 use Pest\Browser\Browsable;
 use Pest\Plugin;
 
@@ -14,7 +14,7 @@ if (! function_exists('visit')) {
      *
      * @param  array<string, mixed>  $options
      */
-    function visit(?string $url = null, array $options = []): Webpage
+    function visit(?string $url = null, array $options = []): AwaitableWebpage
     {
         return test()->visit($url, $options);
     }

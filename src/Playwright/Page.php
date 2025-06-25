@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace Pest\Browser\Playwright;
 
 use Generator;
+use Pest\Browser\Execution;
 use Pest\Browser\ServerManager;
 use Pest\Browser\Support\ImageDiffSlider;
 use Pest\Browser\Support\JavaScriptSerializer;
 use Pest\Browser\Support\Screenshot;
 use Pest\Browser\Support\Selector;
 use Pest\TestSuite;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\ExpectationFailedException;
+use ReflectionClass;
 use RuntimeException;
 
 /**
@@ -55,7 +58,9 @@ final class Page
      */
     public function url(): string
     {
-        $url = $this->evaluate('() => window.location.href');
+        $url = $this->await(
+            fn (): mixed => $this->evaluate('() => window.location.href'),
+        );
 
         assert(is_string($url), 'Expected URL to be a string, got: '.gettype($url));
 
@@ -290,6 +295,31 @@ final class Page
     }
 
     /**
+     * Awaits for a condition to be met, retrying until the timeout is reached.
+     */
+    public function await(callable $callback, int|float $timeout = 0.1): mixed
+    {
+        $originalCount = Assert::getCount();
+
+        $start = microtime(true);
+        $end = $start + $timeout;
+
+        while (microtime(true) < $end) {
+            try {
+                return $callback();
+            } catch (ExpectationFailedException) {
+                //
+            }
+
+            $this->resetAssertions($originalCount);
+
+            Execution::instance()->pause(0.01);
+        }
+
+        return $callback();
+    }
+
+    /**
      * Sets the content of the page.
      */
     public function setContent(string $html): self
@@ -354,8 +384,8 @@ final class Page
      */
     public function forward(): self
     {
-        $this->sendMessage('goForward');
-        $this->processNavigationResponse();
+        $response = $this->sendMessage('goForward');
+        $this->processVoidResponse($response);
 
         return $this;
     }
@@ -365,8 +395,8 @@ final class Page
      */
     public function back(): self
     {
-        $this->sendMessage('goBack');
-        $this->processNavigationResponse();
+        $response = $this->sendMessage('goBack');
+        $this->processVoidResponse($response);
 
         return $this;
     }
@@ -376,8 +406,8 @@ final class Page
      */
     public function reload(): self
     {
-        $this->sendMessage('reload', ['waitUntil' => 'load']);
-        $this->processNavigationResponse();
+        $response = $this->sendMessage('reload', ['waitUntil' => 'load']);
+        $this->processVoidResponse($response);
 
         return $this;
     }
@@ -473,6 +503,22 @@ final class Page
     }
 
     /**
+     * Resets the assertion count to the original value.
+     */
+    private function resetAssertions(int $originalCount): void
+    {
+        if (Assert::getCount() === $originalCount) {
+            return;
+        }
+
+        $reflector = new ReflectionClass(Assert::class);
+        $property = $reflector->getProperty('count');
+        $property->setAccessible(true);
+
+        $property->setValue(Assert::class, $originalCount);
+    }
+
+    /**
      * Screenshots the page and returns the binary data.
      */
     private function screenshotBinary(): ?string
@@ -491,13 +537,6 @@ final class Page
         }
 
         return null;
-    }
-
-    /**
-     * Override processNavigationResponse for Page specific behavior
-     */
-    private function processNavigationResponse(): void
-    {
     }
 
     /**

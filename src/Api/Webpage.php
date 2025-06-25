@@ -12,7 +12,8 @@ final readonly class Webpage
 {
     use Concerns\InteractsWithElements,
         Concerns\MakesAssertions,
-        Concerns\MakesUrlAssertions;
+        Concerns\MakesUrlAssertions,
+        Concerns\WaitsForElements;
 
     /**
      * The page instance.

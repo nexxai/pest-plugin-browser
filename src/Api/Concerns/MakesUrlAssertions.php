@@ -29,9 +29,9 @@ trait MakesUrlAssertions
             $segments['path'] ?? ''
         );
 
-        $message = "Actual URL [{$this->page->url()}] does not equal expected URL [{$url}].";
+        $currentUrl = mb_rtrim($currentUrl, '/');
 
-        $currentUrl = rtrim($currentUrl, '/');
+        $message = "Actual URL [{$currentUrl}] does not equal expected URL [{$url}].";
 
         expect($currentUrl)->toMatch('/^'.$pattern.'$/u', $message);
 
