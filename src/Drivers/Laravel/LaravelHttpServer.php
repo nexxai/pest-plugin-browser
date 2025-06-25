@@ -216,6 +216,10 @@ final class LaravelHttpServer implements HttpServer
     {
         // @phpstan-ignore-next-line
         return new Promise(function (callable $resolve) use ($request): void {
+            if (class_exists(\Tighten\Ziggy\BladeRouteGenerator::class)) {
+                \Tighten\Ziggy\BladeRouteGenerator::$generated = false;
+            }
+
             if (Execution::instance()->isPaused() === false) {
                 $this->loop->futureTick(fn () => $this->loop->stop());
             }
