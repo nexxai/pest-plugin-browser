@@ -513,6 +513,7 @@ final class Page
         $property = $reflector->getProperty('count');
         $property->setAccessible(true);
 
+        // @phpstan-ignore-next-line
         $property->setValue(Assert::class, $originalCount);
     }
 

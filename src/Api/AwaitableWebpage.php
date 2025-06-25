@@ -30,6 +30,7 @@ final readonly class AwaitableWebpage
         $webpage = new Webpage($this->page);
 
         $result = $this->page->await(
+            // @phpstan-ignore-next-line
             fn () => $webpage->{$name}(...$arguments),
         );
 

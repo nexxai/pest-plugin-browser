@@ -32,7 +32,8 @@
             "textarea",
             "webpage",
             "url's",
-            "unstrict"
+            "unstrict",
+            "awaitable"
         ],
         "paths": []
     }
