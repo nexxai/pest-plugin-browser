@@ -30,7 +30,8 @@
             "browsable",
             "dropdown",
             "textarea",
-            "webpage"
+            "webpage",
+            "url's"
         ],
         "paths": []
     }

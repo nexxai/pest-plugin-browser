@@ -10,7 +10,8 @@ use Pest\Browser\Playwright\Page;
 final readonly class Webpage
 {
     use Concerns\InteractsWithElements,
-        Concerns\MakesAssertions;
+        Concerns\MakesAssertions,
+        Concerns\MakesUrlAssertions;
 
     /**
      * The page instance.
