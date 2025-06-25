@@ -96,13 +96,11 @@ final class Page
         $url = ServerManager::instance()->http()->rewrite($url);
 
         $response = $this->sendMessage('goto', [
-            ...['url' => $url, 'waitUntil' => 'load'],
+            ...['url' => $url, 'waitUntil' => 'commit'],
             ...$options,
         ]);
 
         $this->processVoidResponse($response);
-
-        $this->waitForSelector('body', ['state' => 'attached']);
 
         return $this;
     }
