@@ -42,7 +42,9 @@ final readonly class GuessLocator
                 $formattedSelector .= sprintf('[value=%s]', Selector::escapeForAttributeSelectorOrRegex($value, true));
             }
 
-            $locator = $this->page->locator($formattedSelector);
+            $locator = $this->page->unstrict(
+                fn (): Locator => $this->page->locator($formattedSelector),
+            );
 
             if ($locator->count() > 0) {
                 return $locator;
@@ -55,6 +57,8 @@ final readonly class GuessLocator
             );
         }
 
-        return $this->page->getByText($selector);
+        return $this->page->unstrict(
+            fn (): Locator => $this->page->getByText($selector),
+        );
     }
 }

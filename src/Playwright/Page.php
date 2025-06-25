@@ -27,6 +27,11 @@ final class Page
     private bool $closed = false;
 
     /**
+     * Enable or disable strict locators.
+     */
+    private bool $strictLocators = true;
+
+    /**
      * Creates a new page instance.
      */
     public function __construct(
@@ -52,6 +57,25 @@ final class Page
     public function url(): string
     {
         return $this->url;
+    }
+
+    /**
+     * Performs the given callback in unstrict mode.
+     *
+     * @template TReturn
+     *
+     * @param  callable(Page): TReturn  $callback
+     * @return TReturn
+     */
+    public function unstrict(callable $callback): mixed
+    {
+        try {
+            $this->strictLocators = false;
+
+            return $callback($this);
+        } finally {
+            $this->strictLocators = true;
+        }
     }
 
     /**
@@ -124,7 +148,7 @@ final class Page
      */
     public function locator(string $selector): Locator
     {
-        return new Locator($this->frameGuid, $selector, true);
+        return new Locator($this->frameGuid, $selector, $this->strictLocators);
     }
 
     /**

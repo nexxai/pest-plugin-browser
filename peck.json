@@ -31,7 +31,8 @@
             "dropdown",
             "textarea",
             "webpage",
-            "url's"
+            "url's",
+            "unstrict"
         ],
         "paths": []
     }
