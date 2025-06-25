@@ -171,8 +171,10 @@ trait InteractsWithElements
     /**
      * Pause for the given number of seconds.
      */
-    public function pause(int|float $seconds): void
+    public function pause(int|float $seconds): Webpage
     {
         Execution::instance()->pause($seconds);
+
+        return $this;
     }
 }

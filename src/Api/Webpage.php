@@ -49,6 +49,16 @@ final readonly class Webpage
     }
 
     /**
+     * Performs a screenshot of the current page and saves it to the given path.
+     */
+    public function screenshot(string $path): self
+    {
+        $this->page->screenshot($path);
+
+        return $this;
+    }
+
+    /**
      * Executes a script in the context of the page.
      */
     public function script(string $content): mixed
