@@ -96,7 +96,7 @@ final class Page
         $url = ServerManager::instance()->http()->rewrite($url);
 
         $response = $this->sendMessage('goto', [
-            ...['url' => $url, 'waitUntil' => 'commit'],
+            ...['url' => $url, 'waitUntil' => 'load'],
             ...$options,
         ]);
 

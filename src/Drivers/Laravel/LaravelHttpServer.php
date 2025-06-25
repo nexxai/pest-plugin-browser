@@ -223,15 +223,19 @@ final class LaravelHttpServer implements HttpServer
             if (app()->resolved(\Livewire\LivewireManager::class)) {
                 $manager = app()->make(\Livewire\LivewireManager::class);
 
+                // @phpstan-ignore-next-line
                 if (method_exists($manager, 'flushState')) {
                     $manager->flushState();
                 }
             }
 
+            // @phpstan-ignore-next-line
             if (app()->resolved(\Inertia\ResponseFactory::class)) {
+                // @phpstan-ignore-next-line
                 $factory = app()->make(\Inertia\ResponseFactory::class);
 
                 if (method_exists($factory, 'flushShared')) {
+                    // @phpstan-ignore-next-line
                     $factory->flushShared();
                 }
             }
@@ -244,10 +248,22 @@ final class LaravelHttpServer implements HttpServer
 
             $response = $kernel->handle($request);
 
+            $content = $response->getContent();
+
+            if ($content === false) {
+                try {
+                    ob_start();
+                    $response->sendContent();
+                } finally {
+                    // @phpstan-ignore-next-line
+                    $content = mb_trim(ob_get_clean());
+                }
+            }
+
             $resolve(new Response(
                 $response->getStatusCode(),
                 $response->headers->all(), // @phpstan-ignore-line
-                $response->getContent(), // @phpstan-ignore-line
+                $content,
                 $response->getProtocolVersion(),
             ));
 
