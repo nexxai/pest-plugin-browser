@@ -59,6 +59,16 @@ final readonly class Webpage
     }
 
     /**
+     * Submits the first form found on the page.
+     */
+    public function submit(): self
+    {
+        $this->guessLocator('[type="submit"]')->click();
+
+        return $this;
+    }
+
+    /**
      * Executes a script in the context of the page.
      */
     public function script(string $content): mixed
