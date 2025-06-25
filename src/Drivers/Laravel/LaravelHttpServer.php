@@ -220,6 +220,22 @@ final class LaravelHttpServer implements HttpServer
                 \Tighten\Ziggy\BladeRouteGenerator::$generated = false;
             }
 
+            if (app()->resolved(\Livewire\LivewireManager::class)) {
+                $manager = app()->make(\Livewire\LivewireManager::class);
+
+                if (method_exists($manager, 'flushState')) {
+                    $manager->flushState();
+                }
+            }
+
+            if (app()->resolved(\Inertia\ResponseFactory::class)) {
+                $factory = app()->make(\Inertia\ResponseFactory::class);
+
+                if (method_exists($factory, 'flushShared')) {
+                    $factory->flushShared();
+                }
+            }
+
             if (Execution::instance()->isPaused() === false) {
                 $this->loop->futureTick(fn () => $this->loop->stop());
             }
