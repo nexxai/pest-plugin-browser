@@ -297,7 +297,7 @@ final class Page
     /**
      * Awaits for a condition to be met, retrying until the timeout is reached.
      */
-    public function await(callable $callback, int|float $timeout = 0.1): mixed
+    public function await(callable $callback, int|float $timeout = 1): mixed
     {
         $originalCount = Assert::getCount();
 
