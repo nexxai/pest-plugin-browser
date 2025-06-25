@@ -39,7 +39,11 @@ trait MakesAssertions
      */
     public function assertSee(string $text): Webpage
     {
-        expect($this->page->getByText($text)->isVisible())->toBeTrue("Expected to see text '{$text}' on the page, but it was not found or not visible.");
+        $locator = $this->page->unstrict(
+            fn () => $this->page->getByText($text),
+        );
+
+        expect($locator->isVisible())->toBeTrue("Expected to see text '{$text}' on the page, but it was not found or not visible.");
 
         return $this;
     }
@@ -49,7 +53,11 @@ trait MakesAssertions
      */
     public function assertDontSee(string $text): Webpage
     {
-        expect($this->page->getByText($text)->count())->toBe(0, "Expected not to see text '{$text}' on the page, but it was found.");
+        $locator = $this->page->unstrict(
+            fn () => $this->page->getByText($text),
+        );
+
+        expect($locator->count())->toBe(0, "Expected not to see text '{$text}' on the page, but it was found.");
 
         return $this;
     }
