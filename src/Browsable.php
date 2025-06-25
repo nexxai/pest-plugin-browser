@@ -31,6 +31,8 @@ trait Browsable
 
         config(['app.url' => $url]);
 
+        config(['cors.paths' => ['*']]);
+
         if (app()->bound('url')) {
             $urlGenerator = app('url');
 
