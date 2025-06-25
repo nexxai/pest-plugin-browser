@@ -30,6 +30,9 @@ trait MakesUrlAssertions
         );
 
         $message = "Actual URL [{$this->page->url()}] does not equal expected URL [{$url}].";
+
+        $currentUrl = rtrim($currentUrl, '/');
+
         expect($currentUrl)->toMatch('/^'.$pattern.'$/u', $message);
 
         return $this;
