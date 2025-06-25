@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Playwright;
 
+use Exception;
+
 /**
  * @internal
  */
@@ -69,8 +71,17 @@ final class Context
             return;
         }
 
-        $response = $this->sendMessage('close');
-        $this->processVoidResponse($response);
+        try {
+            // fix this...
+            $response = $this->sendMessage('close');
+            $this->processVoidResponse($response);
+        } catch (Exception $e) {
+            if (str_contains($e->getMessage(), 'has been closed')) {
+                return;
+            }
+
+            throw $e;
+        }
 
         $this->closed = true;
     }
