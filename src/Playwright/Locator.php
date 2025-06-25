@@ -221,41 +221,19 @@ final readonly class Locator
     }
 
     /**
-     * Select options by value in a select element matching the locator.
+     * Select an option in a select element matching the locator.
      *
-     * @param  array<int, string>|string|null  $values
-     * @param  array<string, mixed>|null  $options  Can include 'label', 'index', 'force', 'timeout', etc.
-     * @return array<array-key, string>
+     * @param  array<int, string|int>|string|int  $value
      */
-    public function selectOption(array|string|null $values = null, ?array $options = null): array
+    public function selectOption(array|string|int $value): void
     {
-        $element = $this->elementHandle();
-        if (! $element instanceof Element) {
-            throw new RuntimeException('Element not found');
-        }
+        $response = $this->sendMessage('selectOption', [
+            'options' => array_map(
+                fn (string|int $e): array => ['valueOrLabel' => (string) $e], is_array($value) ? $value : [$value]
+            ),
+        ]);
 
-        $params = $options ?? [];
-
-        // Handle different selection criteria - values takes precedence if provided
-        if ($values !== null) {
-            $params['value'] = is_array($values) ? $values : [$values];
-        }
-        // Other criteria (label, index) should be provided via $options
-
-        $response = $this->sendMessage('selectOption', $params);
-        $result = $this->processArrayResponse($response);
-
-        // Ensure all values are strings for type safety
-        return array_map(function (mixed $value): string {
-            if (is_string($value)) {
-                return $value;
-            }
-            if (is_scalar($value) || $value === null) {
-                return (string) $value;
-            }
-
-            return '';
-        }, $result);
+        $this->processVoidResponse($response);
     }
 
     /**

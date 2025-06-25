@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Playwright;
 
+use Pest\Browser\Playwright\Enums\BrowserType;
+
 /**
  * @internal
  */
@@ -12,32 +14,28 @@ final class Playwright
     /**
      * Browser types
      *
-     * @var array<string, BrowserType>
+     * @var array<string, BrowserFactory>
      */
     private static array $browserTypes = [];
 
     /**
-     * Get chromium browser type
+     * Whether to run browsers in headless mode.
      */
-    public static function chromium(): BrowserType
-    {
-        return self::$browserTypes['chromium'] ?? self::initialize('chromium');
-    }
+    private static bool $headless = true;
 
     /**
-     * Get firefox browser type
+     * The default browser type.
      */
-    public static function firefox(): BrowserType
-    {
-        return self::$browserTypes['firefox'] ?? self::initialize('firefox');
-    }
+    private static BrowserType $defaultBrowserType = BrowserType::CHROME;
 
     /**
-     * Get webkit browser type
+     * Get the default browser type.
      */
-    public static function webkit(): BrowserType
+    public static function default(): BrowserFactory
     {
-        return self::$browserTypes['webkit'] ?? self::initialize('webkit');
+        $name = self::$defaultBrowserType->toPlaywrightName();
+
+        return self::$browserTypes[$name] ?? self::initialize($name);
     }
 
     /**
@@ -53,6 +51,14 @@ final class Playwright
     }
 
     /**
+     * Set playwright in non-headless mode.
+     */
+    public static function headed(): void
+    {
+        self::$headless = false;
+    }
+
+    /**
      * Reset playwright state, reset browser types, without closing them.
      */
     public static function reset(): void
@@ -63,9 +69,17 @@ final class Playwright
     }
 
     /**
+     * Sets the default browser type.
+     */
+    public static function defaultTo(BrowserType $browserType): void
+    {
+        self::$defaultBrowserType = $browserType;
+    }
+
+    /**
      * Initialize Playwright
      */
-    private static function initialize(string $browser): BrowserType
+    private static function initialize(string $browser): BrowserFactory
     {
         $response = Client::instance()->execute(
             '',
@@ -83,7 +97,11 @@ final class Playwright
             ) {
                 $name = $message['params']['initializer']['name'] ?? '';
 
-                self::$browserTypes[$name] = new BrowserType($message['params']['guid'], $name);
+                self::$browserTypes[$name] = new BrowserFactory(
+                    $message['params']['guid'],
+                    $name,
+                    self::$headless,
+                );
             }
         }
 

@@ -7,7 +7,7 @@ namespace Pest\Browser\Playwright;
 /**
  * @internal
  */
-final class BrowserType
+final class BrowserFactory
 {
     /**
      * The browser instance.
@@ -20,6 +20,7 @@ final class BrowserType
     public function __construct(
         private readonly string $guid,
         private readonly string $name,
+        private readonly bool $headless,
     ) {
         //
     }
@@ -36,7 +37,7 @@ final class BrowserType
         $response = Client::instance()->execute(
             $this->guid,
             'launch',
-            ['browserType' => $this->name, 'headless' => true],
+            ['browserType' => $this->name, 'headless' => $this->headless],
         );
 
         /** @var array{result: array{browser: array{guid: string|null}}} $message */

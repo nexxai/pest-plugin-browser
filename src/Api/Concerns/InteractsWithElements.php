@@ -70,9 +70,9 @@ trait InteractsWithElements
     /**
      * Select the given value in the given field.
      *
-     * @param  array<int, string>|string  $value
+     * @param  array<int, string|int>|string|int  $option
      */
-    public function select(string $field, array|string $option): Webpage
+    public function select(string $field, array|string|int $option): Webpage
     {
         $this->guessLocator($field)->selectOption($option);
 

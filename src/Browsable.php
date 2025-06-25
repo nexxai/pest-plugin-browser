@@ -55,7 +55,7 @@ trait Browsable
      */
     public function visit(?string $url = null, array $options = []): AwaitableWebpage
     {
-        $browser = Playwright::chromium()->launch();
+        $browser = Playwright::default()->launch();
 
         $page = $browser->newContext($options)->newPage();
 

@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-beforeEach()->skip();
-
-it('may select an option by value', function (): void {
+it('may select an option by value or label', function (): void {
     Route::get('/', fn (): string => '
         <select name="country">
             <option value="us">United States</option>
@@ -18,8 +16,10 @@ it('may select an option by value', function (): void {
     $page->assertValue('country', 'us');
 
     $page->select('country', 'ca');
-
     $page->assertValue('country', 'ca');
+
+    $page->select('country', 'Mexico');
+    $page->assertValue('country', 'mx');
 });
 
 it('may select multiple options', function (): void {
@@ -33,7 +33,7 @@ it('may select multiple options', function (): void {
 
     $page = visit('/');
 
-    $page->select('#countries', ['us', 'ca']);
+    $page->select('countries', ['us', 'Mexico']);
 
     // Check that both options are selected
     $selectedOptions = $page->script('() => {
@@ -42,23 +42,5 @@ it('may select multiple options', function (): void {
             .filter(option => option.selected)
             .map(option => option.value);
     }');
-    expect($selectedOptions)->toBe(['us', 'ca']);
-});
-
-it('may select a random option when no value is provided', function (): void {
-    Route::get('/', fn (): string => '
-        <select name="country">
-            <option value="us">United States</option>
-            <option value="ca">Canada</option>
-            <option value="mx">Mexico</option>
-        </select>
-    ');
-
-    $page = visit('/');
-
-    $page->value('#country');
-
-    // Check that some option is selected
-    $value = $page->value('country');
-    expect($value)->toBeIn(['us', 'ca', 'mx']);
+    expect($selectedOptions)->toBe(['us', 'mx']);
 });

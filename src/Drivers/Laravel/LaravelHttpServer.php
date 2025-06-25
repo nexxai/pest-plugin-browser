@@ -30,6 +30,7 @@ use Throwable;
 
 /**
  * @internal
+ *
  * @codeCoverageIgnore
  */
 final class LaravelHttpServer implements HttpServer
