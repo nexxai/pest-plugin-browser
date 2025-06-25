@@ -39,6 +39,7 @@ trait Browsable
             assert($urlGenerator instanceof UrlGenerator);
 
             $urlGenerator->useOrigin($url);
+            $urlGenerator->forceScheme('http');
         }
     }
 
