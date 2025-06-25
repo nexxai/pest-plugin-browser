@@ -9,6 +9,7 @@ use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Http\Request;
 use Pest\Browser\Contracts\HttpServer;
 use Pest\Browser\Exceptions\ServerNotFoundException;
+use Pest\Browser\Execution;
 use Psr\Http\Message\ServerRequestInterface;
 use React\EventLoop\LoopInterface;
 use React\Http\HttpServer as ReactHttpServer;
@@ -202,7 +203,9 @@ final class LaravelHttpServer implements HttpServer
     {
         // @phpstan-ignore-next-line
         return new Promise(function (callable $resolve) use ($request): void {
-            $this->loop->futureTick(fn () => $this->loop->stop());
+            if (Execution::instance()->isPaused() === false) {
+                $this->loop->futureTick(fn () => $this->loop->stop());
+            }
 
             $kernel = app()->make(HttpKernel::class);
 
