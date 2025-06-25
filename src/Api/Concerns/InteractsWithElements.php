@@ -15,7 +15,7 @@ trait InteractsWithElements
     /**
      * Click the link with the given text.
      */
-    public function clickLink(string $text): Webpage
+    public function click(string $text): Webpage
     {
         $this->guessLocator($text)->click();
 

@@ -8,7 +8,7 @@ it('may click a link', function (): void {
 
     $page = visit('/');
 
-    $page->clickLink('About Us');
+    $page->click('About Us');
 
     $page->assertSee('About Page');
 });
@@ -19,7 +19,7 @@ it('may click a link with an id selector', function (): void {
 
     $page = visit('/');
 
-    $page->clickLink('#about-link');
+    $page->click('#about-link');
 
     $page->assertSee('About Page');
 });
