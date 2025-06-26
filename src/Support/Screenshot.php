@@ -17,7 +17,7 @@ final class Screenshot
     public static function dir(): string
     {
         return TestSuite::getInstance()->rootPath
-            .'/tests/Browser/screenshots';
+            .'/tests/Browser/Screenshots';
     }
 
     /**
