@@ -33,22 +33,6 @@ final readonly class Element
     }
 
     /**
-     * Select options in a select element.
-     *
-     * @param  string|array<int, string>|array<int, string>  $values
-     * @param  array<string, mixed>|null  $options
-     * @return array<array-key, string>
-     */
-    public function selectOption(string|array $values, ?array $options = null): array
-    {
-        $params = array_merge(['values' => $values], $options ?? []);
-
-        $result = $this->processArrayResponse($this->sendMessage('selectOption', $params));
-
-        return array_map(static fn (mixed $value): string => is_scalar($value) ? (string) $value : '', $result);
-    }
-
-    /**
      * Get the text content of the element.
      */
     public function textContent(): ?string
