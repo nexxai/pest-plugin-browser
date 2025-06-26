@@ -41,21 +41,20 @@
         }
     },
     "require-dev": {
-        "laravel/pint": "^1.22.1",
-        "peckphp/peck": "^0.1.3",
-        "pestphp/pest-dev-tools": "^4.0.0",
-        "pestphp/pest-plugin-type-coverage": "^4.0.0",
         "ext-pcntl": "*",
         "ext-posix": "*",
-        "laravel/framework": "^11.45.1",
-        "laravel/tinker": "^2.10.1",
-        "livewire/livewire": "^3.6.3",
         "fakerphp/faker": "^1.24.1",
+        "laravel/framework": "^11.45.1",
         "laravel/pail": "^1.2.3",
+        "laravel/pint": "^1.22.1",
         "laravel/sail": "^1.43.1",
+        "livewire/livewire": "^3.6.3",
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.8.2",
-        "pestphp/pest-plugin-laravel": "^4.0"
+        "peckphp/peck": "^0.1.3",
+        "pestphp/pest-dev-tools": "^4.0.0",
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "pestphp/pest-plugin-type-coverage": "^4.0.0"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

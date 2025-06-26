@@ -12,10 +12,10 @@ use Pest\Browser\Support\GuessLocator;
 final readonly class Webpage
 {
     use Concerns\InteractsWithElements,
-        Concerns\MakesAssertions,
+        Concerns\InteractsWithTab,
         Concerns\MakesConsoleAssertions,
-        Concerns\MakesUrlAssertions,
-        Concerns\WaitsForElements;
+        Concerns\MakesElementAssertions,
+        Concerns\MakesUrlAssertions;
 
     /**
      * The page instance.

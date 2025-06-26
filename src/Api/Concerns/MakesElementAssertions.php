@@ -10,7 +10,7 @@ use Pest\Browser\Api\Webpage;
 /**
  * @mixin Webpage
  */
-trait MakesAssertions
+trait MakesElementAssertions
 {
     /**
      * Assert that the page title matches the given text.

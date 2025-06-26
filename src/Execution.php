@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Pest\Browser;
 
+use Pest\Support\Container;
 use React\EventLoop\Loop;
+use React\Stream\ReadableResourceStream;
+use Symfony\Component\Console\Output\OutputInterface;
 
 use function React\Async\async;
 use function React\Async\await;
@@ -79,5 +82,33 @@ final class Execution
         }));
 
         Loop::run();
+    }
+
+    /**
+     * Waits for a key press.
+     */
+    public function waitForKey(): void
+    {
+        $this->waiting = true;
+
+        Loop::get()->futureTick(async(function (): void {
+            $loop = Loop::get();
+
+            // @phpstan-ignore-next-line
+            Container::getInstance()->get(OutputInterface::class)->writeln(
+                '<info>Press any key to continue...</info>'
+            );
+
+            $stdin = new ReadableResourceStream(STDIN, $loop);
+
+            $stdin->on('data', function () use ($stdin, $loop) {
+                $this->waiting = false;
+
+                $stdin->close();
+                $loop->stop();
+            });
+        }));
+
+        $this->tick();
     }
 }
