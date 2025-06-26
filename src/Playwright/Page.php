@@ -427,21 +427,29 @@ final class Page
     /**
      * Get the console logs from the page, if any.
      *
-     * @return array<int, string>
+     * @return array<int, array{message: string}>
      */
     public function consoleLogs(): array
     {
-        return $this->evaluate('window.__pestBrowser.consoleLogs || []');
+        $consoleLogs = $this->evaluate('window.__pestBrowser.consoleLogs || []');
+
+        /** @var array<int, array{message: string}> $consoleLogs */
+
+        return $consoleLogs;
     }
 
     /**
      * Get the JavaScript errors from the page, if any.
      *
-     * @return array<int, string>
+     * @return array<int, array{message: string}>
      */
     public function javaScriptErrors(): array
     {
-        return $this->evaluate('window.__pestBrowser.jsErrors || []');
+        $jsErrors = $this->evaluate('window.__pestBrowser.jsErrors || []');
+
+        /** @var array<int, array{message: string}> $jsErrors */
+
+        return $jsErrors;
     }
 
     /**
