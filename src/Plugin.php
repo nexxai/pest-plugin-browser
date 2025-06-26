@@ -56,6 +56,12 @@ final class Plugin implements Bootable, HandlesArguments, Terminable // @pest-ar
             $arguments = $this->popArgument('--headed', $arguments);
         }
 
+        if ($this->hasArgument('--diff', $arguments)) {
+            Playwright::setShouldDiffOnScreenshotAssertions();
+
+            $arguments = $this->popArgument('--diff', $arguments);
+        }
+
         if ($this->hasArgument('--browser', $arguments)) {
             $index = array_search('--browser', $arguments, true);
 

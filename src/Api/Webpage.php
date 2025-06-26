@@ -15,6 +15,7 @@ final readonly class Webpage
         Concerns\InteractsWithTab,
         Concerns\MakesConsoleAssertions,
         Concerns\MakesElementAssertions,
+        Concerns\MakesScreenshotAssertions,
         Concerns\MakesUrlAssertions;
 
     /**

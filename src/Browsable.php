@@ -58,7 +58,15 @@ trait Browsable
     {
         $browser = Playwright::default()->launch();
 
-        $context = $browser->newContext($options);
+        $context = $browser->newContext([
+            'viewport' => ['width' => 1728, 'height' => 1117],
+            'deviceScaleFactor' => 2,
+            'isMobile' => false,
+            'hasTouch' => false,
+            'locale' => 'en-US',
+            'timezoneId' => 'UTC',
+            ...$options,
+        ]);
         $context->addInitScript(InitScript::get());
 
         $page = $context->newPage();

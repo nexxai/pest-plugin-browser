@@ -11,6 +11,7 @@ use Pest\Browser\Support\ImageDiffSlider;
 use Pest\Browser\Support\JavaScriptSerializer;
 use Pest\Browser\Support\Screenshot;
 use Pest\Browser\Support\Selector;
+use Pest\Browser\Support\Shell;
 use Pest\TestSuite;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\ExpectationFailedException;
@@ -280,6 +281,17 @@ final class Page
     }
 
     /**
+     * Adds a script tag to the page.
+     */
+    public function addStyleTag(string $content): self
+    {
+        $response = $this->sendMessage('addStyleTag', ['content' => $content]);
+        $this->processVoidResponse($response);
+
+        return $this;
+    }
+
+    /**
      * Waits for the selector to satisfy state option.
      *
      * @param  array<string, mixed>|null  $options  Additional options like state, strict, timeout
@@ -455,15 +467,11 @@ final class Page
     /**
      * Make a screenshot of the page and compare it with the expected one.
      *
-     * If the screenshot does not match, it will throw an ExpectationFailedException.
-     * The diff will be saved in the screenshots directory.
-     *
      * @throws ExpectationFailedException
      */
-    public function toMatchScreenshot(bool $showDiff = false): void
+    public function expectScreenshot(bool $showDiff): void
     {
         $actualImageBlob = $this->screenshotBinary();
-
         try {
             expect($actualImageBlob)->toMatchSnapshot();
         } catch (ExpectationFailedException) {
@@ -478,28 +486,43 @@ final class Page
                 ]
             );
 
-            // keep only the filename without the path and extension
             $snapshotName = pathinfo($snapshotName, PATHINFO_FILENAME);
             /** @var array{result: array{diff: string|null}} $message */
             foreach ($response as $message) {
                 if (isset($message['result']['diff'])) {
-                    $sliderDir = Screenshot::dir().'/.sliders';
+                    $sliderDir = Screenshot::dir().'/Sliders';
 
                     if (is_dir($sliderDir) === false) {
                         mkdir($sliderDir, 0755, true);
                     }
 
                     $sliderPath = $sliderDir.'/'.$snapshotName.'.html';
-                    $diffImage = $showDiff ? $message['result']['diff'] : $actualImageBlob;
+                    $diffImage = $message['result']['diff'];
 
-                    // @phpstan-ignore-next-line
-                    file_put_contents($sliderPath, ImageDiffSlider::generate(base64_decode($expectedImageBlob), base64_decode((string) $diffImage), test()->name()));
+                    file_put_contents($sliderPath, ImageDiffSlider::generate(
+                        (string) base64_decode($expectedImageBlob, true),
+                        (string) base64_decode($diffImage, true),
+                        test()->name() // @phpstan-ignore-line
+                    ));
 
-                    throw new ExpectationFailedException('snapshot does not match the current screenshot. Check '.$sliderPath);
+                    if ($showDiff) {
+                        Shell::open($sliderPath);
+                    }
+
+                    throw new ExpectationFailedException(<<<'EOT'
+                        Screenshot does not match the last one.
+                          - Expected? Update the snapshots with [--update-snapshots].
+                          - Not expected? Re-run the test with [--diff] to see the differences.
+                        EOT
+                    );
                 }
             }
 
-            throw new ExpectationFailedException('No "visual" differences found, but the snapshot does not match the current screenshot.');
+            throw new ExpectationFailedException(<<<'EOT'
+                Screenshot does not match the last one.
+                  - Expected? Update the snapshots with [--update-snapshots].
+                EOT,
+            );
         }
     }
 

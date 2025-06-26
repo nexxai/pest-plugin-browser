@@ -24,6 +24,11 @@ final class Playwright
     private static bool $headless = true;
 
     /**
+     * Whether to show the diff on screenshot assertions.
+     */
+    private static bool $shouldDiffOnScreenshotAssertions = true;
+
+    /**
      * The default browser type.
      */
     private static BrowserType $defaultBrowserType = BrowserType::CHROME;
@@ -56,6 +61,22 @@ final class Playwright
     public static function headed(): void
     {
         self::$headless = false;
+    }
+
+    /**
+     * Set whether to show the diff on screenshot assertions.
+     */
+    public static function setShouldDiffOnScreenshotAssertions(): void
+    {
+        self::$shouldDiffOnScreenshotAssertions = true;
+    }
+
+    /**
+     * Whether to show the diff on screenshot assertions.
+     */
+    public static function shouldShowDiffOnScreenshotAssertions(): bool
+    {
+        return self::$shouldDiffOnScreenshotAssertions;
     }
 
     /**

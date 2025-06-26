@@ -101,7 +101,7 @@ final class Execution
 
             $stdin = new ReadableResourceStream(STDIN, $loop);
 
-            $stdin->on('data', function () use ($stdin, $loop) {
+            $stdin->on('data', function () use ($stdin, $loop): void {
                 $this->waiting = false;
 
                 $stdin->close();
