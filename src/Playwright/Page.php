@@ -425,6 +425,26 @@ final class Page
     }
 
     /**
+     * Get the console logs from the page, if any.
+     *
+     * @return array<int, string>
+     */
+    public function consoleLogs(): array
+    {
+        return $this->evaluate('window.__pestBrowser.consoleLogs || []');
+    }
+
+    /**
+     * Get the JavaScript errors from the page, if any.
+     *
+     * @return array<int, string>
+     */
+    public function javaScriptErrors(): array
+    {
+        return $this->evaluate('window.__pestBrowser.jsErrors || []');
+    }
+
+    /**
      * Make a screenshot of the page and compare it with the expected one.
      *
      * If the screenshot does not match, it will throw an ExpectationFailedException.

@@ -43,7 +43,6 @@ final class Context
     {
         $response = Client::instance()->execute($this->guid, 'newPage');
 
-        $frameUrl = '';
         $frameGuid = '';
         $pageGuid = '';
 
@@ -51,7 +50,6 @@ final class Context
         foreach ($response as $message) {
             if (isset($message['method']) && $message['method'] === '__create__' && (isset($message['params']['type']) && $message['params']['type'] === 'Frame')) {
                 $frameGuid = $message['params']['guid'];
-                $frameUrl = $message['params']['initializer']['url'];
             }
 
             if (isset($message['result']['page']['guid'])) {
@@ -92,5 +90,16 @@ final class Context
     public function isClosed(): bool
     {
         return $this->closed;
+    }
+
+    /**
+     * Adds a script which will be evaluated.
+     */
+    public function addInitScript(string $script): self
+    {
+        $response = $this->sendMessage('addInitScript', ['source' => $script]);
+        $this->processVoidResponse($response);
+
+        return $this;
     }
 }

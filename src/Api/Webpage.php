@@ -13,6 +13,7 @@ final readonly class Webpage
 {
     use Concerns\InteractsWithElements,
         Concerns\MakesAssertions,
+        Concerns\MakesConsoleAssertions,
         Concerns\MakesUrlAssertions,
         Concerns\WaitsForElements;
 
@@ -52,9 +53,11 @@ final readonly class Webpage
     /**
      * Performs a screenshot of the current page and saves it to the given path.
      */
-    public function screenshot(string $path): self
+    public function screenshot(?string $name = null): self
     {
-        $this->page->screenshot($path);
+        $name = is_string($name) ? $name : date('Y_m_d_H_i_s_u');
+
+        $this->page->screenshot($name);
 
         return $this;
     }

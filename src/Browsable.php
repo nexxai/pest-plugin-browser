@@ -7,6 +7,7 @@ namespace Pest\Browser;
 use Illuminate\Routing\UrlGenerator;
 use Pest\Browser\Api\AwaitableWebpage;
 use Pest\Browser\Playwright\Client;
+use Pest\Browser\Playwright\InitScript;
 use Pest\Browser\Playwright\Playwright;
 
 /**
@@ -57,7 +58,10 @@ trait Browsable
     {
         $browser = Playwright::default()->launch();
 
-        $page = $browser->newContext($options)->newPage();
+        $context = $browser->newContext($options);
+        $context->addInitScript(InitScript::get());
+
+        $page = $context->newPage();
 
         if ($url !== null) {
             $page->goto($url, $options);
