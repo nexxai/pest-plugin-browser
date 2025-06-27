@@ -69,3 +69,23 @@ it('may visit a page in dark mode', function (): void {
 
     $page->assertScreenshotMatches();
 })->with(ColorScheme::cases());
+
+it('may visit a page in light mode', function (): void {
+    Route::get('/', fn (): string => '
+        <html>
+        <head>
+            <style>
+                body { background: #fff; color: #000; }
+            </style>
+        </head>
+        <body>
+            <h1>Light Mode Test</h1>
+            <p>This is a test for light mode.</p>
+        </body>
+        </html>
+    ');
+
+    $page = visit('/')->inLightMode();
+
+    $page->assertScreenshotMatches();
+});
