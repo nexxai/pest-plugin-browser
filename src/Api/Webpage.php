@@ -90,16 +90,6 @@ final readonly class Webpage
     }
 
     /**
-     * Pause for the given number of seconds.
-     */
-    public function wait(int|float $seconds): self
-    {
-        Execution::instance()->wait($seconds);
-
-        return $this;
-    }
-
-    /**
      * Gets the locator for the given selector.
      */
     private function guessLocator(string $selector, ?string $value = null): Locator

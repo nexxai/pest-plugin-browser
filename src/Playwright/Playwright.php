@@ -24,6 +24,11 @@ final class Playwright
     private static bool $headless = true;
 
     /**
+     * Whether to run browsers in dark mode.
+     */
+    private static bool $darkMode = false;
+
+    /**
      * Whether to show the diff on screenshot assertions.
      */
     private static bool $shouldDiffOnScreenshotAssertions = true;
@@ -69,6 +74,14 @@ final class Playwright
     public static function setShouldDiffOnScreenshotAssertions(): void
     {
         self::$shouldDiffOnScreenshotAssertions = true;
+    }
+
+    /**
+     * Set whether to run in dark mode.
+     */
+    public static function darkMode(): void
+    {
+        self::$darkMode = true;
     }
 
     /**
@@ -122,6 +135,7 @@ final class Playwright
                     $message['params']['guid'],
                     $name,
                     self::$headless,
+                    self::$darkMode
                 );
             }
         }

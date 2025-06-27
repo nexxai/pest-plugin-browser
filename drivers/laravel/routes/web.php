@@ -3,19 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\User;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
-
-Route::get('dashboard', function () {
-    App\Jobs\ProcessPodcast::dispatch();
-
-    return Blade::render(<<<'BLADE'
-        <div>
-            Hi {{ auth()->user()?->name ?? 'Guest'}}!
-        </div>
-        BLADE,
-    );
-})->name('dashboard');
 
 Route::get('/queue', function () {
     App\Jobs\ProcessPodcast::dispatch();

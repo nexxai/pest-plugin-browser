@@ -25,4 +25,18 @@ trait InteractsWithTab
 
         return $this;
     }
+
+    /**
+     * Pause for the given number of seconds.
+     */
+    public function wait(int|float|null $seconds = null): self
+    {
+        if ($seconds === null) {
+            return $this->waitForKey();
+        }
+
+        Execution::instance()->wait($seconds);
+
+        return $this;
+    }
 }

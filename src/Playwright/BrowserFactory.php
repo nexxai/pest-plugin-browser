@@ -21,6 +21,7 @@ final class BrowserFactory
         private readonly string $guid,
         private readonly string $name,
         private readonly bool $headless,
+        private readonly bool $darkMode,
     ) {
         //
     }
@@ -37,7 +38,13 @@ final class BrowserFactory
         $response = Client::instance()->execute(
             $this->guid,
             'launch',
-            ['browserType' => $this->name, 'headless' => $this->headless],
+            [
+                'browserType' => $this->name,
+                'headless' => $this->headless,
+                'ignoreHttpsErrors' => true,
+                'bypassCSP' => true,
+                'colorScheme' => $this->darkMode ? 'dark' : 'light',
+            ],
         );
 
         /** @var array{result: array{browser: array{guid: string|null}}} $message */

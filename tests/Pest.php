@@ -17,5 +17,8 @@ function page(?string $url = null, array $options = []): Page
 {
     $webpage = visit($url, $options);
 
-    return (fn (): Page => $this->page)->call($webpage);
+    $webpage->url();
+
+    return (fn (): Page => (fn (): Page => $this->page)->call($this->createAwaitablePage()))
+        ->call($webpage);
 }

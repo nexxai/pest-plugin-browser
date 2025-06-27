@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Pest\Browser;
 
 use Illuminate\Routing\UrlGenerator;
-use Pest\Browser\Api\AwaitableWebpage;
+use Pest\Browser\Api\PendingAwaitablePage;
+use Pest\Browser\Enums\Device;
 use Pest\Browser\Playwright\Client;
-use Pest\Browser\Playwright\InitScript;
-use Pest\Browser\Playwright\Playwright;
 
 /**
  * @internal
@@ -54,27 +53,12 @@ trait Browsable
      *
      * @param  array<string, mixed>  $options
      */
-    public function visit(?string $url = null, array $options = []): AwaitableWebpage
+    public function visit(?string $url = null, array $options = []): PendingAwaitablePage
     {
-        $browser = Playwright::default()->launch();
-
-        $context = $browser->newContext([
-            'viewport' => ['width' => 1728, 'height' => 1117],
-            'deviceScaleFactor' => 2,
-            'isMobile' => false,
-            'hasTouch' => false,
-            'locale' => 'en-US',
-            'timezoneId' => 'UTC',
-            ...$options,
-        ]);
-        $context->addInitScript(InitScript::get());
-
-        $page = $context->newPage();
-
-        if ($url !== null) {
-            $page->goto($url, $options);
-        }
-
-        return new AwaitableWebpage($page);
+        return new PendingAwaitablePage(
+            Device::DESKTOP,
+            $url,
+            $options,
+        );
     }
 }

@@ -19,11 +19,11 @@ it('may match a screenshot', function (): void {
 it('may not match a screenshot', function (): void {
     $randomNumber = random_int(1, PHP_INT_MAX);
 
-    Route::get('/', fn (): string => '
+    Route::get('/', fn (): string => "
         <div>
-            <h1>{$randomNumber}</h1>
+            <h1>$randomNumber</h1>
         </div>
-    ');
+    ");
 
     $page = visit('/');
 

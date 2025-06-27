@@ -62,6 +62,12 @@ final class Plugin implements Bootable, HandlesArguments, Terminable // @pest-ar
             $arguments = $this->popArgument('--diff', $arguments);
         }
 
+        if ($this->hasArgument('--dark', $arguments)) {
+            Playwright::darkMode();
+
+            $arguments = $this->popArgument('--dark', $arguments);
+        }
+
         if ($this->hasArgument('--browser', $arguments)) {
             $index = array_search('--browser', $arguments, true);
 

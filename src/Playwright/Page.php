@@ -481,8 +481,20 @@ final class Page
                 $this->guid,
                 'expectScreenshot',
                 [
-                    'type' => 'png', 'fullPage' => true, 'hideCaret' => true,
-                    'isNot' => false, 'expected' => $expectedImageBlob,
+                    'expected' => $expectedImageBlob,
+                    'timeout' => 30000,
+                    'isNot' => false,
+                    'comparisonMethod' => 'pixelmatch',
+                    'threshold' => 0.2,
+                    'maxDiffPixels' => 100,
+                    'maxDiffPixelRatio' => 0.01,
+                    'detectAntialiasing' => true,
+                    'forceSameDimensions' => true,
+                    'type' => 'png',
+                    'fullPage' => true,
+                    'caret' => 'hide',
+                    'animations' => 'disabled',
+                    'scale' => 'css',
                 ]
             );
 
