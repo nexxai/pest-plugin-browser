@@ -7,7 +7,7 @@ namespace Pest\Browser\Playwright;
 use Generator;
 use Pest\Browser\Execution;
 use Pest\Browser\ServerManager;
-use Pest\Browser\Support\ImageDiffSlider;
+use Pest\Browser\Support\ImageDiffView;
 use Pest\Browser\Support\JavaScriptSerializer;
 use Pest\Browser\Support\Screenshot;
 use Pest\Browser\Support\Selector;
@@ -425,9 +425,9 @@ final class Page
     /**
      * Make screenshot of the page.
      */
-    public function screenshot(?string $filename = null): void
+    public function screenshot(bool $fullPage = true, ?string $filename = null): void
     {
-        $binary = $this->screenshotBinary();
+        $binary = $this->screenshotBinary($fullPage);
 
         if ($binary === null) {
             return;
@@ -469,9 +469,11 @@ final class Page
      *
      * @throws ExpectationFailedException
      */
-    public function expectScreenshot(bool $showDiff): void
+    public function expectScreenshot(bool $fullPage, bool $openDiff): void
     {
-        $actualImageBlob = $this->screenshotBinary();
+        $actualImageBlob = $this->screenshotBinary($fullPage);
+        assert(is_string($actualImageBlob), 'Unable to screenshot');
+
         try {
             expect($actualImageBlob)->toMatchSnapshot();
         } catch (ExpectationFailedException) {
@@ -481,6 +483,7 @@ final class Page
                 $this->guid,
                 'expectScreenshot',
                 [
+                    ...$this->screenshotOptions($fullPage),
                     'expected' => $expectedImageBlob,
                     'timeout' => 30000,
                     'isNot' => false,
@@ -490,11 +493,6 @@ final class Page
                     'maxDiffPixelRatio' => 0.01,
                     'detectAntialiasing' => true,
                     'forceSameDimensions' => true,
-                    'type' => 'png',
-                    'fullPage' => false,
-                    'caret' => 'hide',
-                    'animations' => 'disabled',
-                    'scale' => 'css',
                 ]
             );
 
@@ -502,23 +500,23 @@ final class Page
             /** @var array{result: array{diff: string|null}} $message */
             foreach ($response as $message) {
                 if (isset($message['result']['diff'])) {
-                    $sliderDir = Screenshot::dir().'/Sliders';
+                    $imageDiffViewDir = Screenshot::dir().'/ImageDiffView';
 
-                    if (is_dir($sliderDir) === false) {
-                        mkdir($sliderDir, 0755, true);
+                    if (is_dir($imageDiffViewDir) === false) {
+                        mkdir($imageDiffViewDir, 0755, true);
                     }
 
-                    $sliderPath = $sliderDir.'/'.$snapshotName.'.html';
-                    $diffImage = $message['result']['diff'];
+                    $imageDiffViewPath = $imageDiffViewDir.'/'.$snapshotName.'.html';
 
-                    file_put_contents($sliderPath, ImageDiffSlider::generate(
-                        (string) base64_decode($expectedImageBlob, true),
-                        (string) base64_decode($diffImage, true),
+                    file_put_contents($imageDiffViewPath, ImageDiffView::generate(
+                        $expectedImageBlob,
+                        $actualImageBlob,
+                        $message['result']['diff'],
                         test()->name() // @phpstan-ignore-line
                     ));
 
-                    if ($showDiff) {
-                        Shell::open($sliderPath);
+                    if ($openDiff) {
+                        Shell::open($imageDiffViewPath);
                     }
 
                     throw new ExpectationFailedException(<<<'EOT'
@@ -583,12 +581,12 @@ final class Page
     /**
      * Screenshots the page and returns the binary data.
      */
-    private function screenshotBinary(): ?string
+    private function screenshotBinary(bool $fullPage = true): ?string
     {
         $response = Client::instance()->execute(
             $this->guid,
             'screenshot',
-            ['type' => 'png', 'fullPage' => true, 'hideCaret' => true]
+            $this->screenshotOptions($fullPage)
         );
 
         /** @var array{result: array{binary: string|null}} $message */
@@ -631,5 +629,19 @@ final class Page
         ];
 
         return in_array($method, $pageLevelOperations, true);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function screenshotOptions(bool $fullPage = true): array
+    {
+        return [
+            'type' => 'png',
+            'fullPage' => $fullPage,
+            'caret' => 'hide',
+            'animations' => 'disabled',
+            'scale' => 'css',
+        ];
     }
 }

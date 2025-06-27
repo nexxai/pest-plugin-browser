@@ -65,7 +65,7 @@ final class Screenshot
 
         foreach ([
             self::dir().'/Screenshots',
-            self::dir().'/Sliders',
+            self::dir().'/ImageDiffView',
             self::dir(),
         ] as $dir) {
             $files = glob($dir.'/*');
