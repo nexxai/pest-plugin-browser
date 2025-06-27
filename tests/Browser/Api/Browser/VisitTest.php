@@ -30,7 +30,7 @@ it('may visit a page', function (string $method): void {
         ->assertScreenshotMatches();
 })->with($methods);
 
-it('may visit a page in dark mode', function (): void {
+it('may visit a page in light/dark mode', function (ColorScheme $scheme): void {
     Route::get('/', fn (): string => '
         <html>
         <head>
@@ -64,31 +64,15 @@ it('may visit a page in dark mode', function (): void {
         </html>
     ');
 
-    /** @var Webpage $page */
-    $page = visit('/')->inDarkMode();
+    $page = visit('/');
+
+    match ($scheme) {
+        ColorScheme::DARK => $page->inDarkMode(),
+        ColorScheme::LIGHT => $page->inLightMode(),
+    };
 
     $page->assertScreenshotMatches();
 })->with(ColorScheme::cases());
-
-it('may visit a page in light mode', function (): void {
-    Route::get('/', fn (): string => '
-        <html>
-        <head>
-            <style>
-                body { background: #fff; color: #000; }
-            </style>
-        </head>
-        <body>
-            <h1>Light Mode Test</h1>
-            <p>This is a test for light mode.</p>
-        </body>
-        </html>
-    ');
-
-    $page = visit('/')->inLightMode();
-
-    $page->assertScreenshotMatches();
-});
 
 it('may visit a page with custom locale and timezone', function (): void {
     Route::get('/', fn (): string => '
