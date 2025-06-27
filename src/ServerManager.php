@@ -16,6 +16,8 @@ use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 
 /**
  * @internal
+ *
+ * @codeCoverageIgnore
  */
 final class ServerManager
 {

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Api;
 
+use Pest\Browser\Exceptions\BrowserExpectationFailedException;
 use Pest\Browser\Playwright\Page;
+use PHPUnit\Framework\ExpectationFailedException;
 
 /**
  * @mixin Webpage
@@ -39,10 +41,16 @@ final readonly class AwaitableWebpage
             return $webpage->{$name}(...$arguments);
         }
 
-        $result = $this->page->await(
-            // @phpstan-ignore-next-line
-            fn () => $webpage->{$name}(...$arguments),
-        );
+        try {
+            $result = $this->page->await(
+                // @phpstan-ignore-next-line
+                fn () => $webpage->{$name}(...$arguments),
+            );
+        } catch (ExpectationFailedException $e) {
+            $e = BrowserExpectationFailedException::from($e, $name, $arguments);
+
+            throw $e;
+        }
 
         return $result === $webpage
             ? $this

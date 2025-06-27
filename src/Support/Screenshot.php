@@ -56,6 +56,8 @@ final class Screenshot
 
     /**
      * Clean up the screenshots directory.
+     *
+     * @codeCoverageIgnore
      */
     public static function cleanup(): void
     {

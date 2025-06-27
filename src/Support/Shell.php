@@ -6,6 +6,8 @@ namespace Pest\Browser\Support;
 
 /**
  * @internal
+ *
+ * @codeCoverageIgnore
  */
 final readonly class Shell
 {

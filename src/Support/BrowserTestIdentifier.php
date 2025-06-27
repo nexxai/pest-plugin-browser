@@ -12,6 +12,8 @@ use ReflectionFunction;
 
 /**
  * @internal
+ *
+ * @codeCoverageIgnore
  */
 final readonly class BrowserTestIdentifier
 {

@@ -219,22 +219,6 @@ final class Page
     }
 
     /**
-     * Create a locator that matches elements by given ID attribute.
-     */
-    public function getById(string $id): Locator
-    {
-        return $this->locator(Selector::getByIdSelector($id));
-    }
-
-    /**
-     * Create a locator that matches elements by given name attribute.
-     */
-    public function getByName(string $name): Locator
-    {
-        return $this->locator(Selector::getByNameSelector($name));
-    }
-
-    /**
      * Gets the full HTML contents of the page, including the doctype.
      */
     public function content(): string

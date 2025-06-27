@@ -17,29 +17,9 @@ final class Selector
             }
         }
 
-        foreach ([','] as $s) {
-            if (str_contains($selector, $s)) {
-                return true;
-            }
-        }
+        $s = ',';
 
-        return false;
-    }
-
-    /**
-     * Get selector by ID.
-     */
-    public static function getByIdSelector(string $id): string
-    {
-        return 'internal:'."id=[{$id}]";
-    }
-
-    /**
-     * Get selector by class.
-     */
-    public static function getByNameSelector(string $name): string
-    {
-        return 'internal:'."name=[{$name}]";
+        return str_contains($selector, $s) ? true : false;
     }
 
     /**

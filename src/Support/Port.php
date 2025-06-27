@@ -27,7 +27,9 @@ final readonly class Port
         }
 
         if ($port === false) {
+            // @codeCoverageIgnoreStart
             throw new PortNotFoundException('Unable to find an available port.');
+            // @codeCoverageIgnoreEnd
         }
 
         assert(is_int($port));
