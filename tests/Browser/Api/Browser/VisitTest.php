@@ -89,3 +89,25 @@ it('may visit a page in light mode', function (): void {
 
     $page->assertScreenshotMatches();
 });
+
+it('may visit a page with custom locale and timezone', function (): void {
+    Route::get('/', fn (): string => '
+        <html>
+        <head></head>
+        <body>
+            <h1>Locale/Timezone Test</h1>
+            <p id="info">Locale and timezone are set in browser context only.</p>
+        </body>
+        </html>
+    ');
+
+    $page = visit('/')
+        ->withLocale('fr-FR')
+        ->withTimezone('Europe/Paris');
+
+    $locale = $page->evaluate('() => navigator.language');
+    expect($locale)->toBe('fr-FR');
+
+    $timezone = $page->evaluate('() => Intl.DateTimeFormat().resolvedOptions().timeZone');
+    expect($timezone)->toBe('Europe/Paris');
+});
