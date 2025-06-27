@@ -17,8 +17,23 @@ trait MakesScreenshotAssertions
      */
     public function assertScreenshotMatches(bool $fullPage = true, ?bool $openDiff = null): self
     {
-        $this->page->addStyleTag('* { transition: none !important; animation: none !important; }');
+        // // Disable animations and transitions...
+        $this->page->addStyleTag('* {
+            transition: none !important;
+            animation: none !important;
+            font-family: Arial, sans-serif !important;
+            body {
+                -webkit-font-smoothing: antialiased !important;
+                -moz-osx-font-smoothing: grayscale !important;
+            }
+        }');
+
+        // Wait for network and DOM stability...
         $this->page->waitForLoadState('networkidle');
+        $this->page->waitForFunction('document.readyState === "complete"');
+
+        // Give a short buffer to handle OS-level timing differences..
+        $this->wait(0.1);
 
         $this->page->expectScreenshot(
             $fullPage,

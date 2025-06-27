@@ -267,6 +267,27 @@ final class Page
     }
 
     /**
+     * Waits for a JavaScript function to return true.
+     *
+     * @param  mixed  $arg  Optional argument to pass to the function
+     */
+    public function waitForFunction(string $content, mixed $arg = null): self
+    {
+        $params = [
+            'expression' => $content,
+            'arg' => JavaScriptSerializer::serializeArgument($arg),
+        ];
+
+        Client::instance()->execute(
+            $this->guid,
+            'waitForFunction',
+            $params
+        );
+
+        return $this;
+    }
+
+    /**
      * Waits for navigation to the specified URL.
      */
     public function waitForURL(string $url): self

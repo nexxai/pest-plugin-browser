@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
@@ -17,13 +16,15 @@ test('example', function (): void {
         BLADE,
     ));
 
-    $user = User::factory()->create([
-        'name' => 'Nuno Maduro',
-    ]);
+    $response = visit('/')->on()->mobile()->inDarkMode();
 
-    $this->actingAs($user);
+    $response->assertSee('Hi Guest');
 
-    $response = visit('https://cloud.laravel.com/')->onDesktop();
+    $response = visit('/')->on()->desktop()->inLightMode();
 
-    $response->assertSee('Hi Nuno Maduro');
+    $response->assertSee('Hi Guest');
+
+    $response = $response->on()->desktop()->inLightMode();
+
+    $response->assertSee('Hi Guest');
 });

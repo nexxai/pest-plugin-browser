@@ -74,7 +74,7 @@ it('may fail when asserting element attribute does not contain a value but it do
 it('may assert element attribute does not contain a value when attribute is missing', function (): void {
     Route::get('/', fn (): string => '<div id="content">Hello World</div>');
 
-    $page = visit('/')->onDesktop();
+    $page = visit('/')->on()->desktop();
 
     // This should pass because the attribute doesn't exist (null)
     $page->assertAttributeDoesntContain('#content', 'data-role', 'any-value');
