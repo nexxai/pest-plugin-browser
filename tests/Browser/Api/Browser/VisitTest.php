@@ -89,9 +89,9 @@ it('may visit a page with custom locale and timezone', function (): void {
         ->withLocale('fr-FR')
         ->withTimezone('Europe/Paris');
 
-    $locale = $page->evaluate('() => navigator.language');
+    $locale = $page->script('navigator.language');
     expect($locale)->toBe('fr-FR');
 
-    $timezone = $page->evaluate('() => Intl.DateTimeFormat().resolvedOptions().timeZone');
+    $timezone = $page->script('Intl.DateTimeFormat().resolvedOptions().timeZone');
     expect($timezone)->toBe('Europe/Paris');
 });
