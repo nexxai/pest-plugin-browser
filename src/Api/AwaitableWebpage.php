@@ -52,7 +52,7 @@ final readonly class AwaitableWebpage
     /**
      * @param  array<string, mixed>  $arguments
      */
-    public function evaluate(string $expression)
+    public function evaluate(string $expression): mixed
     {
         return $this->page->evaluate($expression);
     }
