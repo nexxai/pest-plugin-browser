@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Api;
 
+use Pest\Browser\Enums\ColorScheme;
 use Pest\Browser\Enums\Device;
 use Pest\Browser\Playwright\InitScript;
 use Pest\Browser\Playwright\Playwright;
@@ -42,6 +43,28 @@ final class PendingAwaitablePage
 
         // @phpstan-ignore-next-line
         return $this->waitablePage->{$name}(...$arguments);
+    }
+
+    /**
+     * Sets the color scheme to dark mode.
+     */
+    public function inDarkMode(): self
+    {
+        return new self($this->device, $this->url, [
+            'colorScheme' => ColorScheme::DARK->value,
+            ...$this->options,
+        ]);
+    }
+
+    /**
+     * Sets the color scheme to light mode.
+     */
+    public function inLightMode(): self
+    {
+        return new self($this->device, $this->url, [
+            'colorScheme' => ColorScheme::LIGHT->value,
+            ...$this->options,
+        ]);
     }
 
     /**
@@ -246,6 +269,7 @@ final class PendingAwaitablePage
         $context = $browser->newContext([
             'locale' => 'en-US',
             'timezoneId' => 'UTC',
+            'colorScheme' => Playwright::defaultColorScheme()->value,
             ...$this->device->context(),
             ...$this->options,
         ]);

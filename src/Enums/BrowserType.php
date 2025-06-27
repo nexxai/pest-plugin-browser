@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pest\Browser\Playwright\Enums;
+namespace Pest\Browser\Enums;
 
 /**
  * @internal

@@ -21,7 +21,7 @@ trait MakesScreenshotAssertions
         $this->page->waitForLoadState('networkidle');
 
         $this->page->expectScreenshot(
-            $diff ?? Playwright::shouldShowDiffOnScreenshotAssertions(),
+            $diff || Playwright::shouldShowDiffOnScreenshotAssertions(),
         );
 
         return $this;

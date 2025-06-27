@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Pest\Browser;
 
+use Pest\Browser\Enums\BrowserType;
+use Pest\Browser\Enums\ColorScheme;
 use Pest\Browser\Exceptions\BrowserNotSupportedException;
 use Pest\Browser\Filters\UsesBrowserTestCaseMethodFilter;
-use Pest\Browser\Playwright\Enums\BrowserType;
 use Pest\Browser\Playwright\Playwright;
 use Pest\Contracts\Plugins\Bootable;
 use Pest\Contracts\Plugins\HandlesArguments;
@@ -63,9 +64,15 @@ final class Plugin implements Bootable, HandlesArguments, Terminable // @pest-ar
         }
 
         if ($this->hasArgument('--dark', $arguments)) {
-            Playwright::darkMode();
+            Playwright::setColorScheme(ColorScheme::DARK);
 
             $arguments = $this->popArgument('--dark', $arguments);
+        }
+
+        if ($this->hasArgument('--light', $arguments)) {
+            Playwright::setColorScheme(ColorScheme::LIGHT);
+
+            $arguments = $this->popArgument('--light', $arguments);
         }
 
         if ($this->hasArgument('--browser', $arguments)) {

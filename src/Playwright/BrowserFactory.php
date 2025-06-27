@@ -21,7 +21,6 @@ final class BrowserFactory
         private readonly string $guid,
         private readonly string $name,
         private readonly bool $headless,
-        private readonly bool $darkMode,
     ) {
         //
     }
@@ -43,7 +42,6 @@ final class BrowserFactory
                 'headless' => $this->headless,
                 'ignoreHttpsErrors' => true,
                 'bypassCSP' => true,
-                'colorScheme' => $this->darkMode ? 'dark' : 'light',
             ],
         );
 

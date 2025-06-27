@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Playwright;
 
-use Pest\Browser\Playwright\Enums\BrowserType;
+use Pest\Browser\Enums\BrowserType;
+use Pest\Browser\Enums\ColorScheme;
 
 /**
  * @internal
@@ -24,19 +25,19 @@ final class Playwright
     private static bool $headless = true;
 
     /**
-     * Whether to run browsers in dark mode.
-     */
-    private static bool $darkMode = false;
-
-    /**
      * Whether to show the diff on screenshot assertions.
      */
-    private static bool $shouldDiffOnScreenshotAssertions = true;
+    private static bool $shouldDiffOnScreenshotAssertions = false;
 
     /**
      * The default browser type.
      */
     private static BrowserType $defaultBrowserType = BrowserType::CHROME;
+
+    /**
+     * The default color scheme.
+     */
+    private static ColorScheme $defaultColorScheme = ColorScheme::LIGHT;
 
     /**
      * Get the default browser type.
@@ -77,11 +78,19 @@ final class Playwright
     }
 
     /**
-     * Set whether to run in dark mode.
+     * Set the default color scheme.
      */
-    public static function darkMode(): void
+    public static function setColorScheme(ColorScheme $colorScheme): void
     {
-        self::$darkMode = true;
+        self::$defaultColorScheme = $colorScheme;
+    }
+
+    /**
+     * Get the default color scheme.
+     */
+    public static function defaultColorScheme(): ColorScheme
+    {
+        return self::$defaultColorScheme;
     }
 
     /**
@@ -135,7 +144,6 @@ final class Playwright
                     $message['params']['guid'],
                     $name,
                     self::$headless,
-                    self::$darkMode
                 );
             }
         }

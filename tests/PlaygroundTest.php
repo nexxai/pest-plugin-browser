@@ -23,7 +23,7 @@ test('example', function (): void {
 
     $this->actingAs($user);
 
-    $response = visit('/')->onDesktop();
+    $response = visit('https://cloud.laravel.com/')->onDesktop();
 
     $response->assertSee('Hi Nuno Maduro');
 });
