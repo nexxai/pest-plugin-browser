@@ -11,15 +11,15 @@ use Pest\Browser\Enums\ColorScheme;
 $reflection = new ReflectionClass(On::class);
 
 $methods = array_map(
-    fn(ReflectionMethod $method): string => $method->getName(),
+    fn (ReflectionMethod $method): string => $method->getName(),
     array_filter(
         $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
-        fn(ReflectionMethod $method): bool => $method->getName() !== '__construct' && $method->getName() !== '__call',
+        fn (ReflectionMethod $method): bool => $method->getName() !== '__construct' && $method->getName() !== '__call',
     ),
 );
 
 it('may visit a page', function (string $method): void {
-    Route::get('/', fn(): string => file_get_contents(
+    Route::get('/', fn (): string => file_get_contents(
         fixture('responsive.html'),
     ));
 
@@ -31,7 +31,7 @@ it('may visit a page', function (string $method): void {
 })->with($methods);
 
 it('may visit a page in dark mode', function (): void {
-    Route::get('/', fn(): string => '
+    Route::get('/', fn (): string => '
         <html>
         <head>
             <style>
@@ -71,7 +71,7 @@ it('may visit a page in dark mode', function (): void {
 })->with(ColorScheme::cases());
 
 it('may visit a page in light mode', function (): void {
-    Route::get('/', fn(): string => '
+    Route::get('/', fn (): string => '
         <html>
         <head>
             <style>
@@ -91,7 +91,7 @@ it('may visit a page in light mode', function (): void {
 });
 
 it('may visit a page with custom locale and timezone', function (): void {
-    Route::get('/', fn(): string => '
+    Route::get('/', fn (): string => '
         <html>
         <head></head>
         <body>
