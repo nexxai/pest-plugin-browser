@@ -105,6 +105,9 @@ it('may visit a page with custom locale and timezone', function (): void {
         ->withLocale('fr-FR')
         ->withTimezone('Europe/Paris');
 
-    $page->assertSee('Locale/Timezone Test')
-        ->assertScreenshotMatches();
+    $locale = $page->evaluate('() => navigator.language');
+    expect($locale)->toBe('fr-FR');
+
+    $timezone = $page->evaluate('() => Intl.DateTimeFormat().resolvedOptions().timeZone');
+    expect($timezone)->toBe('Europe/Paris');
 });

@@ -48,4 +48,12 @@ final readonly class AwaitableWebpage
             ? $this
             : $result;
     }
+
+    /**
+     * @param  array<string, mixed>  $arguments
+     */
+    public function evaluate(string $expression)
+    {
+        return $this->page->evaluate($expression);
+    }
 }
