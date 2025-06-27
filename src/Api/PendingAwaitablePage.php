@@ -80,6 +80,28 @@ final class PendingAwaitablePage
     }
 
     /**
+     * Sets the locale for the page.
+     */
+    public function withLocale(string $locale): self
+    {
+        return new self($this->device, $this->url, [
+            'locale' => $locale,
+            ...$this->options,
+        ]);
+    }
+
+    /**
+     * Sets the timezone for the page.
+     */
+    public function withTimezone(string $timezone): self
+    {
+        return new self($this->device, $this->url, [
+            'timezoneId' => $timezone,
+            ...$this->options,
+        ]);
+    }
+
+    /**
      * Creates the webpage instance.
      */
     private function createAwaitablePage(): AwaitableWebpage
