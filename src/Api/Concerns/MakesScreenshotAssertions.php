@@ -15,7 +15,7 @@ trait MakesScreenshotAssertions
     /**
      * Asserts that the screenshot matches the expected image.
      */
-    public function assertScreenshotMatches(?bool $diff = false): self
+    public function assertScreenshotMatches(bool $diff = false): self
     {
         $this->page->addStyleTag('* { transition: none !important; animation: none !important; }');
         $this->page->waitForLoadState('networkidle');
