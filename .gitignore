@@ -12,7 +12,7 @@ coverage.xml
 .phpunit.cache
 # Playwright
 node_modules/
-/tests/Browser/screenshots
+/tests/Browser/Screenshots
 
 # MacOS
 .DS_Store

@@ -15,13 +15,14 @@ trait MakesScreenshotAssertions
     /**
      * Asserts that the screenshot matches the expected image.
      */
-    public function assertScreenshotMatches(bool $diff = false): self
+    public function assertScreenshotMatches(bool $fullPage = true, ?bool $openDiff = null): self
     {
         $this->page->addStyleTag('* { transition: none !important; animation: none !important; }');
         $this->page->waitForLoadState('networkidle');
 
         $this->page->expectScreenshot(
-            $diff || Playwright::shouldShowDiffOnScreenshotAssertions(),
+            $fullPage,
+            $openDiff ?? Playwright::shouldShowDiffOnScreenshotAssertions(),
         );
 
         return $this;
