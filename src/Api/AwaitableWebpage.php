@@ -20,6 +20,7 @@ final readonly class AwaitableWebpage
      */
     public function __construct(
         private Page $page,
+        private string $initialUrl,
         private array $nonAwaitableMethods = [
             'assertScreenshotMatches',
         ],
@@ -34,7 +35,7 @@ final readonly class AwaitableWebpage
      */
     public function __call(string $name, array $arguments): mixed
     {
-        $webpage = new Webpage($this->page);
+        $webpage = new Webpage($this->page, $this->initialUrl);
 
         if (in_array($name, $this->nonAwaitableMethods, true)) {
             // @phpstan-ignore-next-line

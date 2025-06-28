@@ -122,7 +122,8 @@ final class PendingAwaitablePage
         $context->addInitScript(InitScript::get());
 
         return new AwaitableWebpage(
-            $context->newPage()->goto($this->url, $this->options)
+            $context->newPage()->goto($this->url, $this->options),
+            $this->url,
         );
     }
 }

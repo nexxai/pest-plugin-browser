@@ -43,7 +43,9 @@ trait MakesElementAssertions
             fn () => $this->page->getByText($text),
         );
 
-        expect($locator->isVisible())->toBeTrue("Expected to see text [{$text}] on the page, but it was not found or not visible.");
+        expect($locator->isVisible())->toBeTrue(
+            "Expected to see text [{$text}] on the page initially with the url [{$this->initialUrl}], but it was not found or not visible."
+        );
 
         return $this;
     }

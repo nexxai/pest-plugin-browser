@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Pest\Browser\Api\On;
-use Pest\Browser\Api\PendingAwaitablePage;
 use Pest\Browser\Api\Webpage;
 use Pest\Browser\Enums\ColorScheme;
 

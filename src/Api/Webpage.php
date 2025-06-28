@@ -23,6 +23,7 @@ final readonly class Webpage
      */
     public function __construct(
         private Page $page,
+        private string $initialUrl,
     ) {
         //
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pest\Browser;
 
 use Illuminate\Routing\UrlGenerator;
+use Pest\Browser\Api\ArrayablePendingAwaitablePage;
 use Pest\Browser\Api\PendingAwaitablePage;
 use Pest\Browser\Enums\Device;
 use Pest\Browser\Playwright\Client;
@@ -52,15 +53,27 @@ trait Browsable
     /**
      * Browse to the given URL.
      *
+     * @param  array<int, string>|string  $url
      * @param  array<string, mixed>  $options
      */
-    public function visit(string $url, array $options = []): PendingAwaitablePage
+    public function visit(array|string $url, array $options = []): ArrayablePendingAwaitablePage|PendingAwaitablePage
     {
-        return new PendingAwaitablePage(
-            Playwright::defaultBrowserType(),
-            Device::DESKTOP,
-            $url,
-            $options,
+        if (is_string($url)) {
+            return new PendingAwaitablePage(
+                Playwright::defaultBrowserType(),
+                Device::DESKTOP,
+                $url,
+                $options,
+            );
+        }
+
+        return new ArrayablePendingAwaitablePage(
+            array_map(fn (string $singleUrl): PendingAwaitablePage => new PendingAwaitablePage(
+                Playwright::defaultBrowserType(),
+                Device::DESKTOP,
+                $singleUrl,
+                $options,
+            ), $url),
         );
     }
 }
