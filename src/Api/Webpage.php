@@ -13,6 +13,7 @@ final readonly class Webpage
 {
     use Concerns\InteractsWithElements,
         Concerns\InteractsWithTab,
+        Concerns\InteractsWithToolbar,
         Concerns\MakesConsoleAssertions,
         Concerns\MakesElementAssertions,
         Concerns\MakesScreenshotAssertions,
