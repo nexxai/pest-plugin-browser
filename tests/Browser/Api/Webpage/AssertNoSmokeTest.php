@@ -14,6 +14,20 @@ it('may not have smoke', function (): void {
     $response->assertNoSmoke();
 });
 
+it('may not have smoke in multiple pages', function (): void {
+    Route::get('/page1', fn (): string => '<div>
+        <h1>Page 1</h1>
+    </div>');
+
+    Route::get('/page2', fn (): string => '<div>
+        <h1>Page 2</h1>
+    </div>');
+
+    $response = visit(['/page1', '/page2']);
+
+    $response->assertNoSmoke();
+});
+
 it('may have smoke because of console logs', function (): void {
     Route::get('/', fn (): string => '<div>
         <h1>Smoke Test</h1>
