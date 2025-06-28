@@ -9,7 +9,7 @@ use Pest\Browser\Enums\ColorScheme;
 use Pest\Browser\Enums\Device;
 use Pest\Browser\Playwright\InitScript;
 use Pest\Browser\Playwright\Playwright;
-use Pest\Browser\ServerManager;
+use Pest\Browser\Support\ComputeUrl;
 
 /**
  * @mixin Webpage
@@ -161,23 +161,11 @@ final class PendingAwaitablePage
 
         $context->addInitScript(InitScript::get());
 
-        $url = $this->computeUrl($this->url);
+        $url = ComputeUrl::from($this->url);
 
         return new AwaitableWebpage(
             $context->newPage()->goto($url, $this->options),
             $url,
         );
-    }
-
-    /**
-     * Computes the URL to visit.
-     */
-    private function computeUrl(string $url): string
-    {
-        return match (true) {
-            str_starts_with($url, 'http://') || str_starts_with($url, 'https://') => $url,
-            ! str_starts_with($url, '/') => 'https://'.$url,
-            default => ServerManager::instance()->http()->rewrite($url),
-        };
     }
 }
