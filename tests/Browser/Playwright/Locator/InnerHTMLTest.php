@@ -3,14 +3,14 @@
 declare(strict_types=1);
 
 it('can get inner HTML', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $element = $page->getByTestId('profile-section');
 
     expect($element->innerHTML())->toContain('<');
 });
 
 it('can get inner HTML of elements with specific content', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $element = $page->getByTestId('profile-section');
 
     $html = $element->innerHTML();

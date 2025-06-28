@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Pest\Browser\Playwright\Locator;
 
 it('can tap on click counter button and increment the counter', function (): void {
-    $page = page(null, ['hasTouch' => true])->goto('/test/element-tests');
+    $page = page('', ['hasTouch' => true])->goto('/test/element-tests');
     $locator = $page->getByTestId('click-button');
 
     expect($locator)->toBeInstanceOf(Locator::class);
@@ -19,7 +19,7 @@ it('can tap on click counter button and increment the counter', function (): voi
 });
 
 it('can tap with force option on event button and trigger events', function (): void {
-    $page = page(null, ['hasTouch' => true])->goto('/test/element-tests');
+    $page = page('', ['hasTouch' => true])->goto('/test/element-tests');
     $locator = $page->getByTestId('event-button');
 
     $resultElement = $page->getByTestId('event-result');
@@ -31,7 +31,7 @@ it('can tap with force option on event button and trigger events', function (): 
 });
 
 it('throws RuntimeException when tap element is not found', function (): void {
-    $page = page(null, ['hasTouch' => true])->goto('/test/element-tests');
+    $page = page('', ['hasTouch' => true])->goto('/test/element-tests');
     $locator = $page->locator('.non-existent-element');
 
     expect(fn () => $locator->tap())

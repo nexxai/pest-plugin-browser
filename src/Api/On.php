@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Api;
 
+use Pest\Browser\Enums\BrowserType;
 use Pest\Browser\Enums\Device;
 
 /**
@@ -17,9 +18,10 @@ final readonly class On
      * @param  array<string, mixed>  $options
      */
     public function __construct(
-        private Device $device = Device::DESKTOP,
-        private ?string $url = null,
-        private array $options = [],
+        private BrowserType $browserType,
+        private Device $device,
+        private string $url,
+        private array $options,
     ) {
         //
     }
@@ -33,6 +35,7 @@ final readonly class On
     {
         // @phpstan-ignore-next-line
         return (new PendingAwaitablePage(
+            $this->browserType,
             $this->device,
             $this->url,
             $this->options,
@@ -44,7 +47,12 @@ final readonly class On
      */
     public function desktop(): self
     {
-        return new self(Device::DESKTOP, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::DESKTOP,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -52,7 +60,12 @@ final readonly class On
      */
     public function mobile(): self
     {
-        return new self(Device::MOBILE, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::MOBILE,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -60,7 +73,12 @@ final readonly class On
      */
     public function macbook16(): self
     {
-        return new self(Device::MACBOOK_16, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::MACBOOK_16,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -68,7 +86,12 @@ final readonly class On
      */
     public function macbook14(): self
     {
-        return new self(Device::MACBOOK_14, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::MACBOOK_14,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -76,7 +99,12 @@ final readonly class On
      */
     public function macbookAir(): self
     {
-        return new self(Device::MACBOOK_AIR, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::MACBOOK_AIR,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -84,7 +112,12 @@ final readonly class On
      */
     public function iPhone15Pro(): self
     {
-        return new self(Device::IPHONE_15_PRO, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::IPHONE_15_PRO,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -92,7 +125,12 @@ final readonly class On
      */
     public function iPhone15(): self
     {
-        return new self(Device::IPHONE_15, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::IPHONE_15,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -100,7 +138,12 @@ final readonly class On
      */
     public function iPhone14Pro(): self
     {
-        return new self(Device::IPHONE_14_PRO, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::IPHONE_14_PRO,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -108,7 +151,12 @@ final readonly class On
      */
     public function iPhoneSE(): self
     {
-        return new self(Device::IPHONE_SE, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::IPHONE_SE,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -116,7 +164,12 @@ final readonly class On
      */
     public function iPadPro(): self
     {
-        return new self(Device::IPAD_PRO, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::IPAD_PRO,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -124,7 +177,12 @@ final readonly class On
      */
     public function iPadMini(): self
     {
-        return new self(Device::IPAD_MINI, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::IPAD_MINI,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -132,7 +190,12 @@ final readonly class On
      */
     public function pixel8(): self
     {
-        return new self(Device::PIXEL_8, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::PIXEL_8,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -140,7 +203,12 @@ final readonly class On
      */
     public function pixel7(): self
     {
-        return new self(Device::PIXEL_7, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::PIXEL_7,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -148,7 +216,12 @@ final readonly class On
      */
     public function pixel6a(): self
     {
-        return new self(Device::PIXEL_6A, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::PIXEL_6A,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -156,7 +229,12 @@ final readonly class On
      */
     public function galaxyS24Ultra(): self
     {
-        return new self(Device::GALAXY_S24_ULTRA, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::GALAXY_S24_ULTRA,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -164,7 +242,12 @@ final readonly class On
      */
     public function galaxyS23(): self
     {
-        return new self(Device::GALAXY_S23, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::GALAXY_S23,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -172,7 +255,12 @@ final readonly class On
      */
     public function galaxyS22(): self
     {
-        return new self(Device::GALAXY_S22, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::GALAXY_S22,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -180,7 +268,12 @@ final readonly class On
      */
     public function galaxyNote20(): self
     {
-        return new self(Device::GALAXY_NOTE_20, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::GALAXY_NOTE_20,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -188,7 +281,12 @@ final readonly class On
      */
     public function galaxyTabS8(): self
     {
-        return new self(Device::GALAXY_TAB_S8, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::GALAXY_TAB_S8,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -196,7 +294,12 @@ final readonly class On
      */
     public function surfacePro9(): self
     {
-        return new self(Device::SURFACE_PRO_9, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::SURFACE_PRO_9,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -204,7 +307,12 @@ final readonly class On
      */
     public function surfaceLaptop5(): self
     {
-        return new self(Device::SURFACE_LAPTOP_5, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::SURFACE_LAPTOP_5,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -212,7 +320,12 @@ final readonly class On
      */
     public function oneplus11(): self
     {
-        return new self(Device::ONEPLUS_11, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::ONEPLUS_11,
+            $this->url,
+            $this->options,
+        );
     }
 
     /**
@@ -220,7 +333,12 @@ final readonly class On
      */
     public function xiaomi13(): self
     {
-        return new self(Device::XIAOMI_13, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::XIAOMI_13,
+            $this->url,
+            $this->options
+        );
     }
 
     /**
@@ -228,6 +346,11 @@ final readonly class On
      */
     public function huaweiP50(): self
     {
-        return new self(Device::HUAWEI_P50, $this->url, $this->options);
+        return new self(
+            $this->browserType,
+            Device::HUAWEI_P50,
+            $this->url,
+            $this->options,
+        );
     }
 }

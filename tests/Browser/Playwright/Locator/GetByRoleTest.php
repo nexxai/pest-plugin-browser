@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Pest\Browser\Playwright\Locator;
 
 it('can create a getByRole locator from parent locator', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('body');
     $roleLocator = $parentLocator->getByRole('button');
 
@@ -14,7 +14,7 @@ it('can create a getByRole locator from parent locator', function (): void {
 });
 
 it('can find button by role with name parameter', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('div');
     $buttonLocator = $containerLocator->getByRole('button', ['name' => 'Save']);
 
@@ -23,7 +23,7 @@ it('can find button by role with name parameter', function (): void {
 });
 
 it('can find checkbox by role', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $formLocator = $page->locator('div');
     $checkboxLocator = $formLocator->getByRole('checkbox');
 
@@ -32,7 +32,7 @@ it('can find checkbox by role', function (): void {
 });
 
 it('can find link by role', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('body');
     $linkLocator = $containerLocator->getByRole('link');
 
@@ -41,7 +41,7 @@ it('can find link by role', function (): void {
 });
 
 it('can chain getByRole with other locator methods', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $profileLocator = $page->getByTestId('user-profile');
     $buttonLocator = $profileLocator->getByRole('button');
 
@@ -50,7 +50,7 @@ it('can chain getByRole with other locator methods', function (): void {
 });
 
 it('preserves frame context with getByRole', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('section');
     $roleLocator = $parentLocator->getByRole('button');
 
@@ -58,7 +58,7 @@ it('preserves frame context with getByRole', function (): void {
 });
 
 it('returns proper selector format for getByRole', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('body');
     $roleLocator = $parentLocator->getByRole('button');
 
@@ -67,7 +67,7 @@ it('returns proper selector format for getByRole', function (): void {
 });
 
 it('can interact with elements found by role', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('.mb-8');
     $buttonLocator = $containerLocator->getByRole('button', ['name' => 'Save']);
 
@@ -77,7 +77,7 @@ it('can interact with elements found by role', function (): void {
 });
 
 it('handles non-existent role gracefully', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('body');
     $nonExistentLocator = $parentLocator->getByRole('menuitem');
 
@@ -86,7 +86,7 @@ it('handles non-existent role gracefully', function (): void {
 });
 
 it('can find multiple buttons with same role', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('.mb-8');
     $buttonsLocator = $containerLocator->getByRole('button');
 
@@ -95,7 +95,7 @@ it('can find multiple buttons with same role', function (): void {
 });
 
 it('works with role parameters for specificity', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('body');
     $specificButtonLocator = $containerLocator->getByRole('button', ['name' => 'Edit Profile']);
 

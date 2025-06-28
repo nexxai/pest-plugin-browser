@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Pest\Browser\Playwright\Locator;
 
 it('can create frame locator', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $frameElement = $page->getByTestId('test-frame');
 
     $frameLocator = $frameElement->frameLocator('.frame-content');
@@ -14,7 +14,7 @@ it('can create frame locator', function (): void {
 });
 
 it('can get page identifier from locator', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $button = $page->getByTestId('click-button');
 
     $locatorPageId = $button->page();
@@ -24,7 +24,7 @@ it('can get page identifier from locator', function (): void {
 });
 
 it('can wait for element state', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
 
     $button = $page->getByTestId('click-button');
 
@@ -34,7 +34,7 @@ it('can wait for element state', function (): void {
 });
 
 it('can wait for enabled state', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $button = $page->getByTestId('click-button');
 
     $button->waitForState('enabled');
@@ -43,7 +43,7 @@ it('can wait for enabled state', function (): void {
 });
 
 it('can wait with timeout', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $button = $page->getByTestId('click-button');
 
     $button->waitForState('visible', ['timeout' => 5000]);
@@ -52,7 +52,7 @@ it('can wait with timeout', function (): void {
 });
 
 it('can wait for element state using waitForElementState method', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $button = $page->getByTestId('click-button');
 
     $button->waitForElementState('visible');
@@ -61,7 +61,7 @@ it('can wait for element state using waitForElementState method', function (): v
 });
 
 it('can wait for element state with options using waitForElementState', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $button = $page->getByTestId('click-button');
 
     $button->waitForElementState('enabled', ['timeout' => 5000]);
@@ -70,7 +70,7 @@ it('can wait for element state with options using waitForElementState', function
 });
 
 it('throws RuntimeException when waitForElementState element is not found', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $locator = $page->locator('.non-existent-element');
 
     expect(fn () => $locator->waitForElementState('visible'))
@@ -78,7 +78,7 @@ it('throws RuntimeException when waitForElementState element is not found', func
 });
 
 it('throws RuntimeException when waitForState element is not found', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $locator = $page->locator('.non-existent-element');
 
     expect(fn () => $locator->waitForState('visible'))

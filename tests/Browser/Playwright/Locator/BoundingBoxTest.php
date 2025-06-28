@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 it('can get bounding box of element', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $button = $page->getByTestId('click-button');
 
     $boundingBox = $button->boundingBox();
@@ -19,7 +19,7 @@ it('can get bounding box of element', function (): void {
 });
 
 it('returns null for hidden elements', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $hiddenElement = $page->getByTestId('hidden-element');
 
     $boundingBox = $hiddenElement->boundingBox();
@@ -28,7 +28,7 @@ it('returns null for hidden elements', function (): void {
 });
 
 it('returns null when boundingBox element is not found', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $locator = $page->locator('.non-existent-element');
 
     $boundingBox = $locator->boundingBox();
@@ -37,7 +37,7 @@ it('returns null when boundingBox element is not found', function (): void {
 });
 
 it('returns null for elements without visible bounding boxes', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
 
     $locator = $page->locator('head');
     $boundingBox = $locator->boundingBox();
@@ -45,7 +45,7 @@ it('returns null for elements without visible bounding boxes', function (): void
 });
 
 it('handles edge case elements that might return malformed bounding box data', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
 
     $locator = $page->getByTestId('zero-width-element');
     $boundingBox = $locator->boundingBox();

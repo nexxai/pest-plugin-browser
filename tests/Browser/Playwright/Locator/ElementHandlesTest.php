@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Pest\Browser\Playwright\Locator;
 
 it('can get element handles', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $buttons = $page->locator('button');
 
     $elementHandles = $buttons->all();
@@ -19,7 +19,7 @@ it('can get element handles', function (): void {
 });
 
 it('returns empty array for non-existent elements', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $nonExistent = $page->locator('.non-existent-class');
 
     $elementHandles = $nonExistent->all();
@@ -29,7 +29,7 @@ it('returns empty array for non-existent elements', function (): void {
 });
 
 it('element handles can be interacted with', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $buttons = $page->locator('button');
 
     $elementHandles = $buttons->all();

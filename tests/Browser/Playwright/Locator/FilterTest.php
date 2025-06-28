@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Pest\Browser\Playwright\Locator;
 
 it('can filter locators', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $buttons = $page->locator('button');
     $filteredButtons = $buttons->filter('[data-testid="click-button"]');
 
@@ -13,7 +13,7 @@ it('can filter locators', function (): void {
 });
 
 it('can filter by text content', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $buttons = $page->locator('button');
     $filteredButtons = $buttons->filter(['hasText' => 'Click']);
 
@@ -22,7 +22,7 @@ it('can filter by text content', function (): void {
 });
 
 it('can filter by exact text content', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $buttons = $page->locator('button');
     $filteredButtons = $buttons->filter(['hasText' => 'Click Me', 'exact' => true]);
 
@@ -30,7 +30,7 @@ it('can filter by exact text content', function (): void {
 });
 
 it('can filter by text that should not be present', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $buttons = $page->locator('button');
     $filteredButtons = $buttons->filter(['hasNotText' => 'Hidden']);
 
@@ -38,7 +38,7 @@ it('can filter by text that should not be present', function (): void {
 });
 
 it('can filter by child locator presence', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $containers = $page->locator('.container');
     $filteredContainers = $containers->filter(['has' => $page->locator('button')]);
 
@@ -46,7 +46,7 @@ it('can filter by child locator presence', function (): void {
 });
 
 it('can filter by child locator absence', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $containers = $page->locator('.container');
     $filteredContainers = $containers->filter(['hasNot' => $page->locator('.hidden')]);
 
@@ -54,7 +54,7 @@ it('can filter by child locator absence', function (): void {
 });
 
 it('can combine multiple filter options', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $elements = $page->locator('*');
     $filteredElements = $elements->filter([
         'hasText' => 'Click',
@@ -65,7 +65,7 @@ it('can combine multiple filter options', function (): void {
 });
 
 it('backward compatibility with string filter', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $buttons = $page->locator('button');
 
     $filteredButtons = $buttons->filter('[data-testid="click-button"]');
@@ -74,7 +74,7 @@ it('backward compatibility with string filter', function (): void {
 });
 
 it('can use filterBySelector method', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $buttons = $page->locator('button');
     $filteredButtons = $buttons->filterBySelector('[data-testid="click-button"]');
 
@@ -82,7 +82,7 @@ it('can use filterBySelector method', function (): void {
 });
 
 it('handles non-string hasText in filter options', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $buttons = $page->locator('button');
 
     // Test with non-string hasText (this should be ignored based on the code)
@@ -92,7 +92,7 @@ it('handles non-string hasText in filter options', function (): void {
 });
 
 it('handles non-string hasNotText in filter options', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $buttons = $page->locator('button');
 
     // Test with non-string hasNotText (this should be ignored based on the code)
@@ -102,7 +102,7 @@ it('handles non-string hasNotText in filter options', function (): void {
 });
 
 it('handles non-locator has in filter options', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $buttons = $page->locator('button');
 
     // Test with non-locator has (this should be ignored based on the code)
@@ -112,7 +112,7 @@ it('handles non-locator has in filter options', function (): void {
 });
 
 it('handles non-locator hasNot in filter options', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $buttons = $page->locator('button');
 
     // Test with non-locator hasNot (this should be ignored based on the code)

@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Pest\Plugins\Parallel;
 
 it('reuses the test case environment variables', function (): void {
-    $page = page()->goto(route('environment-variables'));
+    $page = page('environment-variables');
 
     $testEnvironmentVariables = [
         'APP_ENV' => $appEnv = config('app.env'),

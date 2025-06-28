@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Pest\Browser\Playwright\Locator;
 
 it('returns null for non-iframe elements', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $locator = $page->getByTestId('profile-section');
 
     expect($locator)->toBeInstanceOf(Locator::class);
@@ -16,7 +16,7 @@ it('returns null for non-iframe elements', function (): void {
 });
 
 it('returns frame for iframe elements', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $locator = $page->getByTestId('test-iframe');
 
     $frame = $locator->contentFrame();
@@ -25,7 +25,7 @@ it('returns frame for iframe elements', function (): void {
 });
 
 it('throws RuntimeException when contentFrame element is not found', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $locator = $page->locator('.non-existent-element');
 
     expect(fn (): ?object => $locator->contentFrame())

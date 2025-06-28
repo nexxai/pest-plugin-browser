@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Pest\Browser\Playwright\Locator;
 
 it('can create a getByLabel locator from parent locator', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('body');
     $labelLocator = $parentLocator->getByLabel('Username');
 
@@ -14,7 +14,7 @@ it('can create a getByLabel locator from parent locator', function (): void {
 });
 
 it('can find input by associated label', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $formLocator = $page->locator('.mb-8');
     $usernameInput = $formLocator->getByLabel('Username');
 
@@ -23,7 +23,7 @@ it('can find input by associated label', function (): void {
 });
 
 it('can find password input by label', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('div');
     $passwordInput = $containerLocator->getByLabel('Password');
 
@@ -32,7 +32,7 @@ it('can find password input by label', function (): void {
 });
 
 it('can use exact label matching', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $formLocator = $page->locator('body');
     $exactLabelLocator = $formLocator->getByLabel('Username', true);
 
@@ -41,7 +41,7 @@ it('can use exact label matching', function (): void {
 });
 
 it('can chain getByLabel with other locator methods', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $sectionLocator = $page->locator('.mb-8');
     $labelLocator = $sectionLocator->getByLabel('Username');
 
@@ -50,7 +50,7 @@ it('can chain getByLabel with other locator methods', function (): void {
 });
 
 it('preserves frame context with getByLabel', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('section');
     $labelLocator = $parentLocator->getByLabel('Password');
 
@@ -58,7 +58,7 @@ it('preserves frame context with getByLabel', function (): void {
 });
 
 it('returns proper selector format for getByLabel', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('body');
     $labelLocator = $parentLocator->getByLabel('Username');
 
@@ -68,7 +68,7 @@ it('returns proper selector format for getByLabel', function (): void {
 });
 
 it('can interact with inputs found by label', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $formLocator = $page->locator('form, div');
     $usernameInput = $formLocator->getByLabel('Username');
 
@@ -77,7 +77,7 @@ it('can interact with inputs found by label', function (): void {
 });
 
 it('handles non-existent label gracefully', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('body');
     $nonExistentLocator = $parentLocator->getByLabel('Non-existent Label');
 
@@ -86,7 +86,7 @@ it('handles non-existent label gracefully', function (): void {
 });
 
 it('works with nested form structures', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $sectionLocator = $page->locator('.mb-8');
     $labelLocator = $sectionLocator->getByLabel('Password');
 
@@ -95,7 +95,7 @@ it('works with nested form structures', function (): void {
 });
 
 it('can find checkbox by label', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('body');
     $checkboxLocator = $containerLocator->getByLabel('Remember Me');
 

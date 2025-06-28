@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 pest()->use(RefreshDatabase::class);
 
 it('shares the same database', function (): void {
-    $page = page()->goto(route('database'));
+    $page = page(route('database'));
 
     [
         'users' => $users,

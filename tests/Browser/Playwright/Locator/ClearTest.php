@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 it('can clear input fields', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $input = $page->getByTestId('prefilled-input');
 
     expect($input->inputValue())->not()->toBe('');

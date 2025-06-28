@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Api;
 
+use Pest\Browser\Enums\BrowserType;
 use Pest\Browser\Enums\ColorScheme;
 use Pest\Browser\Enums\Device;
 use Pest\Browser\Playwright\InitScript;
@@ -25,9 +26,10 @@ final class PendingAwaitablePage
      * @param  array<string, mixed>  $options
      */
     public function __construct(
-        private readonly Device $device = Device::DESKTOP,
-        private readonly ?string $url = null,
-        private readonly array $options = [],
+        private readonly BrowserType $browserType,
+        private readonly Device $device,
+        private readonly string $url,
+        private readonly array $options,
     ) {
         //
     }
@@ -50,7 +52,7 @@ final class PendingAwaitablePage
      */
     public function inDarkMode(): self
     {
-        return new self($this->device, $this->url, [
+        return new self($this->browserType, $this->device, $this->url, [
             'colorScheme' => ColorScheme::DARK->value,
             ...$this->options,
         ]);
@@ -61,7 +63,7 @@ final class PendingAwaitablePage
      */
     public function inLightMode(): self
     {
-        return new self($this->device, $this->url, [
+        return new self($this->browserType, $this->device, $this->url, [
             'colorScheme' => ColorScheme::LIGHT->value,
             ...$this->options,
         ]);
@@ -73,6 +75,7 @@ final class PendingAwaitablePage
     public function on(): On
     {
         return new On(
+            $this->browserType,
             $this->device,
             $this->url,
             $this->options,
@@ -84,7 +87,7 @@ final class PendingAwaitablePage
      */
     public function withLocale(string $locale): self
     {
-        return new self($this->device, $this->url, [
+        return new self($this->browserType, $this->device, $this->url, [
             'locale' => $locale,
             ...$this->options,
         ]);
@@ -95,7 +98,7 @@ final class PendingAwaitablePage
      */
     public function withTimezone(string $timezone): self
     {
-        return new self($this->device, $this->url, [
+        return new self($this->browserType, $this->device, $this->url, [
             'timezoneId' => $timezone,
             ...$this->options,
         ]);
@@ -106,7 +109,7 @@ final class PendingAwaitablePage
      */
     private function createAwaitablePage(): AwaitableWebpage
     {
-        $browser = Playwright::default()->launch();
+        $browser = Playwright::browser($this->browserType)->launch();
 
         $context = $browser->newContext([
             'locale' => 'en-US',
@@ -118,12 +121,8 @@ final class PendingAwaitablePage
 
         $context->addInitScript(InitScript::get());
 
-        $page = $context->newPage();
-
-        if ($this->url !== null) {
-            $page->goto($this->url, $this->options);
-        }
-
-        return new AwaitableWebpage($page);
+        return new AwaitableWebpage(
+            $context->newPage()->goto($this->url, $this->options)
+        );
     }
 }

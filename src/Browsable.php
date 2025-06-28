@@ -8,6 +8,7 @@ use Illuminate\Routing\UrlGenerator;
 use Pest\Browser\Api\PendingAwaitablePage;
 use Pest\Browser\Enums\Device;
 use Pest\Browser\Playwright\Client;
+use Pest\Browser\Playwright\Playwright;
 
 /**
  * @internal
@@ -53,9 +54,10 @@ trait Browsable
      *
      * @param  array<string, mixed>  $options
      */
-    public function visit(?string $url = null, array $options = []): PendingAwaitablePage
+    public function visit(string $url, array $options = []): PendingAwaitablePage
     {
         return new PendingAwaitablePage(
+            Playwright::defaultBrowserType(),
             Device::DESKTOP,
             $url,
             $options,

@@ -13,6 +13,8 @@ final class BrowserExpectationFailedException
 {
     /**
      * Creates a new browser expectation failed exception instance.
+     *
+     * @param  array<int, mixed>  $arguments
      */
     public static function from(ExpectationFailedException $e, string $methodName, array $arguments): ExpectationFailedException
     {
@@ -26,12 +28,14 @@ final class BrowserExpectationFailedException
         return new ExpectationFailedException(
             $message,
             $e->getComparisonFailure(),
-            $e->getPrevious(),
+            $e->getPrevious(), // @phpstan-ignore-line
         );
     }
 
     /**
      * Creates a human-readable method name based on the method and its arguments.
+     *
+     * @param  array<int, mixed>  $arguments
      */
     private static function humanizeMethodName(string $methodName, array $arguments): string
     {
@@ -48,11 +52,14 @@ final class BrowserExpectationFailedException
 
     /**
      * Converts the arguments to a human-readable string.
+     *
+     * @param  array<int, mixed>  $arguments
      */
     private static function humanizeArguments(array $arguments): string
     {
         return implode(', ', array_map(
-            fn ($arg) => is_array($arg) ? json_encode($arg, JSON_THROW_ON_ERROR) : (string) $arg,
+            // @phpstan-ignore-next-line
+            fn ($arg): string|false => is_array($arg) ? json_encode($arg, JSON_THROW_ON_ERROR) : (string) $arg,
             $arguments,
         ));
     }

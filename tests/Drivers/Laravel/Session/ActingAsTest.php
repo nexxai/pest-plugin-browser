@@ -14,7 +14,7 @@ it('may act as a user', function (): void {
 
     $this->actingAs($user);
 
-    $page = page()->goto(route('auth'));
+    $page = page(route('auth'));
 
     $content = json_decode((string) $page->textContent(), true);
 
@@ -29,7 +29,7 @@ it('may act as a user', function (): void {
 
     $this->actingAs($user);
 
-    $page = page()->goto(route('auth'));
+    $page = page(route('auth'));
 
     $content = json_decode((string) $page->textContent(), true);
 
@@ -40,7 +40,7 @@ it('may act as a user', function (): void {
 });
 
 it('may act as guest', function (): void {
-    $page = page()->goto(route('auth'));
+    $page = page(route('auth'));
 
     $content = json_decode((string) $page->textContent(), true);
 
@@ -58,7 +58,7 @@ it('may logout', function (): void {
 
     $this->actingAs($user);
 
-    $page = page()->goto(route('logout'));
+    $page = page(route('logout'));
 
     $content = json_decode((string) $page->textContent(), true);
 

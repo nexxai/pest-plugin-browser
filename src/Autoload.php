@@ -14,7 +14,7 @@ if (! function_exists('visit')) {
      *
      * @param  array<string, mixed>  $options
      */
-    function visit(?string $url = null, array $options = []): PendingAwaitablePage
+    function visit(string $url, array $options = []): PendingAwaitablePage
     {
         return test()->visit($url, $options);
     }

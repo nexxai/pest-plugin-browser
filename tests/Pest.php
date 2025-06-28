@@ -13,7 +13,7 @@ pest()->uses(TestCase::class);
  * @param  string|null  $url  The URL to visit
  * @param  array<string, mixed>  $options  Options for the page or for the goto, e.g. ['hasTouch' => true]
  */
-function page(?string $url = null, array $options = []): Page
+function page(string $url, array $options = []): Page
 {
     $webpage = visit($url, $options);
 

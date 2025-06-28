@@ -19,7 +19,7 @@ final class Selector
 
         $s = ',';
 
-        return str_contains($selector, $s) ? true : false;
+        return str_contains($selector, $s);
     }
 
     /**

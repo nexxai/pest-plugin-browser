@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Pest\Browser\Playwright\Locator;
 
 it('can create a getByTitle locator from parent locator', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('body');
     $titleLocator = $parentLocator->getByTitle('Info Button');
 
@@ -14,7 +14,7 @@ it('can create a getByTitle locator from parent locator', function (): void {
 });
 
 it('can find button by title attribute', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('.mb-8');
     $buttonLocator = $containerLocator->getByTitle('Info Button');
 
@@ -23,7 +23,7 @@ it('can find button by title attribute', function (): void {
 });
 
 it('can find link by title attribute', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('div');
     $linkLocator = $containerLocator->getByTitle('Help Link');
 
@@ -32,7 +32,7 @@ it('can find link by title attribute', function (): void {
 });
 
 it('can find div by title attribute', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('body');
     $divLocator = $containerLocator->getByTitle('Important Information');
 
@@ -41,7 +41,7 @@ it('can find div by title attribute', function (): void {
 });
 
 it('can use exact title matching', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('body');
     $exactTitleLocator = $containerLocator->getByTitle('User\'s Name', true);
 
@@ -50,7 +50,7 @@ it('can use exact title matching', function (): void {
 });
 
 it('can find title with partial matching', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('div');
     $partialTitleLocator = $containerLocator->getByTitle('Info');
 
@@ -59,7 +59,7 @@ it('can find title with partial matching', function (): void {
 });
 
 it('can chain getByTitle with other locator methods', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $profileLocator = $page->getByTestId('user-profile');
     $titleLocator = $profileLocator->getByTitle('User\'s Name');
 
@@ -68,7 +68,7 @@ it('can chain getByTitle with other locator methods', function (): void {
 });
 
 it('preserves frame context with getByTitle', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('section');
     $titleLocator = $parentLocator->getByTitle('Info Button');
 
@@ -76,7 +76,7 @@ it('preserves frame context with getByTitle', function (): void {
 });
 
 it('returns proper selector format for getByTitle', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('body');
     $titleLocator = $parentLocator->getByTitle('Help Link');
 
@@ -85,7 +85,7 @@ it('returns proper selector format for getByTitle', function (): void {
 });
 
 it('can interact with elements found by title', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('div');
     $buttonLocator = $containerLocator->getByTitle('Info Button');
 
@@ -95,7 +95,7 @@ it('can interact with elements found by title', function (): void {
 });
 
 it('handles non-existent title gracefully', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('body');
     $nonExistentLocator = $parentLocator->getByTitle('Non-existent title');
 
@@ -104,7 +104,7 @@ it('handles non-existent title gracefully', function (): void {
 });
 
 it('works with nested element structures', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $profileLocator = $page->getByTestId('user-profile');
     $nameLocator = $profileLocator->getByTitle('User\'s Name');
 
@@ -113,7 +113,7 @@ it('works with nested element structures', function (): void {
 });
 
 it('can distinguish between different title attributes', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('body');
 
     $infoLocator = $containerLocator->getByTitle('Info Button');

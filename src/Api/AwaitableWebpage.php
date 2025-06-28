@@ -30,7 +30,7 @@ final readonly class AwaitableWebpage
     /**
      * Awaits for the given method to assert true or fail.
      *
-     * @param  array<string, mixed>  $arguments
+     * @param  array<int, mixed>  $arguments
      */
     public function __call(string $name, array $arguments): mixed
     {

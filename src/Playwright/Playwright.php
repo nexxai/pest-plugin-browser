@@ -40,11 +40,11 @@ final class Playwright
     private static ColorScheme $defaultColorScheme = ColorScheme::LIGHT;
 
     /**
-     * Get the default browser type.
+     * Get a browser factory for the given browser type.
      */
-    public static function default(): BrowserFactory
+    public static function browser(BrowserType $browserType): BrowserFactory
     {
-        $name = self::$defaultBrowserType->toPlaywrightName();
+        $name = $browserType->toPlaywrightName();
 
         return self::$browserTypes[$name] ?? self::initialize($name);
     }
@@ -114,9 +114,17 @@ final class Playwright
     /**
      * Sets the default browser type.
      */
-    public static function defaultTo(BrowserType $browserType): void
+    public static function setDefaultBrowserType(BrowserType $browserType): void
     {
         self::$defaultBrowserType = $browserType;
+    }
+
+    /**
+     * Get the default browser type.
+     */
+    public static function defaultBrowserType(): BrowserType
+    {
+        return self::$defaultBrowserType;
     }
 
     /**

@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Pest\Browser\Playwright\Locator;
 
 it('can create a getByTestId locator from parent locator', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('body');
     $testIdLocator = $parentLocator->getByTestId('profile-section');
 
@@ -14,7 +14,7 @@ it('can create a getByTestId locator from parent locator', function (): void {
 });
 
 it('can chain getByTestId with other locators', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $profileLocator = $page->getByTestId('user-profile');
     $emailLocator = $profileLocator->getByTestId('user-email');
 
@@ -23,7 +23,7 @@ it('can chain getByTestId with other locators', function (): void {
 });
 
 it('can combine getByTestId with other getBy methods', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $profileLocator = $page->getByTestId('user-profile');
     $buttonLocator = $profileLocator->getByRole('button');
 
@@ -32,7 +32,7 @@ it('can combine getByTestId with other getBy methods', function (): void {
 });
 
 it('can use getByTestId within a filtered locator', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('div');
     $filteredLocator = $containerLocator->filter(['hasText' => 'User Profile']);
     $emailLocator = $filteredLocator->getByTestId('user-email');
@@ -42,7 +42,7 @@ it('can use getByTestId within a filtered locator', function (): void {
 });
 
 it('preserves frame context with getByTestId', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('.mb-8');
     $testIdLocator = $parentLocator->getByTestId('profile-section');
 
@@ -50,7 +50,7 @@ it('preserves frame context with getByTestId', function (): void {
 });
 
 it('returns proper selector format for getByTestId', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('body');
     $testIdLocator = $parentLocator->getByTestId('submit-button');
 
@@ -59,7 +59,7 @@ it('returns proper selector format for getByTestId', function (): void {
 });
 
 it('can interact with elements found by getByTestId', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $sectionLocator = $page->getByTestId('profile-section');
     $buttonLocator = $sectionLocator->getByTestId('submit-button');
 
@@ -69,7 +69,7 @@ it('can interact with elements found by getByTestId', function (): void {
 });
 
 it('handles non-existent testId gracefully', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('body');
     $nonExistentLocator = $parentLocator->getByTestId('non-existent-testid');
 
@@ -78,7 +78,7 @@ it('handles non-existent testId gracefully', function (): void {
 });
 
 it('can be used with multiple matching parent elements', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $sectionsLocator = $page->locator('.mb-8');
     $profileLocator = $sectionsLocator->getByTestId('profile-section');
 
@@ -87,7 +87,7 @@ it('can be used with multiple matching parent elements', function (): void {
 });
 
 it('works with nested getByTestId calls', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $outerLocator = $page->locator('section');
     $profileLocator = $outerLocator->getByTestId('user-profile');
     $emailLocator = $profileLocator->getByTestId('user-email');

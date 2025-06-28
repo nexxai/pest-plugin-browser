@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Pest\Browser\Playwright\Locator;
 
 it('can get all matching locators', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $buttons = $page->locator('button');
     $allButtons = $buttons->all();
 
@@ -18,7 +18,7 @@ it('can get all matching locators', function (): void {
 });
 
 it('returns empty array for non-existent elements', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $nonExistent = $page->locator('.non-existent-class');
     $allElements = $nonExistent->all();
 
@@ -27,7 +27,7 @@ it('returns empty array for non-existent elements', function (): void {
 });
 
 it('can get all text contents from multiple elements', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $buttons = $page->locator('button');
     $allButtons = $buttons->all();
 

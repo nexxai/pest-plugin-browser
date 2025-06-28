@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Pest\Browser\Playwright\Locator;
 
 it('can create a getByAltText locator from parent locator', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('body');
     $altTextLocator = $parentLocator->getByAltText('Pest Logo');
 
@@ -14,7 +14,7 @@ it('can create a getByAltText locator from parent locator', function (): void {
 });
 
 it('can find image by alt text', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('.mb-8');
     $imageLocator = $containerLocator->getByAltText('Pest Logo');
 
@@ -23,7 +23,7 @@ it('can find image by alt text', function (): void {
 });
 
 it('can find different images by different alt text', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('div');
     $logoLocator = $containerLocator->getByAltText('Pest Logo');
     $anotherImageLocator = $containerLocator->getByAltText('Another Image');
@@ -34,7 +34,7 @@ it('can find different images by different alt text', function (): void {
 });
 
 it('can use exact alt text matching', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('body');
     $exactAltLocator = $containerLocator->getByAltText('Profile Picture', true);
 
@@ -43,7 +43,7 @@ it('can use exact alt text matching', function (): void {
 });
 
 it('can find alt text with partial matching', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('div');
     $partialAltLocator = $containerLocator->getByAltText('Profile');
 
@@ -52,7 +52,7 @@ it('can find alt text with partial matching', function (): void {
 });
 
 it('can chain getByAltText with other locator methods', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $profileLocator = $page->getByTestId('user-profile');
     $imageLocator = $profileLocator->getByAltText('Profile Picture');
 
@@ -61,7 +61,7 @@ it('can chain getByAltText with other locator methods', function (): void {
 });
 
 it('preserves frame context with getByAltText', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('section');
     $altTextLocator = $parentLocator->getByAltText('Pest Logo');
 
@@ -69,7 +69,7 @@ it('preserves frame context with getByAltText', function (): void {
 });
 
 it('returns proper selector format for getByAltText', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('body');
     $altTextLocator = $parentLocator->getByAltText('Pest Logo');
 
@@ -78,7 +78,7 @@ it('returns proper selector format for getByAltText', function (): void {
 });
 
 it('can interact with images found by alt text', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $containerLocator = $page->locator('div');
     $imageLocator = $containerLocator->getByAltText('Pest Logo');
 
@@ -88,7 +88,7 @@ it('can interact with images found by alt text', function (): void {
 });
 
 it('handles non-existent alt text gracefully', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $parentLocator = $page->locator('body');
     $nonExistentLocator = $parentLocator->getByAltText('Non-existent alt text');
 
@@ -97,7 +97,7 @@ it('handles non-existent alt text gracefully', function (): void {
 });
 
 it('works with nested image structures', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $profileLocator = $page->getByTestId('user-profile');
     $imageLocator = $profileLocator->getByAltText('Profile Picture');
 
@@ -106,7 +106,7 @@ it('works with nested image structures', function (): void {
 });
 
 it('can find multiple images in different containers', function (): void {
-    $page = page()->goto('/test/selector-tests');
+    $page = page('/test/selector-tests');
     $bodyLocator = $page->locator('body');
     $allImagesLocator = $bodyLocator->getByAltText('Pest Logo');
 

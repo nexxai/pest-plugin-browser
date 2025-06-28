@@ -93,7 +93,7 @@ final class Plugin implements Bootable, HandlesArguments, Terminable // @pest-ar
                 );
             }
 
-            Playwright::defaultTo($browser);
+            Playwright::setDefaultBrowserType($browser);
 
             unset($arguments[$index], $arguments[$index + 1]);
 

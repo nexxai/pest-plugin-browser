@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Pest\Browser\Playwright\Locator;
 
 it('can combine locators with and()', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $buttons = $page->locator('button');
     $clickButtons = $page->locator('[data-testid="click-button"]');
 
@@ -16,7 +16,7 @@ it('can combine locators with and()', function (): void {
 });
 
 it('can combine locators with or()', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $buttons = $page->locator('button');
     $inputs = $page->locator('input');
 
@@ -28,7 +28,7 @@ it('can combine locators with or()', function (): void {
 });
 
 it('and() returns intersection of locators', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $allButtons = $page->locator('button');
     $testIdButtons = $page->locator('[data-testid]');
 
@@ -39,7 +39,7 @@ it('and() returns intersection of locators', function (): void {
 });
 
 it('or() returns union of locators', function (): void {
-    $page = page()->goto('/test/element-tests');
+    $page = page('/test/element-tests');
     $buttons = $page->locator('button');
     $inputs = $page->locator('input');
 
