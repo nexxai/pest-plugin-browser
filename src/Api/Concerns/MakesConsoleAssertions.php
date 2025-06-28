@@ -12,6 +12,17 @@ use Pest\Browser\Api\Webpage;
 trait MakesConsoleAssertions
 {
     /**
+     * Asserts there are no console logs or JavaScript errors on the page.
+     */
+    public function assertNoSmoke(): Webpage
+    {
+        $this->assertNoConsoleLogs();
+        $this->assertNoJavaScriptErrors();
+
+        return $this;
+    }
+
+    /**
      * Asserts there are no console logs on the page.
      */
     public function assertNoConsoleLogs(): Webpage
