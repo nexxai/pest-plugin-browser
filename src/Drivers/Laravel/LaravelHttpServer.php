@@ -7,6 +7,7 @@ namespace Pest\Browser\Drivers\Laravel;
 use Fig\Http\Message\StatusCodeInterface;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Http\Request;
+use Illuminate\Routing\UrlGenerator;
 use Pest\Browser\Contracts\HttpServer;
 use Pest\Browser\Exceptions\ServerNotFoundException;
 use Pest\Browser\Execution;
@@ -170,9 +171,35 @@ final class LaravelHttpServer implements HttpServer
     }
 
     /**
+     * Bootstrap the server and set the application URL.
+     */
+    public function bootstrap(): void
+    {
+        $this->start();
+
+        $url = $this->url();
+
+        config(['app.url' => $url]);
+
+        config(['cors.paths' => ['*']]);
+
+        if (app()->bound('url')) {
+            $urlGenerator = app('url');
+
+            assert($urlGenerator instanceof UrlGenerator);
+
+            $this->setOriginalAssetUrl($urlGenerator->asset(''));
+
+            $urlGenerator->useOrigin($url);
+            $urlGenerator->useAssetOrigin($url);
+            $urlGenerator->forceScheme('http');
+        }
+    }
+
+    /**
      * Get the public path for the given path.
      */
-    public function url(): string
+    private function url(): string
     {
         if (! $this->socket instanceof SocketServer) {
             throw new ServerNotFoundException('The HTTP server is not running.');
@@ -184,7 +211,7 @@ final class LaravelHttpServer implements HttpServer
     /**
      * Sets the original asset URL.
      */
-    public function setOriginalAssetUrl(string $url): void
+    private function setOriginalAssetUrl(string $url): void
     {
         $this->originalAssetUrl = mb_rtrim($url, '/');
     }
@@ -222,11 +249,13 @@ final class LaravelHttpServer implements HttpServer
                 \Tighten\Ziggy\BladeRouteGenerator::$generated = false;
             }
 
+            // @phpstan-ignore-next-line
             if (app()->resolved(\Livewire\LivewireManager::class)) {
+                // @phpstan-ignore-next-line
                 $manager = app()->make(\Livewire\LivewireManager::class);
 
-                // @phpstan-ignore-next-line
                 if (method_exists($manager, 'flushState')) {
+                    // @phpstan-ignore-next-line
                     $manager->flushState();
                 }
             }

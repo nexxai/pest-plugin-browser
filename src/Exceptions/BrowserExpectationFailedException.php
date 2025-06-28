@@ -59,7 +59,7 @@ final class BrowserExpectationFailedException
     {
         return implode(', ', array_map(
             // @phpstan-ignore-next-line
-            fn ($arg): string|false => is_array($arg) ? json_encode($arg, JSON_THROW_ON_ERROR) : (string) $arg,
+            fn (mixed $arg): string|false => is_array($arg) ? json_encode($arg, JSON_THROW_ON_ERROR) : (string) $arg,
             $arguments,
         ));
     }

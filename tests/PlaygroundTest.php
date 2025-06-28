@@ -10,21 +10,11 @@ pest()->uses(RefreshDatabase::class);
 
 test('example', function (): void {
     Route::get('/', fn (): string => Blade::render(<<<'BLADE'
-        <div>
-            <h1>Hi {{ auth()->user()?->name ?? "Guest" }}</h1>
-        </div>
+        hi nuno
         BLADE,
     ));
 
-    $response = visit('/')->on()->mobile()->inDarkMode();
+    $response = visit('/')->on()->firefox();
 
-    $response->assertSee('Hi Guest');
-
-    $response = visit('/')->on()->desktop()->inLightMode();
-
-    $response->assertSee('Hi Guest');
-
-    $response = $response->on()->desktop()->inLightMode();
-
-    $response->assertSee('Hi Guest');
+    $response->assertSee('hi nuno');
 });

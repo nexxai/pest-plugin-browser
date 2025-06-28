@@ -34,23 +34,17 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\": "drivers/laravel/app/",
-            "Database\\Factories\\": "drivers/laravel/database/factories/",
-            "Database\\Seeders\\": "drivers/laravel/database/seeders/",
-            "Tests\\": "tests/"
+            "Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
         }
     },
     "require-dev": {
         "ext-pcntl": "*",
         "ext-posix": "*",
-        "fakerphp/faker": "^1.24.1",
-        "laravel/framework": "^11.45.1",
-        "laravel/pail": "^1.2.3",
-        "laravel/pint": "^1.22.1",
-        "laravel/sail": "^1.43.1",
-        "livewire/livewire": "^3.6.3",
-        "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.8.2",
+        "orchestra/testbench": "^10.4",
         "pestphp/pest-dev-tools": "^4.0.0",
         "pestphp/pest-plugin-laravel": "^4.0",
         "pestphp/pest-plugin-type-coverage": "^4.0.0"
@@ -78,7 +72,7 @@
             "pint"
         ],
         "test:profanity": "pest --profanity --compact --language=en",
-        "test:type-coverage": "pest --type-coverage --exactly=100",
+        "test:type-coverage": "pest --type-coverage --compact --exactly=100",
         "test:lint": [
             "rector --dry-run",
             "pint --test"
@@ -91,6 +85,18 @@
             "@test:type-coverage",
             "@test:types",
             "@test:unit"
+        ],
+        "post-autoload-dump": [
+            "@clear",
+            "@prepare"
+        ],
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": "@php vendor/bin/testbench workbench:build --ansi",
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@build",
+            "@php vendor/bin/testbench serve --ansi"
         ]
     },
     "extra": {

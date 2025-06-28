@@ -3,8 +3,15 @@
 declare(strict_types=1);
 
 it('rewrites the URLs on JS files', function (): void {
-    $page = visit('app.js');
+    @file_put_contents(
+        public_path('app.js'),
+        <<<'JS'
+        console.log('Hello http://localhost');
+        JS,
+    );
 
-    $contents = $page->assertSee('http://127.0.0.1')
-        ->assertDontSee('https://my-app.test');
+    $page = visit('/app.js');
+
+    $page->assertSee('http://127.0.0.1')
+        ->assertDontSee('http://localhost');
 });

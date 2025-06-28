@@ -30,12 +30,7 @@ interface HttpServer
     public function flush(): void;
 
     /**
-     * Returns the server's URL.
+     * Boots the server.
      */
-    public function url(): string;
-
-    /**
-     * Sets the original asset URL for the server.
-     */
-    public function setOriginalAssetUrl(string $url): void;
+    public function bootstrap(): void;
 }

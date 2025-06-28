@@ -7,6 +7,7 @@ namespace Pest\Browser;
 use Pest\Browser\Contracts\HttpServer;
 use Pest\Browser\Contracts\PlaywrightServer;
 use Pest\Browser\Drivers\Laravel\LaravelHttpServer;
+use Pest\Browser\Drivers\Laravel\NullableHttpServer;
 use Pest\Browser\Playwright\Servers\AlreadyStartedPlaywrightServer;
 use Pest\Browser\Playwright\Servers\PlaywrightNpxServer;
 use Pest\Browser\Support\Port;
@@ -81,11 +82,14 @@ final class ServerManager
      */
     public function http(): HttpServer
     {
-        return $this->http ??= new LaravelHttpServer(
-            Loop::get(),
-            new HttpFoundationFactory(),
-            self::DEFAULT_HOST,
-            Port::find(),
-        );
+        return $this->http ??= match (function_exists('app_path')) {
+            true => new LaravelHttpServer(
+                Loop::get(),
+                new HttpFoundationFactory(),
+                self::DEFAULT_HOST,
+                Port::find(),
+            ),
+            default => new NullableHttpServer(),
+        };
     }
 }

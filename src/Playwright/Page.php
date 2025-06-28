@@ -6,7 +6,6 @@ namespace Pest\Browser\Playwright;
 
 use Generator;
 use Pest\Browser\Execution;
-use Pest\Browser\ServerManager;
 use Pest\Browser\Support\ImageDiffView;
 use Pest\Browser\Support\JavaScriptSerializer;
 use Pest\Browser\Support\Screenshot;
@@ -94,8 +93,6 @@ final class Page
      */
     public function goto(string $url, array $options = []): self
     {
-        $url = ServerManager::instance()->http()->rewrite($url);
-
         $response = $this->sendMessage('goto', [
             ...['url' => $url, 'waitUntil' => 'load'],
             ...$options,

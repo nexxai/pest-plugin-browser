@@ -94,3 +94,12 @@ it('may visit a page with custom locale and timezone', function (): void {
     $timezone = $page->script('Intl.DateTimeFormat().resolvedOptions().timeZone');
     expect($timezone)->toBe('Europe/Paris');
 });
+
+it('may visit external URLs', function (): void {
+    $page = visit('https://laravel.com');
+
+    $page->screenshot();
+
+    $page->assertSee('Laravel')
+        ->assertDontSee('Symfony');
+});

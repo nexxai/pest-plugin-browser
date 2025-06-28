@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pest\Browser;
 
-use Illuminate\Routing\UrlGenerator;
 use Pest\Browser\Api\ArrayablePendingAwaitablePage;
 use Pest\Browser\Api\PendingAwaitablePage;
 use Pest\Browser\Enums\Device;
@@ -29,25 +28,7 @@ trait Browsable
 
         $http = ServerManager::instance()->http();
 
-        $http->start();
-
-        $url = $http->url();
-
-        config(['app.url' => $url]);
-
-        config(['cors.paths' => ['*']]);
-
-        if (app()->bound('url')) {
-            $urlGenerator = app('url');
-
-            assert($urlGenerator instanceof UrlGenerator);
-
-            $http->setOriginalAssetUrl($urlGenerator->asset(''));
-
-            $urlGenerator->useOrigin($url);
-            $urlGenerator->useAssetOrigin($url);
-            $urlGenerator->forceScheme('http');
-        }
+        $http->bootstrap();
     }
 
     /**

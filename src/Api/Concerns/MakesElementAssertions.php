@@ -6,6 +6,7 @@ namespace Pest\Browser\Api\Concerns;
 
 use Illuminate\Support\Str;
 use Pest\Browser\Api\Webpage;
+use PHPUnit\Framework\ExpectationFailedException;
 
 /**
  * @mixin Webpage
@@ -43,11 +44,17 @@ trait MakesElementAssertions
             fn () => $this->page->getByText($text),
         );
 
-        expect($locator->isVisible())->toBeTrue(
-            "Expected to see text [{$text}] on the page initially with the url [{$this->initialUrl}], but it was not found or not visible."
-        );
+        foreach ($locator->all() as $element) {
+            if ($element->isVisible()) {
+                expect(true)->toBeTrue();
 
-        return $this;
+                return $this;
+            }
+        }
+
+        throw new ExpectationFailedException(
+            "Expected to see text [{$text}] on the page initially with the url [{$this->initialUrl}], but it was not found or not visible.",
+        );
     }
 
     /**
@@ -59,7 +66,15 @@ trait MakesElementAssertions
             fn () => $this->page->getByText($text),
         );
 
-        expect($locator->count())->toBe(0, "Expected not to see text [{$text}] on the page initially with the url [{$this->initialUrl}], but it was found.");
+        foreach ($locator->all() as $element) {
+            if ($element->isVisible()) {
+                throw new ExpectationFailedException(
+                    "Expected not to see text [{$text}] on the page initially with the url [{$this->initialUrl}], but it was found.",
+                );
+            }
+        }
+
+        expect(true)->toBeTrue();
 
         return $this;
     }
