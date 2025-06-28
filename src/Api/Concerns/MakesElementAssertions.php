@@ -17,7 +17,7 @@ trait MakesElementAssertions
      */
     public function assertTitle(string $title): Webpage
     {
-        expect($this->page->title())->toBe($title, "Expected page title to be '[{$title}]' but found '[{$this->page->title()}]'.");
+        expect($this->page->title())->toBe($title, "Expected page title to be '[{$title}]' but found '[{$this->page->title()}]' on the page initially with the url [{$this->initialUrl}].");
 
         return $this;
     }
@@ -28,7 +28,7 @@ trait MakesElementAssertions
     public function assertTitleContains(string $title): Webpage
     {
         $pageTitle = $this->page->title();
-        $message = "Expected page title to contain '[{$title}]' but found '[{$pageTitle}]'.";
+        $message = "Expected page title to contain '[{$title}]' but found '[{$pageTitle}]' on the page initially with the url [{$this->initialUrl}].";
         expect(str_contains($pageTitle, $title))->toBeTrue($message);
 
         return $this;
@@ -59,7 +59,7 @@ trait MakesElementAssertions
             fn () => $this->page->getByText($text),
         );
 
-        expect($locator->count())->toBe(0, "Expected not to see text [{$text}] on the page, but it was found.");
+        expect($locator->count())->toBe(0, "Expected not to see text [{$text}] on the page initially with the url [{$this->initialUrl}], but it was found.");
 
         return $this;
     }
@@ -71,7 +71,7 @@ trait MakesElementAssertions
     {
         $locator = $this->guessLocator($selector);
 
-        expect($locator->getByText($text)->isVisible())->toBeTrue("Expected to see text [{$text}] within element [{$selector}], but it was not found or not visible.");
+        expect($locator->getByText($text)->isVisible())->toBeTrue("Expected to see text [{$text}] within element [{$selector}] on the page initially with the url [{$this->initialUrl}], but it was not found or not visible.");
 
         return $this;
     }
@@ -83,7 +83,7 @@ trait MakesElementAssertions
     {
         $locator = $this->guessLocator($selector);
 
-        expect($locator->getByText($text)->count())->toBe(0, "Expected not to see text [{$text}] within element [{$selector}], but it was found.");
+        expect($locator->getByText($text)->count())->toBe(0, "Expected not to see text [{$text}] within element [{$selector}] on the page initially with the url [{$this->initialUrl}], but it was found.");
 
         return $this;
     }
@@ -95,7 +95,7 @@ trait MakesElementAssertions
     {
         $text = $this->guessLocator($selector)->textContent();
 
-        expect($text)->not->toBeEmpty("Expected element [{$selector}] to contain some text, but it was empty.");
+        expect($text)->not->toBeEmpty("Expected element [{$selector}] to contain some text on the page initially with the url [{$this->initialUrl}], but it was empty.");
 
         return $this;
     }
@@ -107,7 +107,7 @@ trait MakesElementAssertions
     {
         $text = $this->guessLocator($selector)->textContent();
 
-        expect($text)->toBeEmpty("Expected element [{$selector}] to be empty, but it contained text: [{$text}].");
+        expect($text)->toBeEmpty("Expected element [{$selector}] to be empty on the page initially with the url [{$this->initialUrl}], but it contained text: [{$text}].");
 
         return $this;
     }
@@ -118,7 +118,7 @@ trait MakesElementAssertions
     public function assertCount(string $selector, int $expected): Webpage
     {
         $count = $this->guessLocator($selector)->count();
-        expect($count)->toBe($expected, "Expected to find {$expected} elements matching [{$selector}], but found {$count}.");
+        expect($count)->toBe($expected, "Expected to find {$expected} elements matching [{$selector}] on the page initially with the url [{$this->initialUrl}], but found {$count}.");
 
         return $this;
     }
@@ -155,7 +155,7 @@ trait MakesElementAssertions
             $resultStr = gettype($result);
         }
 
-        expect($result)->toBe($expected, "Expected JavaScript expression [{$expression}] to evaluate to {$expectedStr}, but got {$resultStr}.");
+        expect($result)->toBe($expected, "Expected JavaScript expression [{$expression}] to evaluate to {$expectedStr} on the page initially with the url [{$this->initialUrl}], but got {$resultStr}.");
 
         return $this;
     }
@@ -166,7 +166,7 @@ trait MakesElementAssertions
     public function assertSourceHas(string $code): Webpage
     {
         $content = $this->page->content();
-        $message = "Expected page source to contain [{$code}], but it was not found.";
+        $message = "Expected page source to contain [{$code}] on the page initially with the url [{$this->initialUrl}], but it was not found.";
         expect(str_contains($content, $code))->toBeTrue($message);
 
         return $this;
@@ -178,7 +178,7 @@ trait MakesElementAssertions
     public function assertSourceMissing(string $code): Webpage
     {
         $content = $this->page->content();
-        $message = "Expected page source not to contain [{$code}], but it was found.";
+        $message = "Expected page source not to contain [{$code}] on the page initially with the url [{$this->initialUrl}], but it was found.";
         expect(str_contains($content, $code))->toBeFalse($message);
 
         return $this;
@@ -191,7 +191,7 @@ trait MakesElementAssertions
     {
         $locator = $this->guessLocator($link);
 
-        expect($locator->isVisible())->toBeTrue("Expected to see link with text [{$link}], but it was not found or not visible.");
+        expect($locator->isVisible())->toBeTrue("Expected to see link with text [{$link}] on the page initially with the url [{$this->initialUrl}], but it was not found or not visible.");
 
         return $this;
     }
@@ -203,7 +203,7 @@ trait MakesElementAssertions
     {
         $locator = $this->guessLocator($link);
 
-        expect($locator->count())->toBe(0, "Expected not to see link with text [{$link}], but it was found.");
+        expect($locator->count())->toBe(0, "Expected not to see link with text [{$link}] on the page initially with the url [{$this->initialUrl}], but it was found.");
 
         return $this;
     }
@@ -214,7 +214,7 @@ trait MakesElementAssertions
     public function assertChecked(string $field, ?string $value = null): Webpage
     {
         $valueDescription = $value !== null ? " with value [{$value}]" : '';
-        expect($this->guessLocator($field, $value)->isChecked())->toBeTrue("Expected checkbox [{$field}]{$valueDescription} to be checked, but it was not.");
+        expect($this->guessLocator($field, $value)->isChecked())->toBeTrue("Expected checkbox [{$field}]{$valueDescription} to be checked on the page initially with the url [{$this->initialUrl}], but it was not.");
 
         return $this;
     }
@@ -225,7 +225,7 @@ trait MakesElementAssertions
     public function assertNotChecked(string $field, ?string $value = null): Webpage
     {
         $valueDescription = $value !== null ? " with value [{$value}]" : '';
-        expect($this->guessLocator($field, $value)->isChecked())->toBeFalse("Expected checkbox [{$field}]{$valueDescription} not to be checked, but it was.");
+        expect($this->guessLocator($field, $value)->isChecked())->toBeFalse("Expected checkbox [{$field}]{$valueDescription} not to be checked on the page initially with the url [{$this->initialUrl}], but it was.");
 
         return $this;
     }
@@ -248,7 +248,7 @@ trait MakesElementAssertions
         ");
 
         $valueDescription = $value !== null ? " with value [{$value}]" : '';
-        expect($isIndeterminate)->toBeTrue("Expected checkbox [{$field}]{$valueDescription} to be in indeterminate state, but it was not.");
+        expect($isIndeterminate)->toBeTrue("Expected checkbox [{$field}]{$valueDescription} to be in indeterminate state on the page initially with the url [{$this->initialUrl}], but it was not.");
 
         return $this;
     }
@@ -258,7 +258,7 @@ trait MakesElementAssertions
      */
     public function assertRadioSelected(string $field, string $value): Webpage
     {
-        expect($this->guessLocator($field, $value)->isChecked())->toBeTrue("Expected radio button [{$field}] with value [{$value}] to be selected, but it was not.");
+        expect($this->guessLocator($field, $value)->isChecked())->toBeTrue("Expected radio button [{$field}] with value [{$value}] to be selected on the page initially with the url [{$this->initialUrl}], but it was not.");
 
         return $this;
     }
@@ -269,7 +269,7 @@ trait MakesElementAssertions
     public function assertRadioNotSelected(string $field, ?string $value = null): Webpage
     {
         if ($value !== null) {
-            expect($this->guessLocator($field, $value)->isChecked())->toBeFalse("Expected radio button [{$field}] with value [{$value}] not to be selected, but it was.");
+            expect($this->guessLocator($field, $value)->isChecked())->toBeFalse("Expected radio button [{$field}] with value [{$value}] not to be selected on the page initially with the url [{$this->initialUrl}], but it was.");
 
             return $this;
         }
@@ -287,7 +287,7 @@ trait MakesElementAssertions
             }
         }
 
-        expect($anyChecked)->toBeFalse("Expected no radio buttons in group [{$field}] to be selected, but at least one was selected.");
+        expect($anyChecked)->toBeFalse("Expected no radio buttons in group [{$field}] to be selected on the page initially with the url [{$this->initialUrl}], but at least one was selected.");
 
         return $this;
     }
@@ -300,7 +300,7 @@ trait MakesElementAssertions
         $locator = $this->guessLocator($field);
         $actual = $locator->inputValue();
 
-        expect($actual)->toBe($value, "Expected dropdown [{$field}] to have value [{$value}] selected, but found [{$actual}].");
+        expect($actual)->toBe($value, "Expected dropdown [{$field}] to have value [{$value}] selected on the page initially with the url [{$this->initialUrl}], but found [{$actual}].");
 
         return $this;
     }
@@ -313,7 +313,7 @@ trait MakesElementAssertions
         $locator = $this->guessLocator($field);
         $actual = $locator->inputValue();
 
-        expect($actual)->not->toBe($value, "Expected dropdown [{$field}] not to have value [{$value}] selected, but it was.");
+        expect($actual)->not->toBe($value, "Expected dropdown [{$field}] not to have value [{$value}] selected on the page initially with the url [{$this->initialUrl}], but it was.");
 
         return $this;
     }
@@ -325,7 +325,7 @@ trait MakesElementAssertions
     {
         $locator = $this->guessLocator($field);
 
-        expect($actual = $locator->inputValue())->toBe($value, "Expected element [{$field}] to have value [{$value}], but found [{$actual}].");
+        expect($actual = $locator->inputValue())->toBe($value, "Expected element [{$field}] to have value [{$value}] on the page initially with the url [{$this->initialUrl}], but found [{$actual}].");
 
         return $this;
     }
@@ -336,7 +336,7 @@ trait MakesElementAssertions
     public function assertValueIsNot(string $selector, string $value): Webpage
     {
         $actual = $this->guessLocator($selector)->inputValue();
-        expect($actual)->not->toBe($value, "Expected element [{$selector}] not to have value [{$value}], but it did.");
+        expect($actual)->not->toBe($value, "Expected element [{$selector}] not to have value [{$value}] on the page initially with the url [{$this->initialUrl}], but it did.");
 
         return $this;
     }
@@ -347,7 +347,7 @@ trait MakesElementAssertions
     public function assertAttribute(string $selector, string $attribute, string $value): Webpage
     {
         $actual = $this->guessLocator($selector)->getAttribute($attribute);
-        expect($actual)->toBe($value, "Expected element [{$selector}] to have attribute [{$attribute}] with value [{$value}], but found [{$actual}].");
+        expect($actual)->toBe($value, "Expected element [{$selector}] to have attribute [{$attribute}] with value [{$value}] on the page initially with the url [{$this->initialUrl}], but found [{$actual}].");
 
         return $this;
     }
@@ -358,7 +358,7 @@ trait MakesElementAssertions
     public function assertAttributeMissing(string $selector, string $attribute): Webpage
     {
         $actual = $this->guessLocator($selector)->getAttribute($attribute);
-        expect($actual)->toBeNull("Expected element [{$selector}] not to have attribute [{$attribute}], but it had value [{$actual}].");
+        expect($actual)->toBeNull("Expected element [{$selector}] not to have attribute [{$attribute}] on the page initially with the url [{$this->initialUrl}], but it had value [{$actual}].");
 
         return $this;
     }
@@ -370,9 +370,9 @@ trait MakesElementAssertions
     {
         $attributeValue = $this->guessLocator($selector)->getAttribute($attribute);
 
-        expect($attributeValue)->not->toBeNull("Expected element [{$selector}] to have attribute [{$attribute}], but it was not found.");
+        expect($attributeValue)->not->toBeNull("Expected element [{$selector}] to have attribute [{$attribute}] on the page initially with the url [{$this->initialUrl}], but it was not found.");
 
-        $message = "Expected attribute [{$attribute}] of element [{$selector}] to contain [{$value}], but found [{$attributeValue}].";
+        $message = "Expected attribute [{$attribute}] of element [{$selector}] to contain [{$value}] on the page initially with the url [{$this->initialUrl}], but found [{$attributeValue}].";
         expect(str_contains((string) $attributeValue, $value))->toBeTrue($message);
 
         return $this;
@@ -389,7 +389,7 @@ trait MakesElementAssertions
             return $this;
         }
 
-        $message = "Expected attribute [{$attribute}] of element [{$selector}] not to contain [{$value}], but found [{$attributeValue}].";
+        $message = "Expected attribute [{$attribute}] of element [{$selector}] not to contain [{$value}] on the page initially with the url [{$this->initialUrl}], but found [{$attributeValue}].";
         expect(str_contains($attributeValue, $value))->toBeFalse($message);
 
         return $this;
@@ -418,7 +418,7 @@ trait MakesElementAssertions
     {
         $locator = $this->guessLocator($selector);
 
-        expect($locator->isVisible())->toBeTrue("Expected element [{$selector}] to be visible, but it was not.");
+        expect($locator->isVisible())->toBeTrue("Expected element [{$selector}] to be visible on the page initially with the url [{$this->initialUrl}], but it was not.");
 
         return $this;
     }
@@ -429,7 +429,7 @@ trait MakesElementAssertions
     public function assertPresent(string $selector): Webpage
     {
         $count = $this->guessLocator($selector)->count();
-        expect($count)->toBeGreaterThan(0, "Expected element [{$selector}] to be present in the DOM, but it was not found.");
+        expect($count)->toBeGreaterThan(0, "Expected element [{$selector}] to be present in the DOM on the page initially with the url [{$this->initialUrl}], but it was not found.");
 
         return $this;
     }
@@ -440,7 +440,7 @@ trait MakesElementAssertions
     public function assertNotPresent(string $selector): Webpage
     {
         $count = $this->guessLocator($selector)->count();
-        expect($count)->toBe(0, "Expected element [{$selector}] not to be present in the DOM, but it was found.");
+        expect($count)->toBe(0, "Expected element [{$selector}] not to be present in the DOM on the page initially with the url [{$this->initialUrl}], but it was found.");
 
         return $this;
     }
@@ -452,7 +452,7 @@ trait MakesElementAssertions
     {
         $locator = $this->guessLocator($selector);
 
-        expect($locator->isVisible())->toBeFalse("Expected element [{$selector}] not to be visible, but it was.");
+        expect($locator->isVisible())->toBeFalse("Expected element [{$selector}] not to be visible on the page initially with the url [{$this->initialUrl}], but it was.");
 
         return $this;
     }
@@ -462,7 +462,7 @@ trait MakesElementAssertions
      */
     public function assertEnabled(string $field): Webpage
     {
-        expect($this->guessLocator($field)->isEnabled())->toBeTrue("Expected field [{$field}] to be enabled, but it was disabled.");
+        expect($this->guessLocator($field)->isEnabled())->toBeTrue("Expected field [{$field}] to be enabled on the page initially with the url [{$this->initialUrl}], but it was disabled.");
 
         return $this;
     }
@@ -472,7 +472,7 @@ trait MakesElementAssertions
      */
     public function assertDisabled(string $field): Webpage
     {
-        expect($this->guessLocator($field)->isDisabled())->toBeTrue("Expected field [{$field}] to be disabled, but it was enabled.");
+        expect($this->guessLocator($field)->isDisabled())->toBeTrue("Expected field [{$field}] to be disabled on the page initially with the url [{$this->initialUrl}], but it was enabled.");
 
         return $this;
     }
@@ -484,7 +484,7 @@ trait MakesElementAssertions
     {
         $selector = $this->guessLocator($button);
 
-        expect($selector->isEnabled())->toBeTrue("Expected button [{$button}] to be enabled, but it was disabled.");
+        expect($selector->isEnabled())->toBeTrue("Expected button [{$button}] to be enabled on the page initially with the url [{$this->initialUrl}], but it was disabled.");
 
         return $this;
     }
@@ -496,7 +496,7 @@ trait MakesElementAssertions
     {
         $selector = $this->guessLocator($button);
 
-        expect($selector->isDisabled())->toBeTrue("Expected button [{$button}] to be disabled, but it was enabled.");
+        expect($selector->isDisabled())->toBeTrue("Expected button [{$button}] to be disabled on the page initially with the url [{$this->initialUrl}], but it was enabled.");
 
         return $this;
     }

@@ -53,8 +53,11 @@ trait Browsable
     /**
      * Browse to the given URL.
      *
-     * @param  array<int, string>|string  $url
+     * @template TUrl of array<int, string>|string
+     *
+     * @param  TUrl  $url
      * @param  array<string, mixed>  $options
+     * @return (TUrl is array<int, string> ? ArrayablePendingAwaitablePage : PendingAwaitablePage)
      */
     public function visit(array|string $url, array $options = []): ArrayablePendingAwaitablePage|PendingAwaitablePage
     {
