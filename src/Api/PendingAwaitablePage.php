@@ -84,6 +84,45 @@ final class PendingAwaitablePage
     }
 
     /**
+     * Sets the browser to Chrome.
+     */
+    public function inChrome(): self
+    {
+        return new self(
+            BrowserType::CHROME,
+            $this->device,
+            $this->url,
+            $this->options,
+        );
+    }
+
+    /**
+     * Sets the browser to Firefox.
+     */
+    public function inFirefox(): self
+    {
+        return new self(
+            BrowserType::FIREFOX,
+            $this->device,
+            $this->url,
+            $this->options,
+        );
+    }
+
+    /**
+     * Sets the browser to Safari.
+     */
+    public function inSafari(): self
+    {
+        return new self(
+            BrowserType::SAFARI,
+            $this->device,
+            $this->url,
+            $this->options,
+        );
+    }
+
+    /**
      * Sets the locale for the page.
      */
     public function withLocale(string $locale): self

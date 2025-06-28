@@ -353,43 +353,4 @@ final readonly class On
             $this->options,
         );
     }
-
-    /**
-     * Sets the browser to Chrome.
-     */
-    public function chrome(): self
-    {
-        return new self(
-            BrowserType::CHROME,
-            $this->device,
-            $this->url,
-            $this->options,
-        );
-    }
-
-    /**
-     * Sets the browser to Firefox.
-     */
-    public function firefox(): self
-    {
-        return new self(
-            BrowserType::FIREFOX,
-            $this->device,
-            $this->url,
-            $this->options,
-        );
-    }
-
-    /**
-     * Sets the browser to Safari.
-     */
-    public function safari(): self
-    {
-        return new self(
-            BrowserType::SAFARI,
-            $this->device,
-            $this->url,
-            $this->options,
-        );
-    }
 }

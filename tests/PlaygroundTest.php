@@ -14,7 +14,7 @@ test('example', function (): void {
         BLADE,
     ));
 
-    $response = visit('/')->on()->firefox();
+    $response = visit('/')->inFirefox();
 
     $response->assertSee('hi nuno');
 });
