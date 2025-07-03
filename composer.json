@@ -68,13 +68,13 @@
         ],
         "lint": [
             "rector",
-            "pint"
+            "pint --parallel"
         ],
         "test:profanity": "pest --profanity --compact --language=en",
         "test:type-coverage": "pest --type-coverage --compact --exactly=100",
         "test:lint": [
             "rector --dry-run",
-            "pint --test"
+            "pint --parallel --test"
         ],
         "test:unit": "pest --parallel",
         "test:types": "phpstan",
