@@ -58,7 +58,7 @@ final readonly class GuessLocator
         }
 
         return $this->page->unstrict(
-            fn (): Locator => $this->page->getByText($selector),
+            fn (): Locator => $this->page->getByText($selector, true),
         );
     }
 }
