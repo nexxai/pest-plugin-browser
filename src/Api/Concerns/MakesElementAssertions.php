@@ -515,4 +515,14 @@ trait MakesElementAssertions
 
         return $this;
     }
+
+    /**
+     * Wait for the given text to appear on the page.
+     *
+     * @deprecated Use `assertSee` instead.
+     */
+    public function waitForText(string $text): Webpage
+    {
+        return $this->assertSee($text);
+    }
 }
