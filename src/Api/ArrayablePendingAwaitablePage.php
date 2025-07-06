@@ -124,7 +124,12 @@ final class ArrayablePendingAwaitablePage implements ArrayAccess, Countable, Ite
     {
         $onWebPage = false;
 
-        foreach ([PendingAwaitablePage::class, AwaitableWebpage::class, On::class] as $class) {
+        foreach ([
+            PendingAwaitablePage::class,
+            AwaitableWebpage::class,
+            Webpage::class,
+            On::class,
+        ] as $class) {
             if ($result instanceof $class) {
                 $onWebPage = true;
             }
