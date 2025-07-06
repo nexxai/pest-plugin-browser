@@ -30,7 +30,12 @@ final readonly class BrowserTestIdentifier
             return true;
         }
 
-        return self::usesVisitFunction($factory->closure ?? fn (): null => null);
+        return self::usesFunction($factory->closure ?? fn (): null => null, 'visit');
+    }
+
+    public static function isDebugTest(TestCaseMethodFactory $factory): bool
+    {
+        return self::usesFunction($factory->closure ?? fn (): null => null, 'debug');
     }
 
     /**
@@ -58,10 +63,7 @@ final readonly class BrowserTestIdentifier
         return in_array('browser', $factory->groups, true);
     }
 
-    /**
-     * Checks if the given closure uses the "page" function.
-     */
-    private static function usesVisitFunction(Closure $closure): bool
+    private static function usesFunction(Closure $closure, string $functionName): bool
     {
         try {
             $ref = new ReflectionFunction($closure);
@@ -94,7 +96,7 @@ final readonly class BrowserTestIdentifier
             if (
                 is_array($tokens[$i]) &&
                 $tokens[$i][0] === T_STRING &&
-                mb_strtolower($tokens[$i][1]) === 'visit' &&
+                mb_strtolower($tokens[$i][1]) === $functionName &&
                 $tokens[$i + 1] === '('
             ) {
                 return true;

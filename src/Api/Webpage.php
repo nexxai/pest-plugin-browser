@@ -38,6 +38,18 @@ final readonly class Webpage
     }
 
     /**
+     * Waits for the page to load and returns the current instance.
+     *
+     * This automatically only runs this test + opens the browser in headed mode.
+     */
+    public function debug(): self
+    {
+        $this->wait();
+
+        return $this;
+    }
+
+    /**
      * Gets the page's content.
      */
     public function content(): string

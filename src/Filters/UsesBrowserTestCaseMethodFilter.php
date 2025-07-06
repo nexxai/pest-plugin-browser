@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Filters;
 
+use Pest\Browser\Playwright\Playwright;
 use Pest\Browser\Plugin;
 use Pest\Browser\ServerManager;
 use Pest\Browser\Support\BrowserTestIdentifier;
 use Pest\Browser\Support\Screenshot;
 use Pest\Contracts\TestCaseMethodFilter;
 use Pest\Factories\TestCaseMethodFactory;
+use Pest\Plugins\Only;
 use Pest\Plugins\Parallel;
 use Pest\Support\Backtrace;
 
@@ -29,6 +31,14 @@ final readonly class UsesBrowserTestCaseMethodFilter implements TestCaseMethodFi
 
         if ($usesBrowser === false) {
             return true;
+        }
+
+        $usesDebug = BrowserTestIdentifier::isDebugTest($factory);
+
+        if ($usesDebug) {
+            Playwright::headed();
+
+            Only::enable($factory);
         }
 
         $factory->proxies->add(
