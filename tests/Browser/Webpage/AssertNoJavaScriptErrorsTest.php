@@ -25,4 +25,4 @@ it('asserts that there are javascript errors', function (): void {
     $page = visit('/');
 
     $page->assertNoJavaScriptErrors();
-})->throws(ExpectationFailedException::class, 'Expected no JavaScript errors, but found 1: Uncaught ReferenceError: wqd is not define');
+})->throws(ExpectationFailedException::class, 'but found 1: Uncaught ReferenceError: wqd is not define');

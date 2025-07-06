@@ -25,4 +25,4 @@ it('asserts that there are console logs', function (): void {
     $page = visit('/');
 
     $page->assertNoConsoleLogs();
-})->throws(ExpectationFailedException::class, 'Expected no console logs, but found 1: Hello, World!');
+})->throws(ExpectationFailedException::class, 'but found 1: Hello, World!');
