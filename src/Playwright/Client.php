@@ -26,6 +26,11 @@ final class Client
     private ?WebSocketClient $websocketClient = null;
 
     /**
+     * Default timeout for requests in milliseconds.
+     */
+    private int $timeout = 5_000;
+
+    /**
      * Returns the current client instance.
      */
     public static function instance(): self
@@ -64,7 +69,7 @@ final class Client
             'id' => $requestId,
             'guid' => $guid,
             'method' => $method,
-            'params' => ['timeout' => 5_000, ...$params],
+            'params' => ['timeout' => $this->timeout, ...$params],
             'metadata' => $meta,
         ]);
 
@@ -96,6 +101,22 @@ final class Client
                 break;
             }
         }
+    }
+
+    /**
+     * Sets the timeout for requests.
+     */
+    public function setTimeout(int $timeout): void
+    {
+        $this->timeout = $timeout;
+    }
+
+    /**
+     * Returns the current timeout for requests.
+     */
+    public function timeout(): int
+    {
+        return $this->timeout;
     }
 
     /**

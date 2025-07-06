@@ -128,6 +128,26 @@ final class Playwright
     }
 
     /**
+     * Executes a callback with a temporary timeout.
+     *
+     * @template TReturnType
+     *
+     * @param  callable(): TReturnType  $callback
+     * @return TReturnType
+     */
+    public static function usingTimeout(int $timeout, callable $callback): mixed
+    {
+        $previousTimeout = Client::instance()->timeout();
+        Client::instance()->setTimeout($timeout);
+
+        try {
+            return $callback();
+        } finally {
+            Client::instance()->setTimeout($previousTimeout);
+        }
+    }
+
+    /**
      * Initialize Playwright
      */
     private static function initialize(string $browser): BrowserFactory
