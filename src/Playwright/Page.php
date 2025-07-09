@@ -318,7 +318,7 @@ final class Page
 
         while (microtime(true) < $end) {
             try {
-                return Playwright::usingTimeout(100, $callback);
+                return Playwright::usingTimeout(1000, $callback);
             } catch (ExpectationFailedException) {
                 //
             }
