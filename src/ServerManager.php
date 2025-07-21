@@ -9,7 +9,7 @@ use Pest\Browser\Contracts\PlaywrightServer;
 use Pest\Browser\Drivers\Laravel\LaravelHttpServer;
 use Pest\Browser\Drivers\Laravel\NullableHttpServer;
 use Pest\Browser\Playwright\Servers\AlreadyStartedPlaywrightServer;
-use Pest\Browser\Playwright\Servers\PlaywrightNpxServer;
+use Pest\Browser\Playwright\Servers\PlaywrightNpmServer;
 use Pest\Browser\Support\Port;
 use Pest\Plugins\Parallel;
 use React\EventLoop\Loop;
@@ -61,9 +61,9 @@ final class ServerManager
 
         $port = Port::find();
 
-        $this->playwright ??= PlaywrightNpxServer::create(
+        $this->playwright ??= PlaywrightNpmServer::create(
             __DIR__.'/..',
-            'npx playwright run-server --host %s --port %d',
+            './node_modules/.bin/playwright run-server --host %s --port %d --mode launchServer',
             self::DEFAULT_HOST,
             $port,
             'Listening on',

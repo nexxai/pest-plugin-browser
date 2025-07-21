@@ -155,11 +155,25 @@ final class Playwright
         $response = Client::instance()->execute(
             '',
             'initialize',
-            ['sdkLanguage' => 'javascript']
+            [
+                'sdkLanguage' => 'javascript',
+            ]
         );
 
         /** @var array{method: string|null, params: array{type: string|null, guid: string, initializer: array{name: string|null}}} $message */
         foreach ($response as $message) {
+            if (
+                isset($message['method'])
+                && $message['method'] === '__create__'
+                && isset($message['params']['type'])
+                && $message['params']['type'] === 'Playwright'
+                && isset($message['params']['initializer']['preLaunchedBrowser'])
+            ) {
+                self::$browserTypes[$browser]->prelaunch(
+                    $message['params']['initializer']['preLaunchedBrowser']['guid'],
+                );
+            }
+
             if (
                 isset($message['method'])
                 && $message['method'] === '__create__'

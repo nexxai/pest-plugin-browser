@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pest\Browser\Playwright\Servers;
 
 use Pest\Browser\Contracts\PlaywrightServer;
+use Pest\Browser\Exceptions\PlaywrightNotInstalledException;
 use Pest\Browser\Playwright\Playwright;
 use RuntimeException;
 use Symfony\Component\Process\Process as SystemProcess;
@@ -14,7 +15,7 @@ use Symfony\Component\Process\Process as SystemProcess;
  *
  * @codeCoverageIgnore This class is used at plugin level to manage processes.
  */
-final class PlaywrightNpxServer implements PlaywrightServer
+final class PlaywrightNpmServer implements PlaywrightServer
 {
     /**
      * The underlying process instance, if any.
@@ -22,7 +23,7 @@ final class PlaywrightNpxServer implements PlaywrightServer
     private ?SystemProcess $systemProcess = null;
 
     /**
-     * Creates a new playwright npx server instance.
+     * Creates a new playwright npm server instance.
      */
     private function __construct(
         public readonly string $baseDirectory,
@@ -35,7 +36,7 @@ final class PlaywrightNpxServer implements PlaywrightServer
     }
 
     /**
-     * Creates a new playwright npx server instance with the given parameters.
+     * Creates a new playwright npm server instance with the given parameters.
      */
     public static function create(string $baseDirectory, string $command, string $host, int $port, string $until): self
     {
@@ -68,6 +69,12 @@ final class PlaywrightNpxServer implements PlaywrightServer
         $this->systemProcess->waitUntil(
             fn (string $type, string $output): bool => str_contains($output, $this->until)
         );
+
+        if ($this->isRunning() === false) {
+            throw new PlaywrightNotInstalledException(
+                'Playwright is not installed. Please run [npm install playwright].',
+            );
+        }
 
         AlreadyStartedPlaywrightServer::persist(
             $this->host,
@@ -116,7 +123,7 @@ final class PlaywrightNpxServer implements PlaywrightServer
                     'port' => $this->port,
                     'until' => $this->until,
                 ]),
-                ));
+            ));
         }
 
         return sprintf('%s:%d', $this->host, $this->port);

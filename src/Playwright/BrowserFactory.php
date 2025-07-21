@@ -26,13 +26,26 @@ final class BrowserFactory
     }
 
     /**
+     * Pre-launches the browser type with the given GUID.
+     */
+    public function prelaunch(string $guid): void
+    {
+        $this->browser = new Browser($guid);
+    }
+
+    /**
      * Launches a browser of the specified type.
      */
     public function launch(): Browser
     {
+        dump('Launching browser: ' . $this->name);
+
         if ($this->browser instanceof Browser) {
+            dump('Browser already launched: ' . $this->name);
             return $this->browser;
         }
+
+        dump('Launching new browser: ' . $this->name);
 
         $response = Client::instance()->execute(
             $this->guid,

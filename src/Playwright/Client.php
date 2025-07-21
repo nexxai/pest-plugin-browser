@@ -78,15 +78,14 @@ final class Client
         while (true) {
             /** @var string $responseJson */
             $responseJson = $this->fetch($this->websocketClient);
-
             /** @var array{id: string|null, params: array{add: string|null}, error: array{error: array{message: string|null}}} $response */
             $response = json_decode($responseJson, true);
 
             if (isset($response['error']['error']['message'])) {
                 $message = $response['error']['error']['message'];
 
-                if (str_contains($message, 'npx playwright install')) {
-                    $message = 'Playwright was not installed. Please run [npx playwright install] to install the browsers.';
+                if (str_contains($message, 'npm install playwright')) {
+                    $message = 'Playwright is not installed. Please run [npm install playwright].';
                 }
 
                 throw new ExpectationFailedException($message);

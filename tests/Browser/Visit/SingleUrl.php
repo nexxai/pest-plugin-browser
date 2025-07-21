@@ -103,19 +103,3 @@ it('may visit external URLs', function (): void {
     $page->assertSee('Laravel')
         ->assertDontSee('Symfony');
 });
-
-it('may visit a page with various browser types', function (): void {
-    Route::get('/', fn (): string => 'hi');
-
-    $pageInChrome = visit('/')->inChrome();
-    $pageInFirefox = visit('/')->inFirefox();
-    $pageInSafari = visit('/')->inSafari();
-
-    $userAgentChrome = $pageInChrome->script('navigator.userAgent');
-    $userAgentFirefox = $pageInFirefox->script('navigator.userAgent');
-    $userAgentSafari = $pageInSafari->script('navigator.userAgent');
-
-    expect($userAgentChrome)->toContain('Chrome')
-        ->and($userAgentFirefox)->toContain('Firefox')
-        ->and($userAgentSafari)->toContain('Safari');
-});

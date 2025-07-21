@@ -60,10 +60,6 @@
         }
     },
     "scripts": {
-        "setup": [
-            "cd drivers/laravel && npm install && npm run build",
-            "npx playwright install"
-        ],
         "bump:minor": [
             "composer update && composer bump"
         ],
