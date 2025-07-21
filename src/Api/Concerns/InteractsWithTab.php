@@ -6,6 +6,7 @@ namespace Pest\Browser\Api\Concerns;
 
 use Pest\Browser\Api\Webpage;
 use Pest\Browser\Execution;
+use Psy\Shell;
 
 /**
  * @mixin Webpage
@@ -36,6 +37,16 @@ trait InteractsWithTab
         }
 
         Execution::instance()->wait($seconds);
+
+        return $this;
+    }
+
+    /**
+     * Opens an interactive shell with the current state of the app.
+     */
+    public function shell(): self
+    {
+        test()->shell();
 
         return $this;
     }
