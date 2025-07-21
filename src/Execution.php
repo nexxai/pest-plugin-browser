@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Pest\Browser;
 
+use Pest\Browser\Playwright\Playwright;
 use Pest\Support\Container;
+use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\ExpectationFailedException;
 use React\EventLoop\Loop;
 use React\Stream\ReadableResourceStream;
+use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use function React\Async\async;
@@ -110,5 +114,47 @@ final class Execution
         }));
 
         $this->tick();
+    }
+
+    /**
+     * Awaits for a condition to be met, retrying until the timeout is reached.
+     */
+    public function waitForExpectation(callable $callback, int|float $timeout = 1): mixed
+    {
+        $originalCount = Assert::getCount();
+
+        $start = microtime(true);
+        $end = $start + $timeout;
+
+        while (microtime(true) < $end) {
+            try {
+                return Playwright::usingTimeout(1000, $callback);
+            } catch (ExpectationFailedException) {
+                //
+            }
+
+            $this->resetAssertions($originalCount);
+
+            self::instance()->wait(0.01);
+        }
+
+        return $callback();
+    }
+
+    /**
+     * Resets the assertion count to the original value.
+     */
+    private function resetAssertions(int $originalCount): void
+    {
+        if (Assert::getCount() === $originalCount) {
+            return;
+        }
+
+        $reflector = new ReflectionClass(Assert::class);
+        $property = $reflector->getProperty('count');
+        $property->setAccessible(true);
+
+        // @phpstan-ignore-next-line
+        $property->setValue(Assert::class, $originalCount);
     }
 }

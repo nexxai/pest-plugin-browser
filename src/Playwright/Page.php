@@ -12,9 +12,7 @@ use Pest\Browser\Support\Screenshot;
 use Pest\Browser\Support\Selector;
 use Pest\Browser\Support\Shell;
 use Pest\TestSuite;
-use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\ExpectationFailedException;
-use ReflectionClass;
 use RuntimeException;
 
 /**
@@ -58,7 +56,7 @@ final class Page
      */
     public function url(): string
     {
-        $url = $this->await(
+        $url = Execution::instance()->waitForExpectation(
             fn (): mixed => $this->evaluate('() => window.location.href'),
         );
 
@@ -307,31 +305,6 @@ final class Page
     }
 
     /**
-     * Awaits for a condition to be met, retrying until the timeout is reached.
-     */
-    public function await(callable $callback, int|float $timeout = 1): mixed
-    {
-        $originalCount = Assert::getCount();
-
-        $start = microtime(true);
-        $end = $start + $timeout;
-
-        while (microtime(true) < $end) {
-            try {
-                return Playwright::usingTimeout(1000, $callback);
-            } catch (ExpectationFailedException) {
-                //
-            }
-
-            $this->resetAssertions($originalCount);
-
-            Execution::instance()->wait(0.01);
-        }
-
-        return $callback();
-    }
-
-    /**
      * Sets the content of the page.
      */
     public function setContent(string $html): self
@@ -561,23 +534,6 @@ final class Page
     public function isClosed(): bool
     {
         return $this->closed;
-    }
-
-    /**
-     * Resets the assertion count to the original value.
-     */
-    private function resetAssertions(int $originalCount): void
-    {
-        if (Assert::getCount() === $originalCount) {
-            return;
-        }
-
-        $reflector = new ReflectionClass(Assert::class);
-        $property = $reflector->getProperty('count');
-        $property->setAccessible(true);
-
-        // @phpstan-ignore-next-line
-        $property->setValue(Assert::class, $originalCount);
     }
 
     /**

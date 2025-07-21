@@ -249,13 +249,11 @@ final class LaravelHttpServer implements HttpServer
                 \Tighten\Ziggy\BladeRouteGenerator::$generated = false;
             }
 
-            // @phpstan-ignore-next-line
             if (app()->resolved(\Livewire\LivewireManager::class)) {
-                // @phpstan-ignore-next-line
                 $manager = app()->make(\Livewire\LivewireManager::class);
 
+                // @phpstan-ignore-next-line
                 if (method_exists($manager, 'flushState')) {
-                    // @phpstan-ignore-next-line
                     $manager->flushState();
                 }
             }
