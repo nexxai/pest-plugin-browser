@@ -160,7 +160,7 @@ final class Playwright
             ]
         );
 
-        /** @var array{method: string|null, params: array{type: string|null, guid: string, initializer: array{name: string|null}}} $message */
+        /** @var array{method: string|null, params: array{type: string|null, guid: string, initializer: array{name: string|null, preLaunchedBrowser?: array{guid: string}}}} $message */
         foreach ($response as $message) {
             if (
                 isset($message['method'])

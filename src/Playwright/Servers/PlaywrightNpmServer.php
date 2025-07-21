@@ -6,6 +6,7 @@ namespace Pest\Browser\Playwright\Servers;
 
 use Pest\Browser\Contracts\PlaywrightServer;
 use Pest\Browser\Exceptions\PlaywrightNotInstalledException;
+use Pest\Browser\Exceptions\PlaywrightOutdatedException;
 use Pest\Browser\Playwright\Playwright;
 use RuntimeException;
 use Symfony\Component\Process\Process as SystemProcess;
@@ -17,6 +18,11 @@ use Symfony\Component\Process\Process as SystemProcess;
  */
 final class PlaywrightNpmServer implements PlaywrightServer
 {
+    /**
+     * The playwright version required to run this server.
+     */
+    private const string PLAYWRIGHT_VERSION = '1.54.1';
+
     /**
      * The underlying process instance, if any.
      */
@@ -54,6 +60,8 @@ final class PlaywrightNpmServer implements PlaywrightServer
             return;
         }
 
+        self::ensurePlaywrightIsInstalledAndVersionIsSupported();
+
         $this->systemProcess = SystemProcess::fromShellCommandline(sprintf(
             $this->command,
             $this->host,
@@ -71,9 +79,7 @@ final class PlaywrightNpmServer implements PlaywrightServer
         );
 
         if ($this->isRunning() === false) {
-            throw new PlaywrightNotInstalledException(
-                'Playwright is not installed. Please run [npm install playwright].',
-            );
+            throw new PlaywrightNotInstalledException();
         }
 
         AlreadyStartedPlaywrightServer::persist(
@@ -123,10 +129,42 @@ final class PlaywrightNpmServer implements PlaywrightServer
                     'port' => $this->port,
                     'until' => $this->until,
                 ]),
-            ));
+                ));
         }
 
         return sprintf('%s:%d', $this->host, $this->port);
+    }
+
+    /**
+     * Ensures that Playwright is installed and the version is supported.
+     *
+     * @throws PlaywrightNotInstalledException
+     */
+    private function ensurePlaywrightIsInstalledAndVersionIsSupported(): void
+    {
+        $process = SystemProcess::fromShellCommandline(
+            './node_modules/.bin/playwright run-server --version',
+            $this->baseDirectory,
+        );
+
+        $process->run();
+
+        if (! $process->isSuccessful()) {
+            throw new PlaywrightNotInstalledException();
+        }
+
+        $output = $process->getOutput();
+
+        // check if the output matches the required version
+        if (in_array(preg_match('/^Version\s+(\d+\.\d+\.\d+)/', $output, $matches), [0, false], true)) {
+            throw new PlaywrightNotInstalledException();
+        }
+
+        $version = $matches[1];
+
+        if (version_compare($version, self::PLAYWRIGHT_VERSION, '<')) {
+            throw new PlaywrightOutdatedException();
+        }
     }
 
     /**

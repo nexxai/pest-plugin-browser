@@ -38,14 +38,9 @@ final class BrowserFactory
      */
     public function launch(): Browser
     {
-        dump('Launching browser: ' . $this->name);
-
         if ($this->browser instanceof Browser) {
-            dump('Browser already launched: ' . $this->name);
             return $this->browser;
         }
-
-        dump('Launching new browser: ' . $this->name);
 
         $response = Client::instance()->execute(
             $this->guid,

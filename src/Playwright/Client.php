@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pest\Browser\Playwright;
 
 use Generator;
+use Pest\Browser\Exceptions\PlaywrightOutdatedException;
 use PHPUnit\Framework\ExpectationFailedException;
 use React\EventLoop\Loop;
 use WebSocket\Client as WebSocketClient;
@@ -84,8 +85,8 @@ final class Client
             if (isset($response['error']['error']['message'])) {
                 $message = $response['error']['error']['message'];
 
-                if (str_contains($message, 'npm install playwright')) {
-                    $message = 'Playwright is not installed. Please run [npm install playwright].';
+                if (str_contains($message, 'Playwright was just installed or updated')) {
+                    throw new PlaywrightOutdatedException();
                 }
 
                 throw new ExpectationFailedException($message);
