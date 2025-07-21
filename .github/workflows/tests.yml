@@ -18,15 +18,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Install Aspell
-      shell: bash
-      run: |
-        if [[ "$RUNNER_OS" == "Linux" ]]; then
-          sudo apt-get update && sudo apt-get install -y aspell aspell-en
-        elif [[ "$RUNNER_OS" == "macOS" ]]; then
-          brew install aspell
-        fi
-
     - name: Setup Node ${{ matrix.node }}
       uses: actions/setup-node@v4
       with:
@@ -47,8 +38,11 @@ jobs:
     - name: Install PHP dependencies
       run: composer update --${{ matrix.dependency-version }} --no-interaction --no-progress --ansi
 
-    - name: Setup
-      run: composer setup
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
 
     - name: Tests
       run: composer test
