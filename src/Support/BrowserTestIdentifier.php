@@ -88,18 +88,19 @@ final readonly class BrowserTestIdentifier
         // @phpstan-ignore-next-line
         $code = implode('', array_slice($lines, $startLine - 1, $endLine - $startLine + 1));
 
-        // Tokenize and search for "page" function usage
         $tokens = token_get_all('<?php '.$code);
         $tokensCount = count($tokens);
 
         for ($i = 0; $i < $tokensCount - 1; $i++) {
-            if (
-                is_array($tokens[$i]) &&
-                $tokens[$i][0] === T_STRING &&
-                mb_strtolower($tokens[$i][1]) === $functionName &&
-                $tokens[$i + 1] === '('
-            ) {
-                return true;
+            if (is_array($tokens[$i]) &&
+            $tokens[$i][0] === T_STRING &&
+            mb_strtolower($tokens[$i][1]) === $functionName &&
+            $tokens[$i + 1] === '(') {
+                if (($tokens[$i - 1][1] ?? '') === '::' && ($tokens[$i - 2][1] ?? '') === 'Livewire') {
+                    return true;
+                }
+
+                return $tokens[$i - 1][0] === T_WHITESPACE;
             }
         }
 
