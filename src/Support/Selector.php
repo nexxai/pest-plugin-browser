@@ -23,6 +23,14 @@ final class Selector
     }
 
     /**
+     * Check if the selector is a data test selector.
+     */
+    public static function isDataTest(string $selector): bool
+    {
+        return str_starts_with($selector, '@');
+    }
+
+    /**
      * Get selector by attribute text.
      */
     public static function getByAttributeTextSelector(string $attrName, string $text, bool $exact = false): string

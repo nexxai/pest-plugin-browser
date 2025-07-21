@@ -5,14 +5,14 @@ declare(strict_types=1);
 it('may press a button with text', function (): void {
     Route::get('/', fn (): string => '
         <form>
-            <button type="button" id="submit-btn" onclick="document.getElementById(\'result\').textContent = \'Button Pressed\'">Submit</button>
+            <button data-test="my-button" type="button" id="submit-btn" onclick="document.getElementById(\'result\').textContent = \'Button Pressed\'">Submit</button>
             <div id="result"></div>
         </form>
     ');
 
     $page = visit('/');
 
-    $page->press('Submit');
+    $page->press('@my-button');
 
     expect($page->text('#result'))->toBe('Button Pressed');
 });

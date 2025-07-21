@@ -35,6 +35,16 @@ final readonly class GuessLocator
             return $this->page->locator($selector);
         }
 
+        if (Selector::isDataTest($selector)) {
+            $id = Selector::escapeForAttributeSelectorOrRegex(str_replace('@', '', $selector), true);
+
+            return $this->page->unstrict(
+                fn (): Locator => $this->page->locator(
+                    "[data-testid=$id], [data-test=$id]",
+                ),
+            );
+        }
+
         foreach (['[id="%s"]', '[name="%s"]'] as $format) {
             $formattedSelector = sprintf($format, $selector);
 

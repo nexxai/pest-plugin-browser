@@ -5,19 +5,19 @@ declare(strict_types=1);
 use PHPUnit\Framework\ExpectationFailedException;
 
 it('may assert checkbox is checked', function (): void {
-    Route::get('/', fn (): string => '<input type="checkbox" name="terms" checked>');
+    Route::get('/', fn (): string => '<input data-test="terms" type="checkbox" name="terms" checked>');
 
     $page = visit('/');
 
-    $page->assertChecked('terms');
+    $page->assertChecked('@terms');
 });
 
 it('may fail when asserting checkbox is checked but it is not', function (): void {
-    Route::get('/', fn (): string => '<input type="checkbox" name="terms">');
+    Route::get('/', fn (): string => '<input data-test="terms" type="checkbox" name="terms">');
 
     $page = visit('/');
 
-    $page->assertChecked('terms');
+    $page->assertChecked('@terms');
 })->throws(ExpectationFailedException::class);
 
 it('may assert checkbox with specific value is checked', function (): void {

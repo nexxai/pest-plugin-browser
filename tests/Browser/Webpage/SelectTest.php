@@ -6,7 +6,7 @@ use PHPUnit\Framework\ExpectationFailedException;
 
 it('may select an option by value or label', function (): void {
     Route::get('/', fn (): string => '
-        <select name="country">
+        <select name="country" data-testid="my-country-field">
             <option value="us">United States</option>
             <option value="ca">Canada</option>
             <option value="mx">Mexico</option>
@@ -15,7 +15,7 @@ it('may select an option by value or label', function (): void {
 
     $page = visit('/');
 
-    $page->assertValue('country', 'us');
+    $page->assertValue('@my-country-field', 'us');
 
     $page->select('country', 'ca');
     $page->assertValue('country', 'ca');
