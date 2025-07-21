@@ -49,7 +49,17 @@ final class Client
     public function connectTo(string $url): void
     {
         if (! $this->websocketClient instanceof WebSocketClient) {
-            $this->websocketClient = new WebSocketClient("ws://$url?browser=chromium");
+            $browser = Playwright::defaultBrowserType()->toPlaywrightName();
+
+            $launchOptions = json_encode([
+                'headless' => Playwright::isHeadless(),
+                'ignoreHTTPSErrors' => true,
+                'bypassCSP' => true,
+            ]);
+
+            $this->websocketClient = new WebSocketClient(
+                "ws://$url?browser=$browser&launch-options=$launchOptions",
+            );
         }
     }
 

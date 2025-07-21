@@ -46,6 +46,18 @@ trait InteractsWithTab
      */
     public function shell(): self
     {
+        // @phpstan-ignore-next-line
+        test()->shell();
+
+        return $this;
+    }
+
+    /**
+     * Opens an interactive shell with the current state of the app.
+     */
+    public function tinker(): self
+    {
+        // @phpstan-ignore-next-line
         test()->shell();
 
         return $this;

@@ -70,6 +70,14 @@ final class Playwright
     }
 
     /**
+     * Checks if Playwright is running in headless mode.
+     */
+    public static function isHeadless(): bool
+    {
+        return self::$headless;
+    }
+
+    /**
      * Set whether to show the diff on screenshot assertions.
      */
     public static function setShouldDiffOnScreenshotAssertions(): void
