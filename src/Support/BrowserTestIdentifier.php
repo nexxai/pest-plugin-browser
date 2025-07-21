@@ -96,6 +96,10 @@ final readonly class BrowserTestIdentifier
             $tokens[$i][0] === T_STRING &&
             mb_strtolower($tokens[$i][1]) === $functionName &&
             $tokens[$i + 1] === '(') {
+                if ($functionName === 'debug') {
+                    return true;
+                }
+
                 if (($tokens[$i - 1][1] ?? '') === '::' && ($tokens[$i - 2][1] ?? '') === 'Livewire') {
                     return true;
                 }
