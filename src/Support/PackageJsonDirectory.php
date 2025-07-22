@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Support;
 
-use Pest\Browser\Exceptions\PlaywrightNotInstalledException;
 use Pest\TestSuite;
 
 /**
@@ -17,14 +16,6 @@ final readonly class PackageJsonDirectory
      */
     public static function find(): string
     {
-        $rootPath = TestSuite::getInstance()->rootPath;
-
-        $packageJsonPath = $rootPath.'/package.json';
-
-        if (! file_exists($packageJsonPath)) {
-            throw new PlaywrightNotInstalledException();
-        }
-
-        return dirname($packageJsonPath);
+        return TestSuite::getInstance()->rootPath;
     }
 }
