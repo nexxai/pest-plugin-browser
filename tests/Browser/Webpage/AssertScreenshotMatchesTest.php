@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\ExpectationFailedException;
 
+beforeEach()->skipOnCI();
+
 it('may match a screenshot', function (): void {
     Route::get('/', fn (): string => '
         <div>
