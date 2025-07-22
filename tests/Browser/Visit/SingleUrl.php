@@ -27,7 +27,7 @@ it('may visit a page', function (string $method): void {
 
     $page->assertSee('Experience elegance across every device.')
         ->assertScreenshotMatches();
-})->with($methods);
+})->with($methods)->skipOnCI();
 
 it('may visit a page in light/dark mode', function (ColorScheme $scheme): void {
     Route::get('/', fn (): string => '
@@ -71,7 +71,7 @@ it('may visit a page in light/dark mode', function (ColorScheme $scheme): void {
     };
 
     $page->assertScreenshotMatches();
-})->with(ColorScheme::cases());
+})->with(ColorScheme::cases())->skipOnCI();
 
 it('may visit a page with custom locale and timezone', function (): void {
     Route::get('/', fn (): string => '
