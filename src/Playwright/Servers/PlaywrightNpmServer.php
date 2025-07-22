@@ -60,8 +60,6 @@ final class PlaywrightNpmServer implements PlaywrightServer
             return;
         }
 
-        self::ensurePlaywrightIsInstalledAndVersionIsSupported();
-
         $this->systemProcess = SystemProcess::fromShellCommandline(sprintf(
             $this->command,
             $this->host,
@@ -79,6 +77,8 @@ final class PlaywrightNpmServer implements PlaywrightServer
         );
 
         if ($this->isRunning() === false) {
+            self::ensurePlaywrightIsInstalledAndVersionIsSupported();
+
             throw new PlaywrightNotInstalledException();
         }
 
