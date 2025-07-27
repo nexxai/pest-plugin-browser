@@ -143,7 +143,7 @@ final class PlaywrightNpmServer implements PlaywrightServer
     private function ensurePlaywrightIsInstalledAndVersionIsSupported(): void
     {
         $process = SystemProcess::fromShellCommandline(
-            './node_modules/.bin/playwright run-server --version',
+            '.'.DIRECTORY_SEPARATOR.'node_modules'.DIRECTORY_SEPARATOR.'.bin'.DIRECTORY_SEPARATOR.'playwright run-server --version',
             $this->baseDirectory,
         );
 

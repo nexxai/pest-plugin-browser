@@ -64,7 +64,7 @@ final class ServerManager
 
         $this->playwright ??= PlaywrightNpmServer::create(
             PackageJsonDirectory::find(),
-            './node_modules/.bin/playwright run-server --host %s --port %d --mode launchServer',
+            '.'.DIRECTORY_SEPARATOR.'node_modules'.DIRECTORY_SEPARATOR.'.bin'.DIRECTORY_SEPARATOR.'playwright run-server --host %s --port %d --mode launchServer',
             self::DEFAULT_HOST,
             $port,
             'Listening on',
