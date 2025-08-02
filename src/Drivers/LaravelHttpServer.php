@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pest\Browser\Drivers\Laravel;
+namespace Pest\Browser\Drivers;
 
 use Fig\Http\Message\StatusCodeInterface;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
@@ -11,6 +11,7 @@ use Illuminate\Routing\UrlGenerator;
 use Pest\Browser\Contracts\HttpServer;
 use Pest\Browser\Exceptions\ServerNotFoundException;
 use Pest\Browser\Execution;
+use Pest\Browser\GlobalState;
 use Psr\Http\Message\ServerRequestInterface;
 use React\EventLoop\LoopInterface;
 use React\Http\HttpServer as ReactHttpServer;
@@ -245,29 +246,7 @@ final class LaravelHttpServer implements HttpServer
     {
         // @phpstan-ignore-next-line
         return new Promise(function (callable $resolve) use ($request): void {
-            if (class_exists(\Tighten\Ziggy\BladeRouteGenerator::class)) {
-                \Tighten\Ziggy\BladeRouteGenerator::$generated = false;
-            }
-
-            if (app()->resolved(\Livewire\LivewireManager::class)) {
-                $manager = app()->make(\Livewire\LivewireManager::class);
-
-                // @phpstan-ignore-next-line
-                if (method_exists($manager, 'flushState')) {
-                    $manager->flushState();
-                }
-            }
-
-            // @phpstan-ignore-next-line
-            if (app()->resolved(\Inertia\ResponseFactory::class)) {
-                // @phpstan-ignore-next-line
-                $factory = app()->make(\Inertia\ResponseFactory::class);
-
-                if (method_exists($factory, 'flushShared')) {
-                    // @phpstan-ignore-next-line
-                    $factory->flushShared();
-                }
-            }
+            GlobalState::flush();
 
             if (Execution::instance()->isWaiting() === false) {
                 $this->loop->futureTick(fn () => $this->loop->stop());

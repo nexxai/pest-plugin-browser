@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pest\Browser\Drivers\Laravel;
+namespace Pest\Browser\Drivers;
 
 use Pest\Browser\Contracts\HttpServer;
 
