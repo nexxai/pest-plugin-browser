@@ -11,7 +11,6 @@ use Amp\Http\Server\Request as AmpRequest;
 use Amp\Http\Server\RequestHandler\ClosureRequestHandler;
 use Amp\Http\Server\Response;
 use Amp\Http\Server\SocketHttpServer;
-use Exception;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Http\Request;
 use Illuminate\Routing\UrlGenerator;
@@ -20,7 +19,7 @@ use Pest\Browser\Contracts\HttpServer;
 use Pest\Browser\Exceptions\ServerNotFoundException;
 use Pest\Browser\Execution;
 use Pest\Browser\GlobalState;
-use Psr\Log\AbstractLogger;
+use Psr\Log\NullLogger;
 use Symfony\Component\Mime\MimeTypes;
 
 /**
@@ -71,7 +70,7 @@ final class LaravelHttpServer implements HttpServer
 
         $parts = parse_url($url);
         $queryParameters = [];
-        $path = $parts['path'];
+        $path = $parts['path'] ?? '/';
         parse_str($parts['query'] ?? '', $queryParameters);
 
         return (string) Uri::of($this->url())
@@ -88,16 +87,7 @@ final class LaravelHttpServer implements HttpServer
             return;
         }
 
-        $this->socket = $server = SocketHttpServer::createForDirectAccess(new class extends AbstractLogger
-        {
-            public function log($level, $message, array $context = []): void
-            {
-                if (in_array($level, ['error', 'critical'], true)) {
-                    dump($message);
-                    throw new Exception($message);
-                }
-            }
-        });
+        $this->socket = $server = SocketHttpServer::createForDirectAccess(new NullLogger());
 
         $server->expose("{$this->host}:{$this->port}");
         $server->start(
@@ -207,7 +197,7 @@ final class LaravelHttpServer implements HttpServer
             $request->getCookies(),
             [], // @TODO files...
             [],
-            $request->getBody(),
+            (string) $request->getBody(),
         );
 
         $symfonyRequest->headers->add($request->getHeaders());
