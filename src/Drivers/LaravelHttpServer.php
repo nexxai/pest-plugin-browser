@@ -196,7 +196,7 @@ final class LaravelHttpServer implements HttpServer
             $request->getQueryParameters(),
             $request->getCookies(),
             [], // @TODO files...
-            [],
+            [], // @TODO server variables...
             (string) $request->getBody(),
         );
 
