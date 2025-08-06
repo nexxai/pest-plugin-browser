@@ -59,6 +59,8 @@ final class ArrayablePendingAwaitablePage implements ArrayAccess, Countable, Ite
      * Get an iterator for all pending pages.
      *
      * @return Traversable<int, PendingAwaitablePage|On>
+     *
+     * @internal
      */
     public function getIterator(): Traversable
     {
@@ -67,6 +69,8 @@ final class ArrayablePendingAwaitablePage implements ArrayAccess, Countable, Ite
 
     /**
      * Determine if a pending page exists at the given offset.
+     *
+     * @internal
      */
     public function offsetExists(mixed $offset): bool
     {
@@ -77,6 +81,8 @@ final class ArrayablePendingAwaitablePage implements ArrayAccess, Countable, Ite
      * Get a pending page at the given offset.
      *
      * @throws OutOfBoundsException
+     *
+     * @internal
      */
     public function offsetGet(mixed $offset): PendingAwaitablePage|On
     {
@@ -89,6 +95,8 @@ final class ArrayablePendingAwaitablePage implements ArrayAccess, Countable, Ite
 
     /**
      * Set a pending page at the given offset.
+     *
+     * @internal
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
@@ -101,6 +109,8 @@ final class ArrayablePendingAwaitablePage implements ArrayAccess, Countable, Ite
 
     /**
      * Unset the pending page at the given offset.
+     *
+     * @internal
      */
     public function offsetUnset(mixed $offset): void
     {
@@ -109,6 +119,8 @@ final class ArrayablePendingAwaitablePage implements ArrayAccess, Countable, Ite
 
     /**
      * Count the number of pending pages.
+     *
+     * @internal
      */
     public function count(): int
     {

@@ -10,12 +10,11 @@ pest()->uses(RefreshDatabase::class);
 
 test('example', function (): void {
     Route::get('/', fn (): string => Blade::render(<<<'BLADE'
-        hi nuno
+        <div>hi nuno</div>
         BLADE,
     ));
 
     $response = visit('/');
 
-    $response
-        ->assertSee('hi nuno');
+    $response->assertSee('hi nuno');
 });
