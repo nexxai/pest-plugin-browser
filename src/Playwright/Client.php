@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Playwright;
 
+use Amp\Websocket\Client\WebsocketConnection;
 use Generator;
 use Pest\Browser\Exceptions\PlaywrightOutdatedException;
 use PHPUnit\Framework\ExpectationFailedException;
-use WebSocket\Client as WebSocketClient;
-use WebSocket\Exception\ConnectionTimeoutException;
 
-use function Amp\delay;
+use function Amp\Websocket\Client\connect;
 
 /**
  * @internal
@@ -25,7 +24,7 @@ final class Client
     /**
      * WebSocket client instance.
      */
-    private ?WebSocketClient $websocketClient = null;
+    private ?WebsocketConnection $websocketConnection = null;
 
     /**
      * Default timeout for requests in milliseconds.
@@ -49,7 +48,7 @@ final class Client
      */
     public function connectTo(string $url): void
     {
-        if (! $this->websocketClient instanceof WebSocketClient) {
+        if (! $this->websocketConnection instanceof WebsocketConnection) {
             $browser = Playwright::defaultBrowserType()->toPlaywrightName();
 
             $launchOptions = json_encode([
@@ -58,7 +57,7 @@ final class Client
                 'bypassCSP' => true,
             ]);
 
-            $this->websocketClient = new WebSocketClient(
+            $this->websocketConnection = connect(
                 "ws://$url?browser=$browser&launch-options=$launchOptions",
             );
         }
@@ -73,7 +72,7 @@ final class Client
      */
     public function execute(string $guid, string $method, array $params = [], array $meta = []): Generator
     {
-        assert($this->websocketClient instanceof WebSocketClient, 'WebSocket client is not connected.');
+        assert($this->websocketConnection instanceof WebsocketConnection, 'WebSocket client is not connected.');
 
         $requestId = uniqid();
 
@@ -85,11 +84,10 @@ final class Client
             'metadata' => $meta,
         ]);
 
-        $this->websocketClient->text($requestJson);
+        $this->websocketConnection->sendText($requestJson);
 
         while (true) {
-            /** @var string $responseJson */
-            $responseJson = $this->fetch($this->websocketClient);
+            $responseJson = (string) $this->websocketConnection->receive()?->read();
             /** @var array{id: string|null, params: array{add: string|null}, error: array{error: array{message: string|null}}} $response */
             $response = json_decode($responseJson, true);
 
@@ -128,21 +126,5 @@ final class Client
     public function timeout(): int
     {
         return $this->timeout;
-    }
-
-    /**
-     * Fetches the response from the Playwright server.
-     */
-    private function fetch(WebSocketClient $client): string
-    {
-        $client->setTimeout(0.01);
-
-        while (true) {
-            try {
-                return $client->receive()->getContent();
-            } catch (ConnectionTimeoutException) {
-                delay(0);
-            }
-        }
     }
 }

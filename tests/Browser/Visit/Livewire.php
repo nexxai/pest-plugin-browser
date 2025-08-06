@@ -45,9 +45,9 @@ it('may visit a component', function (): void {
     $page
         ->assertSee('Hello, World!')
         ->click('Increment')
-        ->assertSee('1')
+        ->assertSee(1)
         ->assertSet('counter', 1)
         ->click('Increment')
-        ->assertSee('2')
+        ->assertSee(2)
         ->assertSet('counter', 2);
 });

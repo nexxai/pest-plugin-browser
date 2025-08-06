@@ -16,9 +16,9 @@
         "ext-sockets": "*",
         "amphp/amp": "^3.1.0",
         "amphp/http-server": "^3.4.3",
+        "amphp/websocket-client": "^2.0",
         "pestphp/pest": "^4.0.0",
         "pestphp/pest-plugin": "^4.0.0",
-        "phrity/websocket": "^3.5.0",
         "symfony/process": "^7.3.0"
     },
     "autoload": {

@@ -10,7 +10,7 @@ pest()->uses(RefreshDatabase::class);
 
 test('example', function (): void {
     Route::get('/', fn (): string => Blade::render(<<<'BLADE'
-        <div>hi nuno</div>
+        hi nuno
         BLADE,
     ));
 
