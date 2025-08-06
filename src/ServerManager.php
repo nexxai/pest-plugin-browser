@@ -13,8 +13,6 @@ use Pest\Browser\Playwright\Servers\PlaywrightNpmServer;
 use Pest\Browser\Support\PackageJsonDirectory;
 use Pest\Browser\Support\Port;
 use Pest\Plugins\Parallel;
-use React\EventLoop\Loop;
-use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 
 /**
  * @internal
@@ -85,8 +83,6 @@ final class ServerManager
     {
         return $this->http ??= match (function_exists('app_path')) {
             true => new LaravelHttpServer(
-                Loop::get(),
-                new HttpFoundationFactory(),
                 self::DEFAULT_HOST,
                 Port::find(),
             ),

@@ -16,5 +16,6 @@ test('example', function (): void {
 
     $response = visit('/');
 
-    $response->assertSee('hi nuno');
+    $response
+        ->assertSee('hi nuno');
 });

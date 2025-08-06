@@ -4,31 +4,24 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Drivers;
 
-use Fig\Http\Message\StatusCodeInterface;
+use Amp\ByteStream\ReadableResourceStream;
+use Amp\Http\Server\DefaultErrorHandler;
+use Amp\Http\Server\HttpServer as AmpHttpServer;
+use Amp\Http\Server\Request as AmpRequest;
+use Amp\Http\Server\RequestHandler\ClosureRequestHandler;
+use Amp\Http\Server\Response;
+use Amp\Http\Server\SocketHttpServer;
+use Exception;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Http\Request;
 use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\Uri;
 use Pest\Browser\Contracts\HttpServer;
 use Pest\Browser\Exceptions\ServerNotFoundException;
 use Pest\Browser\Execution;
 use Pest\Browser\GlobalState;
-use Psr\Http\Message\ServerRequestInterface;
-use React\EventLoop\LoopInterface;
-use React\Http\HttpServer as ReactHttpServer;
-use React\Http\Message\Response;
-use React\Http\Message\Uri;
-use React\Http\Middleware\LimitConcurrentRequestsMiddleware;
-use React\Http\Middleware\RequestBodyBufferMiddleware;
-use React\Http\Middleware\RequestBodyParserMiddleware;
-use React\Http\Middleware\StreamingRequestMiddleware;
-use React\Promise\Promise;
-use React\Promise\PromiseInterface;
-use React\Socket\ConnectionInterface;
-use React\Socket\SocketServer;
-use React\Stream\ReadableResourceStream;
-use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Psr\Log\AbstractLogger;
 use Symfony\Component\Mime\MimeTypes;
-use Throwable;
 
 /**
  * @internal
@@ -40,15 +33,7 @@ final class LaravelHttpServer implements HttpServer
     /**
      * The underlying socket server instance, if any.
      */
-    private ?SocketServer $socket = null;
-
-    /**
-     * The current connections to the server. Remember to flush
-     * them when the server is being used between tests or sessions.
-     *
-     * @var array<int, ConnectionInterface>
-     */
-    private array $connections = [];
+    private ?AmpHttpServer $socket = null;
 
     /**
      * The original asset URL, if set.
@@ -59,8 +44,6 @@ final class LaravelHttpServer implements HttpServer
      * Creates a new laravel http server instance.
      */
     public function __construct(
-        private readonly LoopInterface $loop,
-        private readonly HttpFoundationFactory $factory,
         public readonly string $host,
         public readonly int $port,
     ) {
@@ -86,12 +69,14 @@ final class LaravelHttpServer implements HttpServer
             $url = '/'.$url;
         }
 
-        $serverUri = new Uri($this->url());
+        $parts = parse_url($url);
+        $queryParameters = [];
+        $path = $parts['path'];
+        parse_str($parts['query'] ?? '', $queryParameters);
 
-        return (string) (new Uri($url))
-            ->withScheme($serverUri->getScheme())
-            ->withHost($serverUri->getHost())
-            ->withPort($serverUri->getPort());
+        return (string) Uri::of($this->url())
+            ->withPath($path)
+            ->withQuery($queryParameters);
     }
 
     /**
@@ -99,40 +84,26 @@ final class LaravelHttpServer implements HttpServer
      */
     public function start(): void
     {
-        if ($this->socket instanceof SocketServer) {
+        if ($this->socket instanceof AmpHttpServer) {
             return;
         }
 
-        $this->socket = new SocketServer(
-            "{$this->host}:{$this->port}",
-            [],
-            $this->loop,
-        );
-
-        $this->socket->on('connection', function (ConnectionInterface $connection): ConnectionInterface {
-            $this->connections[] = $connection;
-
-            $connection->on('close', function () use ($connection): void {
-                $index = array_search($connection, $this->connections, true);
-
-                if ($index !== false) {
-                    unset($this->connections[$index]);
+        $this->socket = $server = SocketHttpServer::createForDirectAccess(new class extends AbstractLogger
+        {
+            public function log($level, $message, array $context = []): void
+            {
+                if (in_array($level, ['error', 'critical'], true)) {
+                    dump($message);
+                    throw new Exception($message);
                 }
-            });
-
-            return $connection;
+            }
         });
 
-        $server = new ReactHttpServer(
-            $this->loop,
-            new StreamingRequestMiddleware(),
-            new LimitConcurrentRequestsMiddleware(100),
-            new RequestBodyBufferMiddleware(32 * 1024 * 1024),
-            new RequestBodyParserMiddleware(32 * 1024 * 1024, 100),
-            $this->handleRequest(...),
+        $server->expose("{$this->host}:{$this->port}");
+        $server->start(
+            new ClosureRequestHandler($this->handleRequest(...)),
+            new DefaultErrorHandler(),
         );
-
-        $server->listen($this->socket);
     }
 
     /**
@@ -141,11 +112,11 @@ final class LaravelHttpServer implements HttpServer
     public function stop(): void
     {
         // @codeCoverageIgnoreStart
-        if ($this->socket instanceof SocketServer) {
+        if ($this->socket instanceof AmpHttpServer) {
             $this->flush();
 
-            if ($this->socket instanceof SocketServer) {
-                $this->socket->close();
+            if ($this->socket instanceof AmpHttpServer) {
+                $this->socket->stop();
 
                 $this->socket = null;
             }
@@ -157,18 +128,11 @@ final class LaravelHttpServer implements HttpServer
      */
     public function flush(): void
     {
-        if (! $this->socket instanceof SocketServer) {
+        if (! $this->socket instanceof AmpHttpServer) {
             return;
         }
 
-        $this->loop->futureTick(fn () => $this->loop->stop());
-        $this->loop->run();
-
-        foreach ($this->connections as $connection) {
-            $connection->close();
-        }
-
-        $this->connections = [];
+        Execution::instance()->tick();
     }
 
     /**
@@ -202,7 +166,7 @@ final class LaravelHttpServer implements HttpServer
      */
     private function url(): string
     {
-        if (! $this->socket instanceof SocketServer) {
+        if (! $this->socket instanceof AmpHttpServer) {
             throw new ServerNotFoundException('The HTTP server is not running.');
         }
 
@@ -219,110 +183,95 @@ final class LaravelHttpServer implements HttpServer
 
     /**
      * Handle the incoming request and return a response.
-     *
-     * @return PromiseInterface<Response>
      */
-    private function handleRequest(ServerRequestInterface $request): PromiseInterface
+    private function handleRequest(AmpRequest $request): Response
     {
-        $filepath = public_path($request->getUri()->getPath());
+        GlobalState::flush();
+
+        if (Execution::instance()->isWaiting() === false) {
+            Execution::instance()->tick();
+        }
+
+        $filepath = public_path($path = $request->getUri()->getPath());
 
         if (file_exists($filepath) && ! is_dir($filepath)) {
             return $this->asset($filepath);
         }
 
-        return $this->pipe(
-            Request::createFromBase($this->factory->createRequest($request)),
-        )->catch(static fn (Throwable $exception) => Response::plaintext(
-            $exception->getMessage()."\n".$exception->getTraceAsString()
-        )->withStatus(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR));
-    }
+        $kernel = app()->make(HttpKernel::class);
 
-    /**
-     * Pipe the request to the Laravel HTTP kernel and return the response.
-     *
-     * @return PromiseInterface<Response>
-     */
-    private function pipe(Request $request): PromiseInterface
-    {
-        // @phpstan-ignore-next-line
-        return new Promise(function (callable $resolve) use ($request): void {
-            GlobalState::flush();
+        $symfonyRequest = Request::create(
+            $path,
+            $request->getMethod(),
+            $request->getQueryParameters(),
+            $request->getCookies(),
+            [], // @TODO files...
+            [],
+            $request->getBody(),
+        );
 
-            if (Execution::instance()->isWaiting() === false) {
-                $this->loop->futureTick(fn () => $this->loop->stop());
+        $symfonyRequest->headers->add($request->getHeaders());
+
+        $response = $kernel->handle($laravelRequest = Request::createFromBase($symfonyRequest));
+
+        $kernel->terminate($laravelRequest, $response);
+
+        $content = $response->getContent();
+
+        if ($content === false) {
+            try {
+                ob_start();
+                $response->sendContent();
+            } finally {
+                // @phpstan-ignore-next-line
+                $content = mb_trim(ob_get_clean());
             }
+        }
 
-            $kernel = app()->make(HttpKernel::class);
-
-            $response = $kernel->handle($request);
-
-            $content = $response->getContent();
-
-            if ($content === false) {
-                try {
-                    ob_start();
-                    $response->sendContent();
-                } finally {
-                    // @phpstan-ignore-next-line
-                    $content = mb_trim(ob_get_clean());
-                }
-            }
-
-            $resolve(new Response(
-                $response->getStatusCode(),
-                $response->headers->all(), // @phpstan-ignore-line
-                $content,
-                $response->getProtocolVersion(),
-            ));
-
-            $kernel->terminate($request, $response);
-        });
+        return new Response(
+            $response->getStatusCode(),
+            $response->headers->all(), // @phpstan-ignore-line
+            $content,
+        );
     }
 
     /**
      * Return an asset response.
-     *
-     * @return PromiseInterface<Response>
      */
-    private function asset(string $filepath): PromiseInterface
+    private function asset(string $filepath): Response
     {
-        // @phpstan-ignore-next-line
-        return new Promise(function (callable $resolve) use ($filepath): void {
-            $file = fopen($filepath, 'r');
+        $file = fopen($filepath, 'r');
 
-            if ($file === false) {
-                $resolve(new Response(status: 404));
+        if ($file === false) {
+            return new Response(404);
+        }
 
-                return;
-            }
+        $mimeTypes = new MimeTypes();
+        $contentType = $mimeTypes->getMimeTypes(pathinfo($filepath, PATHINFO_EXTENSION));
 
-            $mimeTypes = new MimeTypes();
-            $contentType = $mimeTypes->getMimeTypes(pathinfo($filepath, PATHINFO_EXTENSION));
+        $contentType = $contentType[0] ?? 'application/octet-stream';
 
-            $contentType = $contentType[0] ?? 'application/octet-stream';
+        if (str_ends_with($filepath, '.js')) {
+            $temporaryStream = fopen('php://temp', 'r+');
+            assert($temporaryStream !== false, 'Failed to open temporary stream.');
 
-            if (str_ends_with($filepath, '.js')) {
-                $temporaryStream = fopen('php://temp', 'r+');
-                assert($temporaryStream !== false, 'Failed to open temporary stream.');
+            // @phpstan-ignore-next-line
+            $temporaryContent = fread($file, (int) filesize($filepath));
 
-                // @phpstan-ignore-next-line
-                $temporaryContent = fread($file, (int) filesize($filepath));
+            assert($temporaryContent !== false, 'Failed to open temporary stream.');
 
-                assert($temporaryContent !== false, 'Failed to open temporary stream.');
+            $content = $this->rewriteAssetUrl($temporaryContent);
 
-                $content = $this->rewriteAssetUrl($temporaryContent);
+            fwrite($temporaryStream, $content);
 
-                fwrite($temporaryStream, $content);
+            rewind($temporaryStream);
 
-                rewind($temporaryStream);
+            $file = $temporaryStream;
+        }
 
-                $file = $temporaryStream;
-            }
-
-            $resolve(new Response(200, [
-                'Content-Type' => $contentType,
-            ], new ReadableResourceStream($file)));
-        });
+        return new Response(200, [
+            'Content-Type' => $contentType,
+        ], new ReadableResourceStream($file));
     }
 
     /**

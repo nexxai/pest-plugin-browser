@@ -7,9 +7,10 @@ namespace Pest\Browser\Playwright;
 use Generator;
 use Pest\Browser\Exceptions\PlaywrightOutdatedException;
 use PHPUnit\Framework\ExpectationFailedException;
-use React\EventLoop\Loop;
 use WebSocket\Client as WebSocketClient;
 use WebSocket\Exception\ConnectionTimeoutException;
+
+use function Amp\delay;
 
 /**
  * @internal
@@ -140,8 +141,7 @@ final class Client
             try {
                 return $client->receive()->getContent();
             } catch (ConnectionTimeoutException) {
-                Loop::futureTick(fn () => Loop::stop());
-                Loop::run();
+                delay(0);
             }
         }
     }

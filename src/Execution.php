@@ -4,18 +4,16 @@ declare(strict_types=1);
 
 namespace Pest\Browser;
 
+use Amp\ByteStream\ReadableResourceStream;
 use Pest\Browser\Playwright\Playwright;
 use Pest\Support\Container;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\ExpectationFailedException;
-use React\EventLoop\Loop;
-use React\Stream\ReadableResourceStream;
 use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use function React\Async\async;
-use function React\Async\await;
-use function React\Promise\Timer\sleep;
+use function Amp\async;
+use function Amp\delay;
 
 /**
  * @internal
@@ -49,19 +47,13 @@ final class Execution
      */
     public function wait(int|float $seconds = 1): void
     {
-        $this->waiting = true;
+        async(function () use ($seconds): void {
+            $this->waiting = true;
 
-        try {
-            Loop::get()->futureTick(async(function () use ($seconds): void {
-                await(sleep($seconds));
+            delay($seconds);
 
-                Loop::stop();
-            }));
-
-            Loop::run();
-        } finally {
             $this->waiting = false;
-        }
+        })->await();
     }
 
     /**
@@ -77,15 +69,7 @@ final class Execution
      */
     public function tick(): void
     {
-        Loop::get()->futureTick(async(function (): void {
-            if ($this->waiting) {
-                return;
-            }
-
-            Loop::stop();
-        }));
-
-        Loop::run();
+        delay(0);
     }
 
     /**
@@ -95,25 +79,22 @@ final class Execution
     {
         $this->waiting = true;
 
-        Loop::get()->futureTick(async(function (): void {
-            $loop = Loop::get();
+        // @phpstan-ignore-next-line
+        Container::getInstance()->get(OutputInterface::class)->writeln(
+            '<info>Press any key to continue...</info>'
+        );
 
-            // @phpstan-ignore-next-line
-            Container::getInstance()->get(OutputInterface::class)->writeln(
-                '<info>Press any key to continue...</info>'
-            );
+        $stdin = new ReadableResourceStream(STDIN);
 
-            $stdin = new ReadableResourceStream(STDIN, $loop);
-
-            $stdin->on('data', function () use ($stdin, $loop): void {
-                $this->waiting = false;
-
+        async(function () use ($stdin): void {
+            while ($stdin->read() !== null) {
                 $stdin->close();
-                $loop->stop();
-            });
-        }));
 
-        $this->tick();
+                delay(0.1);
+
+                break;
+            }
+        })->await();
     }
 
     /**
