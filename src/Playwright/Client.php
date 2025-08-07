@@ -87,7 +87,7 @@ final class Client
         $this->websocketConnection->sendText($requestJson);
 
         while (true) {
-            $responseJson = (string) $this->websocketConnection->receive()?->read();
+            $responseJson = $this->fetch($this->websocketConnection);
             /** @var array{id: string|null, params: array{add: string|null}, error: array{error: array{message: string|null}}} $response */
             $response = json_decode($responseJson, true);
 
@@ -113,7 +113,7 @@ final class Client
     }
 
     /**
-     * Sets the timeout for requests.
+     * Sets the timeout in milliseconds for requests.
      */
     public function setTimeout(int $timeout): void
     {
@@ -126,5 +126,13 @@ final class Client
     public function timeout(): int
     {
         return $this->timeout;
+    }
+
+    /**
+     * Fetches the response from the Playwright server.
+     */
+    private function fetch(WebsocketConnection $client): string
+    {
+        return (string) $client->receive()?->read();
     }
 }

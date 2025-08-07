@@ -7,6 +7,7 @@ namespace Pest\Browser\Api;
 use Pest\Browser\Exceptions\BrowserExpectationFailedException;
 use Pest\Browser\Execution;
 use Pest\Browser\Playwright\Page;
+use Pest\Browser\Playwright\Playwright;
 use PHPUnit\Framework\ExpectationFailedException;
 
 /**
@@ -38,20 +39,22 @@ final readonly class AwaitableWebpage
     {
         $webpage = new Webpage($this->page, $this->initialUrl);
 
-        if (in_array($name, $this->nonAwaitableMethods, true)) {
-            // @phpstan-ignore-next-line
-            return $webpage->{$name}(...$arguments);
-        }
-
         try {
-            $result = Execution::instance()->waitForExpectation(
+            if (
+                in_array($name, $this->nonAwaitableMethods, true)
+                || str_starts_with($name, 'assert') === false
+                || Playwright::timeout() <= 1000
+            ) {
                 // @phpstan-ignore-next-line
-                fn () => $webpage->{$name}(...$arguments),
-            );
+                $result = $webpage->{$name}(...$arguments);
+            } else {
+                $result = Execution::instance()->waitForExpectation(
+                    // @phpstan-ignore-next-line
+                    fn () => $webpage->{$name}(...$arguments),
+                );
+            }
         } catch (ExpectationFailedException $e) {
-            $e = BrowserExpectationFailedException::from($e, $name, $arguments);
-
-            throw $e;
+            throw BrowserExpectationFailedException::from($e, $name, $arguments);
         }
 
         return $result === $webpage

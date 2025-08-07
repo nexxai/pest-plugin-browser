@@ -40,6 +40,11 @@ final class Playwright
     private static ColorScheme $defaultColorScheme = ColorScheme::LIGHT;
 
     /**
+     * The timeout in milliseconds.
+     */
+    private static int $timeout = 5_000;
+
+    /**
      * Get a browser factory for the given browser type.
      */
     public static function browser(BrowserType $browserType): BrowserFactory
@@ -91,6 +96,24 @@ final class Playwright
     public static function setColorScheme(ColorScheme $colorScheme): void
     {
         self::$defaultColorScheme = $colorScheme;
+    }
+
+    /**
+     * Set the timeout for assertions.
+     */
+    public static function setTimeout(int $timeout): void
+    {
+        self::$timeout = $timeout;
+
+        Client::instance()->setTimeout($timeout);
+    }
+
+    /**
+     * Get the timeout for assertions.
+     */
+    public static function timeout(): int
+    {
+        return self::$timeout;
     }
 
     /**

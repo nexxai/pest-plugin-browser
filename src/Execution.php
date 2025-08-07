@@ -100,23 +100,25 @@ final class Execution
     /**
      * Awaits for a condition to be met, retrying until the timeout is reached.
      */
-    public function waitForExpectation(callable $callback, int|float $timeout = 1): mixed
+    public function waitForExpectation(callable $callback): mixed
     {
+        $timeout = Playwright::timeout();
+
         $originalCount = Assert::getCount();
 
         $start = microtime(true);
-        $end = $start + $timeout;
+        $end = $start + ($timeout / 1_000);
 
         while (microtime(true) < $end) {
             try {
-                return Playwright::usingTimeout(1000, $callback);
+                return Playwright::usingTimeout(1_000, $callback);
             } catch (ExpectationFailedException) {
                 //
             }
 
             $this->resetAssertions($originalCount);
 
-            self::instance()->wait(0.01);
+            self::instance()->tick();
         }
 
         return $callback();
