@@ -8,6 +8,7 @@ use Pest\Browser\Exceptions\BrowserExpectationFailedException;
 use Pest\Browser\Execution;
 use Pest\Browser\Playwright\Page;
 use Pest\Browser\Playwright\Playwright;
+use Pest\Browser\ServerManager;
 use PHPUnit\Framework\ExpectationFailedException;
 
 /**
@@ -54,8 +55,12 @@ final readonly class AwaitableWebpage
                 );
             }
         } catch (ExpectationFailedException $e) {
+            ServerManager::instance()->http()->throwLastThrowableIfNeeded();
+
             throw BrowserExpectationFailedException::from($this->page, $e);
         }
+
+        ServerManager::instance()->http()->throwLastThrowableIfNeeded();
 
         return $result === $webpage
             ? $this

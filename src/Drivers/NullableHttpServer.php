@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pest\Browser\Drivers;
 
 use Pest\Browser\Contracts\HttpServer;
+use Throwable;
 
 /**
  * @internal
@@ -49,6 +50,22 @@ final class NullableHttpServer implements HttpServer
      * Bootstrap the server.
      */
     public function bootstrap(): void
+    {
+        //
+    }
+
+    /**
+     * Get the last throwable that occurred during the server's execution.
+     */
+    public function lastThrowable(): ?Throwable
+    {
+        return null;
+    }
+
+    /**
+     * Throws the last throwable if it should be thrown.
+     */
+    public function throwLastThrowableIfNeeded(): void
     {
         //
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pest\Browser;
 
+use Error;
 use Pest\Browser\Enums\BrowserType;
 use Pest\Browser\Enums\ColorScheme;
 use Pest\Browser\Exceptions\BrowserNotSupportedException;
@@ -108,14 +109,22 @@ final class Plugin implements Bootable, HandlesArguments, Terminable // @pest-ar
      */
     public function terminate(): void
     {
-        if (Parallel::isWorker() || Parallel::isEnabled() === false) {
-            ServerManager::instance()->http()->stop();
+        try {
+            if (Parallel::isWorker() || Parallel::isEnabled() === false) {
+                ServerManager::instance()->http()->stop();
 
-            Playwright::close();
-        }
+                Playwright::close();
+            }
 
-        if (Parallel::isWorker() === false) {
-            ServerManager::instance()->playwright()->stop();
+            if (Parallel::isWorker() === false) {
+                ServerManager::instance()->playwright()->stop();
+            }
+        } catch (Error $e) {
+            if ($e->getMessage() === 'Must call resume() or throw() before calling suspend() again') {
+                return;
+            }
+
+            throw $e;
         }
     }
 

@@ -7,11 +7,14 @@ namespace Pest\Browser\Drivers;
 use Amp\ByteStream\ReadableResourceStream;
 use Amp\Http\Server\DefaultErrorHandler;
 use Amp\Http\Server\HttpServer as AmpHttpServer;
+use Amp\Http\Server\HttpServerStatus;
 use Amp\Http\Server\Request as AmpRequest;
 use Amp\Http\Server\RequestHandler\ClosureRequestHandler;
 use Amp\Http\Server\Response;
 use Amp\Http\Server\SocketHttpServer;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
+use Illuminate\Foundation\Testing\Concerns\WithoutExceptionHandlingHandler;
 use Illuminate\Http\Request;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Uri;
@@ -21,6 +24,7 @@ use Pest\Browser\Execution;
 use Pest\Browser\GlobalState;
 use Psr\Log\NullLogger;
 use Symfony\Component\Mime\MimeTypes;
+use Throwable;
 
 /**
  * @internal
@@ -40,6 +44,11 @@ final class LaravelHttpServer implements HttpServer
     private ?string $originalAssetUrl = null;
 
     /**
+     * The last throwable that occurred during the server's execution.
+     */
+    private ?Throwable $lastThrowable = null;
+
+    /**
      * Creates a new laravel http server instance.
      */
     public function __construct(
@@ -54,7 +63,8 @@ final class LaravelHttpServer implements HttpServer
      */
     public function __destruct()
     {
-        $this->stop(); // @codeCoverageIgnore
+        // @codeCoverageIgnoreStart
+        // $this->stop();
     }
 
     /**
@@ -106,7 +116,9 @@ final class LaravelHttpServer implements HttpServer
             $this->flush();
 
             if ($this->socket instanceof AmpHttpServer) {
-                $this->socket->stop();
+                if (in_array($this->socket->getStatus(), [HttpServerStatus::Starting, HttpServerStatus::Started], true)) {
+                    $this->socket->stop();
+                }
 
                 $this->socket = null;
             }
@@ -123,6 +135,8 @@ final class LaravelHttpServer implements HttpServer
         }
 
         Execution::instance()->tick();
+
+        $this->lastThrowable = null;
     }
 
     /**
@@ -148,6 +162,32 @@ final class LaravelHttpServer implements HttpServer
             $urlGenerator->useOrigin($url);
             $urlGenerator->useAssetOrigin($url);
             $urlGenerator->forceScheme('http');
+        }
+    }
+
+    /**
+     * Get the last throwable that occurred during the server's execution.
+     */
+    public function lastThrowable(): ?Throwable
+    {
+        return $this->lastThrowable;
+    }
+
+    /**
+     * Throws the last throwable if it should be thrown.
+     *
+     * @throws Throwable
+     */
+    public function throwLastThrowableIfNeeded(): void
+    {
+        if (! $this->lastThrowable instanceof Throwable) {
+            return;
+        }
+
+        $exceptionHandler = app(ExceptionHandler::class);
+
+        if ($exceptionHandler instanceof WithoutExceptionHandlingHandler) {
+            throw $this->lastThrowable;
         }
     }
 
@@ -202,7 +242,19 @@ final class LaravelHttpServer implements HttpServer
 
         $symfonyRequest->headers->add($request->getHeaders());
 
-        $response = $kernel->handle($laravelRequest = Request::createFromBase($symfonyRequest));
+        $debug = config('app.debug');
+
+        try {
+            config(['app.debug' => false]);
+
+            $response = $kernel->handle($laravelRequest = Request::createFromBase($symfonyRequest));
+        } catch (Throwable $e) {
+            $this->lastThrowable = $e;
+
+            throw $e;
+        } finally {
+            config(['app.debug' => $debug]);
+        }
 
         $kernel->terminate($laravelRequest, $response);
 
