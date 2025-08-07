@@ -38,13 +38,13 @@ final class Screenshot
     /**
      * Save a screenshot to the filesystem.
      */
-    public static function save(string $binary, ?string $filename = null): void
+    public static function save(string $binary, ?string $filename = null): string
     {
         $decodedBinary = (string) base64_decode($binary, true);
 
         if ($filename === null) {
             // @phpstan-ignore-next-line
-            $filename = str_replace('__pest_evaluable__', '', test()->name());
+            $filename = str_replace('__pest_evaluable_', '', test()->name());
         }
 
         if (is_dir(self::dir()) === false) {
@@ -52,6 +52,8 @@ final class Screenshot
         }
 
         file_put_contents(self::path($filename), $decodedBinary);
+
+        return $filename;
     }
 
     /**

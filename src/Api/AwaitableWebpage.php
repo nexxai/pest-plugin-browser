@@ -54,7 +54,7 @@ final readonly class AwaitableWebpage
                 );
             }
         } catch (ExpectationFailedException $e) {
-            throw BrowserExpectationFailedException::from($e, $name, $arguments);
+            throw BrowserExpectationFailedException::from($this->page, $e);
         }
 
         return $result === $webpage

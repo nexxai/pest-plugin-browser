@@ -400,15 +400,15 @@ final class Page
     /**
      * Make screenshot of the page.
      */
-    public function screenshot(bool $fullPage = true, ?string $filename = null): void
+    public function screenshot(bool $fullPage = true, ?string $filename = null): ?string
     {
         $binary = $this->screenshotBinary($fullPage);
 
         if ($binary === null) {
-            return;
+            return null;
         }
 
-        Screenshot::save($binary, $filename);
+        return Screenshot::save($binary, $filename);
     }
 
     /**
