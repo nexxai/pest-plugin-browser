@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pest\Browser\Exceptions;
 
 use Pest\Browser\Playwright\Page;
+use Pest\Browser\Playwright\Playwright;
 use Pest\Browser\ServerManager;
 use PHPUnit\Framework\ExpectationFailedException;
 use Throwable;
@@ -21,10 +22,12 @@ final class BrowserExpectationFailedException
     {
         $message = $e->getMessage();
 
-        $filename = $page->screenshot();
+        if (Playwright::shouldDebugAssertions() === false) {
+            $filename = $page->screenshot();
 
-        if ($filename !== null) {
-            $message .= " A screenshot of the page has been saved to [Tests/Browser/Screenshots/$filename].";
+            if ($filename !== null) {
+                $message .= " A screenshot of the page has been saved to [Tests/Browser/Screenshots/$filename].";
+            }
         }
 
         $consoleLogs = $page->consoleLogs();
