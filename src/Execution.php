@@ -9,6 +9,7 @@ use Pest\Browser\Playwright\Playwright;
 use Pest\Support\Container;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\TestStatus\TestStatus;
 use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -40,6 +41,40 @@ final class Execution
         }
 
         return self::$instance;
+    }
+
+    /**
+     * Debugs the test execution by waiting for a key press.
+     */
+    public function debug(TestStatus $status): void
+    {
+        $this->waiting = true;
+
+        // @phpstan-ignore-next-line
+        $testName = str_replace('__pest_evaluable_', '', test()->name());
+        $message = $status->message();
+
+        // @phpstan-ignore-next-line
+        Container::getInstance()->get(OutputInterface::class)->writeln(
+            "\n  <info>Test [{$testName}] failed with the message:</info> {$message}\n"
+        );
+
+        // @phpstan-ignore-next-line
+        Container::getInstance()->get(OutputInterface::class)->writeln(
+            '  <info>Press any key to continue...</info>'
+        );
+
+        $stdin = new ReadableResourceStream(STDIN);
+
+        async(function () use ($stdin): void {
+            while ($stdin->read() !== null) {
+                $stdin->close();
+
+                delay(0.1);
+
+                break;
+            }
+        })->await();
     }
 
     /**
@@ -81,7 +116,7 @@ final class Execution
 
         // @phpstan-ignore-next-line
         Container::getInstance()->get(OutputInterface::class)->writeln(
-            '<info>Press any key to continue...</info>'
+            '  <info>Press any key to continue...</info>'
         );
 
         $stdin = new ReadableResourceStream(STDIN);

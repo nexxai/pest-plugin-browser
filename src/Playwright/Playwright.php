@@ -25,6 +25,11 @@ final class Playwright
     private static bool $headless = true;
 
     /**
+     * Whether to debug assertions.
+     */
+    private static bool $shouldDebugAssertions = false;
+
+    /**
      * Whether to show the diff on screenshot assertions.
      */
     private static bool $shouldDiffOnScreenshotAssertions = false;
@@ -130,6 +135,22 @@ final class Playwright
     public static function shouldShowDiffOnScreenshotAssertions(): bool
     {
         return self::$shouldDiffOnScreenshotAssertions;
+    }
+
+    /**
+     * Set whether to debug assertions.
+     */
+    public static function setShouldDebugAssertions(): void
+    {
+        self::$shouldDebugAssertions = true;
+    }
+
+    /**
+     * Whether to debug assertions.
+     */
+    public static function shouldDebugAssertions(): bool
+    {
+        return self::$shouldDebugAssertions;
     }
 
     /**

@@ -33,12 +33,18 @@ final readonly class UsesBrowserTestCaseMethodFilter implements TestCaseMethodFi
             return true;
         }
 
-        $usesDebug = BrowserTestIdentifier::isDebugTest($factory);
+        $usesDebugMethod = BrowserTestIdentifier::isDebugTest($factory);
 
-        if ($usesDebug) {
+        if ($usesDebugMethod) {
             Playwright::headed();
 
             Only::enable($factory);
+        }
+
+        $usesDebug = Playwright::shouldDebugAssertions();
+
+        if ($usesDebug) {
+            Playwright::headed();
         }
 
         $factory->proxies->add(

@@ -16,6 +16,7 @@ use Pest\Contracts\Plugins\Terminable;
 use Pest\Plugins\Concerns\HandleArguments;
 use Pest\Plugins\Parallel;
 use Pest\TestSuite;
+use PHPUnit\Framework\TestStatus\TestStatus;
 
 /**
  * @internal
@@ -39,6 +40,15 @@ final class Plugin implements Bootable, HandlesArguments, Terminable // @pest-ar
             ->addTestCaseMethodFilter(new UsesBrowserTestCaseMethodFilter());
 
         pest()->afterEach(function (): void {
+            if (Playwright::shouldDebugAssertions()) {
+                /** @var TestStatus $status */
+                $status = $this->status(); // @phpstan-ignore-line
+
+                if ($status->isFailure() || $status->isError()) {
+                    Execution::instance()->debug($status);
+                }
+            }
+
             ServerManager::instance()->http()->flush();
 
             Playwright::reset();
@@ -62,6 +72,12 @@ final class Plugin implements Bootable, HandlesArguments, Terminable // @pest-ar
             Playwright::setShouldDiffOnScreenshotAssertions();
 
             $arguments = $this->popArgument('--diff', $arguments);
+        }
+
+        if ($this->hasArgument('--debug', $arguments)) {
+            Playwright::setShouldDebugAssertions();
+
+            $arguments = $this->popArgument('--debug', $arguments);
         }
 
         if ($this->hasArgument('--dark', $arguments)) {
