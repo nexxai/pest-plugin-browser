@@ -258,6 +258,12 @@ final class LaravelHttpServer implements HttpServer
 
         $kernel->terminate($laravelRequest, $response);
 
+        if (property_exists($response, 'exception') && $response->exception !== null) {
+            assert($response->exception instanceof Throwable);
+
+            $this->lastThrowable = $response->exception;
+        }
+
         $content = $response->getContent();
 
         if ($content === false) {

@@ -51,7 +51,10 @@ final class BrowserExpectationFailedException
         $httpThrowable = ServerManager::instance()->http()->lastThrowable();
 
         if ($httpThrowable instanceof Throwable) {
-            $message .= "\n\nThe following HTTP error occurred:\n- ".$httpThrowable->getMessage();
+            $message .= "\n\nThe following exception was thrown by the HTTP server:\n"
+                .$httpThrowable::class.': '.$httpThrowable->getMessage()
+                ."\n\nStack trace:\n"
+                .$httpThrowable->getTraceAsString();
         }
 
         return new ExpectationFailedException(
