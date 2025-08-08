@@ -8,6 +8,7 @@ use Error;
 use Pest\Browser\Enums\BrowserType;
 use Pest\Browser\Enums\ColorScheme;
 use Pest\Browser\Exceptions\BrowserNotSupportedException;
+use Pest\Browser\Exceptions\OptionNotSupportedInParallelException;
 use Pest\Browser\Filters\UsesBrowserTestCaseMethodFilter;
 use Pest\Browser\Playwright\Playwright;
 use Pest\Contracts\Plugins\Bootable;
@@ -117,6 +118,8 @@ final class Plugin implements Bootable, HandlesArguments, Terminable // @pest-ar
             $arguments = array_values($arguments);
         }
 
+        $this->validateNonSupportedParallelFeatures();
+
         return $arguments;
     }
 
@@ -150,5 +153,35 @@ final class Plugin implements Bootable, HandlesArguments, Terminable // @pest-ar
     private function in(): string
     {
         return TestSuite::getInstance()->rootPath.DIRECTORY_SEPARATOR.TestSuite::getInstance()->testPath;
+    }
+
+    /**
+     * Validates that non-supported features are not used when running tests in parallel.
+     *
+     * @throws OptionNotSupportedInParallelException
+     */
+    private function validateNonSupportedParallelFeatures(): void
+    {
+        if (Parallel::isEnabled() === false) {
+            return;
+        }
+
+        if (Playwright::isHeadless() === false) {
+            throw new OptionNotSupportedInParallelException(
+                'Running tests in headed mode is not supported when running tests in parallel.',
+            );
+        }
+
+        if (Playwright::shouldShowDiffOnScreenshotAssertions()) {
+            throw new OptionNotSupportedInParallelException(
+                'Showing the diff on screenshot assertions is not supported when running tests in parallel.',
+            );
+        }
+
+        if (Playwright::shouldDebugAssertions()) {
+            throw new OptionNotSupportedInParallelException(
+                'Debugging assertions is not supported when running tests in parallel.',
+            );
+        }
     }
 }

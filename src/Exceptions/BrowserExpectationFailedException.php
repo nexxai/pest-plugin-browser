@@ -22,7 +22,7 @@ final class BrowserExpectationFailedException
     {
         $message = $e->getMessage();
 
-        if (Playwright::shouldDebugAssertions() === false) {
+        if (Playwright::shouldDebugAssertions() === false && str_contains($message, 'Screenshot does not match the last one.') === false) {
             $filename = $page->screenshot();
 
             if ($filename !== null) {

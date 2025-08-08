@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pest\Browser;
 
 use Pest\Browser\Enums\BrowserType;
+use Pest\Browser\Enums\ColorScheme;
 use Pest\Browser\Playwright\Playwright;
 
 /**
@@ -40,6 +41,66 @@ final readonly class Configuration
     public function inSafari(): self
     {
         Playwright::setDefaultBrowserType(BrowserType::SAFARI);
+
+        return $this;
+    }
+
+    /**
+     * Sets the theme to light mode.
+     */
+    public function inLightMode(): self
+    {
+        Playwright::setColorScheme(ColorScheme::LIGHT);
+
+        return $this;
+    }
+
+    /**
+     * Sets the theme to dark mode.
+     */
+    public function inDarkMode(): self
+    {
+        Playwright::setColorScheme(ColorScheme::DARK);
+
+        return $this;
+    }
+
+    /**
+     * Sets the assertion's timeout in milliseconds.
+     */
+    public function timeout(int $milliseconds): self
+    {
+        Playwright::setTimeout($milliseconds);
+
+        return $this;
+    }
+
+    /**
+     * Uses playwright in headed mode.
+     */
+    public function headed(): self
+    {
+        Playwright::headed();
+
+        return $this;
+    }
+
+    /**
+     * Enables debug mode for assertions.
+     */
+    public function debug(): self
+    {
+        Playwright::setShouldDebugAssertions();
+
+        return $this;
+    }
+
+    /**
+     * Enables diff mode for screenshot assertions.
+     */
+    public function diff(): self
+    {
+        Playwright::setShouldDiffOnScreenshotAssertions();
 
         return $this;
     }
