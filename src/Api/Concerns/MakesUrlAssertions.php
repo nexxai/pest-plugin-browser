@@ -147,6 +147,14 @@ trait MakesUrlAssertions
     }
 
     /**
+     * Assert that the current URL path matches the given route.
+     */
+    public function assertRoute(string $route, array $parameters = []): Webpage
+    {
+        return $this->assertPathIs(route($route, $parameters, false));
+    }
+
+    /**
      * Assert that the current URL path ends with the given path.
      */
     public function assertPathEndsWith(string $path): Webpage

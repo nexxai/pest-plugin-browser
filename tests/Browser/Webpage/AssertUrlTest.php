@@ -98,6 +98,39 @@ it('may assert URL path matches expected path', function (): void {
     $page->assertPathIs('/test-path');
 });
 
+it('may assert URL path matches a route', function (): void {
+    Route::name('test.path')->get('/test-path', fn (): string => 'Test Path Page');
+
+    $page = visit('/test-path');
+
+    $page->assertRoute('test.path');
+});
+
+it('may fail when asserting URL path matches a route but it does not', function (): void {
+    Route::name('test.path')->get('/test-path', fn (): string => 'Test Path Page');
+
+    $page = visit('/wrong-path');
+
+    $page->assertRoute('test.path');
+})->throws(ExpectationFailedException::class);;
+
+it('may assert URL path matches a route with paramters', function (): void {
+    Route::name('test.path')->get('/test-path/{slug}', fn ($slug): string => 'Test Path Page');
+
+    $page = visit('/test-path/example');
+
+    $page->assertRoute('test.path', ['slug' => 'example']);
+});
+
+it('may fail when asserting URL path matches a route but it has wrong parameters', function (): void {
+    Route::name('test.path')->get('/test-path/{slug}', fn ($slug): string => 'Test Path Page');
+
+    $page = visit('/test-path/wrong-slug');
+
+    $page->assertRoute('test.path', ['slug' => 'example']);
+})->throws(ExpectationFailedException::class);;
+
+
 it('may fail when asserting URL path matches but it does not', function (): void {
     Route::get('/test-path', fn (): string => 'Test Path Page');
 
