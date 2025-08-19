@@ -68,6 +68,14 @@ trait InteractsWithElements
     }
 
     /**
+     * Fills the given value in the given field.
+     */
+    public function fill(string $field, string $value): Webpage
+    {
+        return $this->type($field, $value);
+    }
+
+    /**
      * Select the given value in the given field.
      *
      * @param  array<int, string|int>|string|int  $option
