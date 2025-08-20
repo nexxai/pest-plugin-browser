@@ -26,10 +26,6 @@ final readonly class BrowserTestIdentifier
             return true;
         }
 
-        if (self::usesBrowserGroup($factory)) {
-            return true;
-        }
-
         return self::usesFunction($factory->closure ?? fn (): null => null, 'visit');
     }
 
@@ -53,14 +49,6 @@ final readonly class BrowserTestIdentifier
             'Browser',
             DIRECTORY_SEPARATOR,
         ]));
-    }
-
-    /**
-     * Checks if the given factory uses the specified group.
-     */
-    private static function usesBrowserGroup(TestCaseMethodFactory $factory): bool
-    {
-        return in_array('browser', $factory->groups, true);
     }
 
     private static function usesFunction(Closure $closure, string $functionName): bool
