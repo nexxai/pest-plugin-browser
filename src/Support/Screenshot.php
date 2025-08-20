@@ -48,7 +48,7 @@ final class Screenshot
         }
 
         if (is_dir(self::dir()) === false) {
-            mkdir(self::dir(), 0755, true);
+            @mkdir(self::dir(), 0755, true);
         }
 
         file_put_contents(self::path($filename), $decodedBinary);
