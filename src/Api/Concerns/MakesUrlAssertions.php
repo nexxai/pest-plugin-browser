@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pest\Browser\Api\Concerns;
 
 use Pest\Browser\Api\Webpage;
+use RuntimeException;
 
 /**
  * @mixin Webpage
@@ -148,9 +149,15 @@ trait MakesUrlAssertions
 
     /**
      * Assert that the current URL path matches the given route.
+     *
+     * @param  array<string, mixed>  $parameters
      */
     public function assertRoute(string $route, array $parameters = []): Webpage
     {
+        if (function_exists('route') === false) {
+            throw new RuntimeException('The [route] function is not available. Ensure you are using a framework that provides this function.');
+        }
+
         return $this->assertPathIs(route($route, $parameters, false));
     }
 
