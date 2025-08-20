@@ -43,7 +43,6 @@ final readonly class AwaitableWebpage
         try {
             if (
                 in_array($name, $this->nonAwaitableMethods, true)
-                || str_starts_with($name, 'assert') === false
                 || Playwright::timeout() <= 1000
             ) {
                 // @phpstan-ignore-next-line
