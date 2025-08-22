@@ -32,7 +32,7 @@ namespace Pest\Browser\Support;
 final class AccessibilityFormatter
 {
     /**
-     * @param Violations $violations
+     * @param  Violations  $violations
      */
     public static function format(array $violations): string
     {

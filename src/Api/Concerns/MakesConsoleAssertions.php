@@ -77,7 +77,7 @@ trait MakesConsoleAssertions
             $violations = [];
         }
 
-        $violations = array_filter($violations, function ($violation) use ($impact): bool {
+        $violations = array_filter($violations, function (array $violation) use ($impact): bool {
             $violationImpact = $violation['impact'] ?? null;
             $violationRank = is_string($violationImpact) ? Impact::from($violationImpact)->rank() : -1;
 
