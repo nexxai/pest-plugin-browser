@@ -10,6 +10,7 @@ use Pest\Browser\Support\AccessibilityFormatter;
 
 /**
  * @mixin Webpage
+ * @phpstan-import-type Violations from AccessibilityFormatter
  */
 trait MakesConsoleAssertions
 {
@@ -61,22 +62,20 @@ trait MakesConsoleAssertions
      */
     public function assertAccessibility(Impact $impact = Impact::Minor): Webpage
     {
+        /** @var Violations|null $violations */
         $violations = $this->page->evaluate('async () => ((await window.axe.run()).violations)');
         if (! is_array($violations)) {
             $violations = [];
         }
 
-        $violations = array_filter($violations, function ($violation) use ($impact) {
-            if (! is_array($violation)) {
-                return false;
-            }
-
+        $violations = array_filter($violations, function ($violation) use ($impact): bool {
             $violationImpact = $violation['impact'] ?? null;
             $violationRank = is_string($violationImpact) ? Impact::from($violationImpact)->rank() : -1;
+
             return $violationRank >= $impact->rank();
         });
 
-        $report = AccessibilityFormatter::format($violations, $impact);
+        $report = AccessibilityFormatter::format($violations);
 
         expect($violations)->toBeEmpty($report);
 

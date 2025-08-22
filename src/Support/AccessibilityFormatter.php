@@ -4,33 +4,55 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Support;
 
-use Pest\Browser\Enums\Impact;
-
+/**
+ * @phpstan-type Violations array<int, array{
+ *       impact?: string|null,
+ *       help?: string|null,
+ *       helpUrl?: string|null,
+ *       nodes?: array<int, array{
+ *           target?: array<string>|string|null,
+ *           html?: string|null,
+ *           any?: array<int, array{
+ *               message?: string|null,
+ *               relatedNodes?: array<int, array{
+ *                   target?: array<string>|string|null,
+ *                   html?: string|null,
+ *               }>|null,
+ *           }>|null,
+ *           none?: array<int, array{
+ *               message?: string|null,
+ *               relatedNodes?: array<int, array{
+ *                   target?: array<string>|string|null,
+ *                   html?: string|null,
+ *               }>|null,
+ *           }>|null,
+ *       }>|null,
+ *   }>
+ */
 final class AccessibilityFormatter
 {
-    public static function format(array $violations, Impact $impact): string
+    /**
+     * @param Violations $violations
+     */
+    public static function format(array $violations): string
     {
         $issuesCount = count($violations);
         $lines = ["{$issuesCount} Accessibility issues found"];
 
         foreach ($violations as $v) {
-            $impactStr = isset($v['impact']) && is_string($v['impact']) ? $v['impact'] : 'unknown';
-            $help = isset($v['help']) && is_string($v['help']) ? $v['help'] : '';
-            $helpUrl = isset($v['helpUrl']) && is_string($v['helpUrl']) ? $v['helpUrl'] : '';
+            $impactStr = $v['impact'] ?? 'unknown';
+            $help = $v['help'] ?? '';
+            $helpUrl = $v['helpUrl'] ?? '';
             $header = sprintf('- [%s] %s %s', $impactStr, $help, $helpUrl);
             $lines[] = $header;
 
-            $nodes = isset($v['nodes']) && is_array($v['nodes']) ? $v['nodes'] : [];
+            $nodes = $v['nodes'] ?? [];
             foreach ($nodes as $node) {
-                if (! is_array($node)) {
-                    continue;
-                }
-
                 $selector = '';
                 if (isset($node['target'])) {
                     $targets = $node['target'];
                     if (is_array($targets)) {
-                        $selector = implode(' ', array_values(array_filter(array_map(static fn ($t): string => is_string($t) ? $t : '', $targets), static fn (string $s): bool => $s !== '')));
+                        $selector = implode(' ', array_values(array_filter($targets, static fn (string $s): bool => $s !== '')));
                     } elseif (is_string($targets)) {
                         $selector = $targets;
                     }
@@ -46,10 +68,10 @@ final class AccessibilityFormatter
 
                 // any/none messages
                 foreach (['any' => '  any:', 'none' => '  none:'] as $key => $label) {
-                    $checks = isset($node[$key]) && is_array($node[$key]) ? $node[$key] : [];
+                    $checks = $node[$key] ?? [];
                     $messages = [];
                     foreach ($checks as $check) {
-                        if (is_array($check) && isset($check['message']) && is_string($check['message']) && $check['message'] !== '') {
+                        if (isset($check['message']) && $check['message'] !== '') {
                             $messages[] = $check['message'];
                         }
                     }
@@ -64,18 +86,11 @@ final class AccessibilityFormatter
                 // related nodes (from both any and none)
                 $relatedNodes = [];
                 foreach (['any', 'none'] as $k) {
-                    $checks = isset($node[$k]) && is_array($node[$k]) ? $node[$k] : [];
+                    $checks = $node[$k] ?? [];
                     foreach ($checks as $check) {
-                        if (! is_array($check)) {
-                            continue;
-                        }
                         $rels = $check['relatedNodes'] ?? [];
-                        if (is_array($rels)) {
-                            foreach ($rels as $rel) {
-                                if (is_array($rel)) {
-                                    $relatedNodes[] = $rel;
-                                }
-                            }
+                        foreach ($rels as $rel) {
+                            $relatedNodes[] = $rel;
                         }
                     }
                 }
@@ -87,7 +102,7 @@ final class AccessibilityFormatter
                         if (isset($relatedNode['target'])) {
                             $targets = $relatedNode['target'];
                             if (is_array($targets)) {
-                                $relSelector = implode(' ', array_values(array_filter(array_map(static fn ($t): string => is_string($t) ? $t : '', $targets), static fn (string $s): bool => $s !== '')));
+                                $relSelector = implode(' ', array_values(array_filter($targets, static fn (string $s): bool => $s !== '')));
                             } elseif (is_string($targets)) {
                                 $relSelector = $targets;
                             }
