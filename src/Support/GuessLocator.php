@@ -45,14 +45,6 @@ final readonly class GuessLocator
             );
         }
 
-        $locator = $this->page->unstrict(
-            fn (): Locator => $this->page->locator($selector),
-        );
-
-        if ($locator->count() > 0) {
-            return $locator;
-        }
-
         foreach (['[id="%s"]', '[name="%s"]'] as $format) {
             $formattedSelector = sprintf($format, $selector);
 

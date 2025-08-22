@@ -17,9 +17,17 @@ final class Selector
             }
         }
 
-        $s = ',';
+        if (str_contains($selector, ',')) {
+            return true;
+        }
 
-        return str_contains($selector, $s);
+        if (str_ends_with($selector, '[]')) {
+            return false;
+        }
+
+        return str_contains($selector, '[')
+            || str_contains($selector, '#')
+            || str_contains($selector, '.');
     }
 
     /**
