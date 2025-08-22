@@ -42,10 +42,10 @@
         "ext-posix": "*",
         "livewire/livewire": "dev-main",
         "nunomaduro/collision": "^8.8.2",
-        "orchestra/testbench": "^10.5.0",
+        "orchestra/testbench": "^10.6.0",
         "pestphp/pest-dev-tools": "^4.0.0",
         "pestphp/pest-plugin-laravel": "^4.0",
-        "pestphp/pest-plugin-type-coverage": "^4.0.1"
+        "pestphp/pest-plugin-type-coverage": "^4.0.2"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
