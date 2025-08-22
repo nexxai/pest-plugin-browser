@@ -223,23 +223,23 @@ final class LaravelHttpServer implements HttpServer
         }
 
         $uri = $request->getUri();
-        $path = $uri->getPath() ?: '/';
-        $query = $uri->getQuery() ?? '';
-        $fullPath = $path . ($query !== '' ? '?' . $query : '');
-        $absoluteUrl = rtrim($this->url(), '/') . $fullPath;
+        $path = in_array($uri->getPath(), ['', '0'], true) ? '/' : $uri->getPath();
+        $query = $uri->getQuery() ?? ''; // @phpstan-ignore-line
+        $fullPath = $path.($query !== '' ? '?'.$query : '');
+        $absoluteUrl = mb_rtrim($this->url(), '/').$fullPath;
 
         $filepath = public_path($path);
-        if (file_exists($filepath) && !is_dir($filepath)) {
+        if (file_exists($filepath) && ! is_dir($filepath)) {
             return $this->asset($filepath);
         }
 
         $kernel = app()->make(HttpKernel::class);
 
         $contentType = $request->getHeader('content-type') ?? '';
-        $method = strtoupper($request->getMethod());
-        $rawBody = (string)$request->getBody();
+        $method = mb_strtoupper($request->getMethod());
+        $rawBody = (string) $request->getBody();
         $parameters = [];
-        if ($method !== 'GET' && str_starts_with(strtolower($contentType), 'application/x-www-form-urlencoded')) {
+        if ($method !== 'GET' && str_starts_with(mb_strtolower($contentType), 'application/x-www-form-urlencoded')) {
             parse_str($rawBody, $parameters);
         }
 
@@ -250,7 +250,7 @@ final class LaravelHttpServer implements HttpServer
             $request->getCookies(),
             [], // @TODO files...
             [], // @TODO server variables...
-            (string) $rawBody
+            $rawBody
         );
 
         $symfonyRequest->headers->add($request->getHeaders());
