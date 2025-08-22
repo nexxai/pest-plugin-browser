@@ -600,6 +600,9 @@ final class Page
         ];
     }
 
+    /**
+     * Create an HTML view for the image diff.
+     */
     private function createImageDiffView(
         string $snapshotName,
         string $expectedImageBlob,
