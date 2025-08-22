@@ -215,7 +215,11 @@ it('properly detects explicit selectors', function (): void {
         ->and(Selector::isExplicit('[test]'))->toBeTrue()
         ->and(Selector::isExplicit('internal:test'))->toBeTrue()
         ->and(Selector::isExplicit('a, b'))->toBeTrue()
-        ->and(Selector::isExplicit('test'))->toBeFalse();
+        ->and(Selector::isExplicit('test'))->toBeFalse()
+        ->and(Selector::isExplicit('[name*="test"]'))->toBeTrue()
+        ->and(Selector::isExplicit('[name^="test"]'))->toBeTrue()
+        ->and(Selector::isExplicit('[name$="test"]'))->toBeTrue()
+        ->and(Selector::isExplicit('button[name="test"]'))->toBeTrue();
 });
 
 it('properly detects data-test selectors', function (): void {
