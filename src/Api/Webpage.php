@@ -68,11 +68,11 @@ final readonly class Webpage
     /**
      * Performs a screenshot of the current page and saves it to the given path.
      */
-    public function screenshot(bool $fullPage = true, ?string $name = null): self
+    public function screenshot(bool $fullPage = true, ?string $filename = null): self
     {
-        $name = is_string($name) ? $name : date('Y_m_d_H_i_s_u');
+        $filename = is_string($filename) ? $filename : date('Y_m_d_H_i_s_u');
 
-        $this->page->screenshot($fullPage, $name);
+        $this->page->screenshot($fullPage, $filename);
 
         return $this;
     }
