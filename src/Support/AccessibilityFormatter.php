@@ -8,21 +8,10 @@ use Pest\Browser\Enums\Impact;
 
 final class AccessibilityFormatter
 {
-    public static function format(array $data, Impact $impact): string
+    public static function format(array $violations, Impact $impact): string
     {
-        foreach ($data as $violation) {
-            if (! is_array($violation)) {
-                continue;
-            }
-
-            $violationImpact = $violation['impact'] ?? null;
-            $violationRank = is_string($violationImpact) ? Impact::from($violationImpact)->rank() : -1;
-            if ($violationRank >= $impact->rank()) {
-                $violations[] = $violation;
-            }
-        }
-
-        $lines = ['aXe issues'];
+        $issuesCount = count($violations);
+        $lines = ["{$issuesCount} Accesibility issues found"];
 
         foreach ($violations as $v) {
             $impactStr = isset($v['impact']) && is_string($v['impact']) ? $v['impact'] : 'unknown';

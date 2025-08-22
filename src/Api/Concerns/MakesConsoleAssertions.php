@@ -6,7 +6,6 @@ namespace Pest\Browser\Api\Concerns;
 
 use Pest\Browser\Api\Webpage;
 use Pest\Browser\Enums\Impact;
-use Pest\Browser\Playwright\Page;
 use Pest\Browser\Support\AccessibilityFormatter;
 
 /**
@@ -66,6 +65,16 @@ trait MakesConsoleAssertions
         if (! is_array($violations)) {
             $violations = [];
         }
+
+        $violations = array_filter($violations, function ($violation) use ($impact) {
+            if (! is_array($violation)) {
+                return false;
+            }
+
+            $violationImpact = $violation['impact'] ?? null;
+            $violationRank = is_string($violationImpact) ? Impact::from($violationImpact)->rank() : -1;
+            return $violationRank >= $impact->rank();
+        });
 
         $report = AccessibilityFormatter::format($violations, $impact);
 
