@@ -17,8 +17,7 @@ final class InitScript
         return <<<'JS'
             window.__pestBrowser = {
                 jsErrors: [],
-                consoleLogs: [],
-                accessibilityViolations: []
+                consoleLogs: []
             };
 
             const originalConsoleLog = console.log;
@@ -38,15 +37,6 @@ final class InitScript
                     colno: e.colno
                 });
             });
-
-            import('https://unpkg.com/agnostic-axe@3').then(
-              ({ AxeObserver, logViolations }) => {
-                const MyAxeObserver = new AxeObserver((violations) => {
-                    window.__pestBrowser.accessibilityViolations.push(...violations)
-                })
-                MyAxeObserver.observe(document)
-              }
-            )
             JS;
     }
 }

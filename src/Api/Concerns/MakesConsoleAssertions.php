@@ -61,7 +61,7 @@ trait MakesConsoleAssertions
      */
     public function assertAccessibility(Impact $impact = Impact::Minor): Webpage
     {
-        $violations = $this->page->evaluate('window.__pestBrowser.accessibilityViolations || []');
+        $violations = $this->page->evaluate('(await axe.run()).violations');
         if (! is_array($violations)) {
             $violations = [];
         }
