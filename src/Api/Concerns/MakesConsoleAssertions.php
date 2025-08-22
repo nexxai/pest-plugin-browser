@@ -60,14 +60,14 @@ trait MakesConsoleAssertions
     /**
      * Asserts the accessibility of the page.
      */
-    public function assertAccessibility(Page $page, Impact $impact = Impact::Minor): Webpage
+    public function assertAccessibility(Impact $impact = Impact::Minor): Webpage
     {
-        $violations = $page->evaluate('window.__pestBrowser.accessibilityViolations || []');
+        $violations = $this->page->evaluate('window.__pestBrowser.accessibilityViolations || []');
         if (! is_array($violations)) {
             $violations = [];
         }
 
-        $report = AccessibilityFormatter::format($violations);
+        $report = AccessibilityFormatter::format($violations, $impact);
 
         expect($violations)->toBeEmpty($report);
 

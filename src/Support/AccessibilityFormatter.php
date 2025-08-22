@@ -8,7 +8,7 @@ use Pest\Browser\Enums\Impact;
 
 final class AccessibilityFormatter
 {
-    public static function format(array $data): string
+    public static function format(array $data, Impact $impact): string
     {
         foreach ($data as $violation) {
             if (! is_array($violation)) {
