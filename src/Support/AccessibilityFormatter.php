@@ -11,7 +11,7 @@ final class AccessibilityFormatter
     public static function format(array $violations, Impact $impact): string
     {
         $issuesCount = count($violations);
-        $lines = ["{$issuesCount} Accesibility issues found"];
+        $lines = ["{$issuesCount} Accessibility issues found"];
 
         foreach ($violations as $v) {
             $impactStr = isset($v['impact']) && is_string($v['impact']) ? $v['impact'] : 'unknown';
