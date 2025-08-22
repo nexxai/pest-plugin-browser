@@ -235,7 +235,7 @@ final class LaravelHttpServer implements HttpServer
 
         $kernel = app()->make(HttpKernel::class);
 
-        $contentType = $request->getHeader('content-type')[0] ?? '';
+        $contentType = $request->getHeader('content-type') ?? '';
         $method = strtoupper($request->getMethod());
         $rawBody = (string)$request->getBody();
         $parameters = [];
