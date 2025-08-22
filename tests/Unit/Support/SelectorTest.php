@@ -208,3 +208,17 @@ it('escapes special characters in name option', function (): void {
 
     expect($selector)->toBe('internal:role=button[name="Button \"with\" quotes\\\\backslashes"i]');
 });
+
+it('properly detects explicit selectors', function (): void {
+    expect(Selector::isExplicit('#test'))->toBeTrue()
+        ->and(Selector::isExplicit('.test'))->toBeTrue()
+        ->and(Selector::isExplicit('[test]'))->toBeTrue()
+        ->and(Selector::isExplicit('internal:test'))->toBeTrue()
+        ->and(Selector::isExplicit('a, b'))->toBeTrue()
+        ->and(Selector::isExplicit('test'))->toBeFalse();
+});
+
+it('properly detects data-test selectors', function (): void {
+    expect(Selector::isDataTest('@test'))->toBeTrue()
+        ->and(Selector::isDataTest('test'))->toBeFalse();
+});
