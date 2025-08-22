@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Pest\Browser\Api\Concerns;
 
 use Pest\Browser\Api\Webpage;
+use Pest\Browser\Enums\Impact;
+use Pest\Browser\Playwright\Page;
+use Pest\Browser\Support\AccessibilityFormatter;
 
 /**
  * @mixin Webpage
@@ -50,6 +53,23 @@ trait MakesConsoleAssertions
             count($javaScriptErrors),
             implode(', ', array_map(fn (array $log) => $log['message'], $javaScriptErrors)),
         ));
+
+        return $this;
+    }
+
+    /**
+     * Asserts the accessibility of the page.
+     */
+    public function assertAccessibility(Page $page, Impact $impact = Impact::Minor): Webpage
+    {
+        $violations = $page->evaluate('window.__pestBrowser.accessibilityViolations || []');
+        if (! is_array($violations)) {
+            $violations = [];
+        }
+
+        $report = AccessibilityFormatter::format($violations);
+
+        expect($violations)->toBeEmpty($report);
 
         return $this;
     }
