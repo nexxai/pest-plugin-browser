@@ -246,7 +246,7 @@ final class LaravelHttpServer implements HttpServer
         $symfonyRequest = Request::create(
             $absoluteUrl,
             $method,
-            [$parameters],
+            $parameters,
             $request->getCookies(),
             [], // @TODO files...
             [], // @TODO server variables...
