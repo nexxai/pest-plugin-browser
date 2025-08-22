@@ -121,6 +121,10 @@ final class PendingAwaitablePage
         ]);
 
         $context->addInitScript(InitScript::get());
+        $accessibility = file_get_contents(dirname(__DIR__, 5).'/node_modules/axe-core/axe.js');
+        if ($accessibility !== false) {
+            $context->addInitScript($accessibility);
+        }
 
         $url = ComputeUrl::from($this->url);
 
