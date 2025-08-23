@@ -30,5 +30,6 @@ test('can set geolocation', function () {
     visit('/')
         ->geolocation($latitude, $longitude)
         ->assertSeeIn('#latitude', (string) $latitude)
-        ->assertSeeIn('#longitude', (string) $longitude);
+        ->assertSeeIn('#longitude', (string) $longitude)
+        ->assertDontSee('Waiting...');
 });
