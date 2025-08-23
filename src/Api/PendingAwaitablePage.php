@@ -107,6 +107,18 @@ final class PendingAwaitablePage
     }
 
     /**
+     * Sets the geolocation for the page.
+     */
+    public function geolocation(float $latitude, float $longitude): self
+    {
+        return new self($this->browserType, $this->device, $this->url, [
+            'geolocation' => ['latitude' => $latitude, 'longitude' => $longitude],
+            'permissions' => ['geolocation'],
+            ...$this->options,
+        ]);
+    }
+
+    /**
      * Creates the webpage instance.
      */
     private function createAwaitablePage(): AwaitableWebpage
