@@ -43,16 +43,21 @@ final class BrowserFactory
             return $this->browser;
         }
 
+        $defaultOptions = [
+            'browserType' => $this->name,
+            'headless' => $this->headless,
+            'ignoreHttpsErrors' => true,
+            'bypassCSP' => true,
+        ];
+
+        if($this->userAgent !== null) {
+            $defaultOptions['userAgent'] = $this->userAgent;
+        }
+
         $response = Client::instance()->execute(
             $this->guid,
             'launch',
-            [
-                'browserType' => $this->name,
-                'headless' => $this->headless,
-                'ignoreHttpsErrors' => true,
-                'bypassCSP' => true,
-                ...($this->userAgent !== null ? ['userAgent' => $this->userAgent] : []),
-            ],
+            $defaultOptions,
         );
 
         /** @var array{result: array{browser: array{guid: string|null}}} $message */
