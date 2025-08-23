@@ -30,4 +30,3 @@ it('may hover an element', function (): void {
     $page->assertSee('after');
     $page->assertDontSee('before');
 });
-
