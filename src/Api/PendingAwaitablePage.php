@@ -96,6 +96,17 @@ final class PendingAwaitablePage
     }
 
     /**
+     * Sets the userAgent for the page.
+     */
+    public function withUserAgent(string $userAgent): self
+    {
+        return new self($this->browserType, $this->device, $this->url, [
+            'userAgent' => $userAgent,
+            ...$this->options,
+        ]);
+    }
+
+    /**
      * Sets the timezone for the page.
      */
     public function withTimezone(string $timezone): self
