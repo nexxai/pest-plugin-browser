@@ -110,7 +110,6 @@ it('may visit a page with a custom userAgent', function (): void {
 
     $userAgent = $page->script('navigator.userAgent');
     expect($userAgent)->toBe('Pest-Browser');
-
 });
 
 it('may visit external URLs', function (): void {
