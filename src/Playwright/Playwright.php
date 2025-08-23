@@ -49,6 +49,8 @@ final class Playwright
      */
     private static int $timeout = 5_000;
 
+    private static ?string $userAgent = null;
+
     /**
      * Get a browser factory for the given browser type.
      */
@@ -119,6 +121,11 @@ final class Playwright
     public static function timeout(): int
     {
         return self::$timeout;
+    }
+
+    public static function setUserAgent(string $userAgent): void
+    {
+        self::$userAgent = $userAgent;
     }
 
     /**
@@ -238,6 +245,7 @@ final class Playwright
                     $message['params']['guid'],
                     $name,
                     self::$headless,
+                    self::$userAgent
                 );
             }
         }

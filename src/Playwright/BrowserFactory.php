@@ -21,6 +21,7 @@ final class BrowserFactory
         private readonly string $guid,
         private readonly string $name,
         private readonly bool $headless,
+        private readonly ?string $userAgent = null,
     ) {
         //
     }
@@ -50,6 +51,7 @@ final class BrowserFactory
                 'headless' => $this->headless,
                 'ignoreHttpsErrors' => true,
                 'bypassCSP' => true,
+                ...($this->userAgent !== null ? ['userAgent' => $this->userAgent] : []),
             ],
         );
 

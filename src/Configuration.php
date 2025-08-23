@@ -85,6 +85,13 @@ final readonly class Configuration
         return $this;
     }
 
+    public function userAgent(string $userAgent): self
+    {
+        Playwright::setUserAgent($userAgent);
+
+        return $this;
+    }
+
     /**
      * Enables debug mode for assertions.
      */
