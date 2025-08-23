@@ -86,7 +86,7 @@ final readonly class Configuration
     }
 
     /**
-     * Defaults the browsers userAgent.
+     * Sets the browsers userAgent.
      */
     public function userAgent(string $userAgent): self
     {
