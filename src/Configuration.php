@@ -85,6 +85,9 @@ final readonly class Configuration
         return $this;
     }
 
+    /**
+     * Defaults the browsers userAgent.
+     */
     public function userAgent(string $userAgent): self
     {
         Playwright::setUserAgent($userAgent);

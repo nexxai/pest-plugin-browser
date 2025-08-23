@@ -50,7 +50,7 @@ final class BrowserFactory
             'bypassCSP' => true,
         ];
 
-        if($this->userAgent !== null) {
+        if ($this->userAgent !== null) {
             $defaultOptions['userAgent'] = $this->userAgent;
         }
 

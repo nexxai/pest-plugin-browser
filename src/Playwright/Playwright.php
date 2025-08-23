@@ -49,6 +49,9 @@ final class Playwright
      */
     private static int $timeout = 5_000;
 
+    /**
+     * The default userAgent.
+     */
     private static ?string $userAgent = null;
 
     /**
@@ -123,6 +126,9 @@ final class Playwright
         return self::$timeout;
     }
 
+    /**
+     * Set the default userAgent.
+     */
     public static function setUserAgent(string $userAgent): void
     {
         self::$userAgent = $userAgent;
