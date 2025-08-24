@@ -76,6 +76,16 @@ trait InteractsWithElements
     }
 
     /**
+     * Hovers over the element matching the given selector.
+     */
+    public function hover(string $selector): Webpage
+    {
+        $this->guessLocator($selector)->hover();
+
+        return $this;
+    }
+
+    /**
      * Select the given value in the given field.
      *
      * @param  array<int, string|int>|string|int  $option
