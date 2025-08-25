@@ -18,8 +18,8 @@ it('rewrites the URLs on JS files', function (): void {
         ->assertDontSee('http://localhost');
 });
 
-it('changes the hostname for all requests', function () {
-    Route::domain('pest.test')->group(function () {
+it('changes the hostname for all requests', function (): void {
+    Route::domain('pest.test')->group(function (): void {
         Route::get('/about', fn (): string => 'Hello Pest');
     });
 
@@ -27,4 +27,3 @@ it('changes the hostname for all requests', function () {
 
     visit('/about')->assertSee('Hello Pest');
 });
-
