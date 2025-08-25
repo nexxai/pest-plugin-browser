@@ -17,17 +17,19 @@ final class Selector
             }
         }
 
-        if (str_contains($selector, ',')) {
-            return true;
-        }
-
         if (str_ends_with($selector, '[]')) {
             return false;
         }
 
-        return str_contains($selector, '[')
-            || str_contains($selector, '#')
-            || str_contains($selector, '.');
+        $cssSpecialChars = ['[', ']', '#', '.', '>', '+', '~', ':', '*', '|', '^', ',', '=', ',', '(', ')'];
+
+        foreach ($cssSpecialChars as $cssSpecialChar) {
+            if (str_contains($selector, $cssSpecialChar)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
