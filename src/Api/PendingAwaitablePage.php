@@ -72,6 +72,19 @@ final class PendingAwaitablePage
     }
 
     /**
+     * Allows you to set a different physical location for the browser.
+     */
+    public function from(): From
+    {
+        return new From(
+            $this->browserType,
+            $this->device,
+            $this->url,
+            $this->options,
+        );
+    }
+
+    /**
      * Allows you to set a different device for the page.
      */
     public function on(): On
