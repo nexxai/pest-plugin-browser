@@ -222,22 +222,35 @@ final class LaravelHttpServer implements HttpServer
             Execution::instance()->tick();
         }
 
-        $filepath = public_path($path = $request->getUri()->getPath());
+        $uri = $request->getUri();
+        $path = in_array($uri->getPath(), ['', '0'], true) ? '/' : $uri->getPath();
+        $query = $uri->getQuery() ?? ''; // @phpstan-ignore-line
+        $fullPath = $path.($query !== '' ? '?'.$query : '');
+        $absoluteUrl = mb_rtrim($this->url(), '/').$fullPath;
 
+        $filepath = public_path($path);
         if (file_exists($filepath) && ! is_dir($filepath)) {
             return $this->asset($filepath);
         }
 
         $kernel = app()->make(HttpKernel::class);
 
+        $contentType = $request->getHeader('content-type') ?? '';
+        $method = mb_strtoupper($request->getMethod());
+        $rawBody = (string) $request->getBody();
+        $parameters = [];
+        if ($method !== 'GET' && str_starts_with(mb_strtolower($contentType), 'application/x-www-form-urlencoded')) {
+            parse_str($rawBody, $parameters);
+        }
+
         $symfonyRequest = Request::create(
-            $path,
-            $request->getMethod(),
-            $request->getQueryParameters(),
+            $absoluteUrl,
+            $method,
+            $parameters,
             $request->getCookies(),
             [], // @TODO files...
             [], // @TODO server variables...
-            (string) $request->getBody(),
+            $rawBody
         );
 
         $symfonyRequest->headers->add($request->getHeaders());

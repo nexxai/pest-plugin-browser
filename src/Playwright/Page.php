@@ -475,24 +475,13 @@ final class Page
             /** @var array{result: array{diff: string|null}} $message */
             foreach ($response as $message) {
                 if (isset($message['result']['diff'])) {
-                    $imageDiffViewDir = Screenshot::dir().'/ImageDiffView';
-
-                    if (is_dir($imageDiffViewDir) === false) {
-                        mkdir($imageDiffViewDir, 0755, true);
-                    }
-
-                    $imageDiffViewPath = $imageDiffViewDir.'/'.$snapshotName.'.html';
-
-                    file_put_contents($imageDiffViewPath, ImageDiffView::generate(
+                    $this->createImageDiffView(
+                        $snapshotName,
                         $expectedImageBlob,
                         $actualImageBlob,
                         $message['result']['diff'],
-                        test()->name() // @phpstan-ignore-line
-                    ));
-
-                    if ($openDiff) {
-                        Shell::open($imageDiffViewPath);
-                    }
+                        $openDiff
+                    );
 
                     throw new ExpectationFailedException(<<<'EOT'
                         Screenshot does not match the last one.
@@ -502,6 +491,14 @@ final class Page
                     );
                 }
             }
+
+            $this->createImageDiffView(
+                $snapshotName,
+                $expectedImageBlob,
+                $actualImageBlob,
+                ImageDiffView::missingImage(),
+                $openDiff,
+            );
 
             throw new ExpectationFailedException(<<<'EOT'
                 Screenshot does not match the last one.
@@ -601,5 +598,35 @@ final class Page
             'animations' => 'disabled',
             'scale' => 'css',
         ];
+    }
+
+    /**
+     * Create an HTML view for the image diff.
+     */
+    private function createImageDiffView(
+        string $snapshotName,
+        string $expectedImageBlob,
+        string $actualImageBlob,
+        string $diff,
+        bool $openDiff
+    ): void {
+        $imageDiffViewDir = Screenshot::dir().'/ImageDiffView';
+
+        if (is_dir($imageDiffViewDir) === false) {
+            mkdir($imageDiffViewDir, 0755, true);
+        }
+
+        $imageDiffViewPath = $imageDiffViewDir.'/'.$snapshotName.'.html';
+
+        file_put_contents($imageDiffViewPath, ImageDiffView::generate(
+            $expectedImageBlob,
+            $actualImageBlob,
+            $diff,
+            test()->name() // @phpstan-ignore-line
+        ));
+
+        if ($openDiff) {
+            Shell::open($imageDiffViewPath);
+        }
     }
 }

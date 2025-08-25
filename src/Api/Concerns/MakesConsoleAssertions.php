@@ -5,9 +5,14 @@ declare(strict_types=1);
 namespace Pest\Browser\Api\Concerns;
 
 use Pest\Browser\Api\Webpage;
+use Pest\Browser\Enums\Impact;
+use Pest\Browser\Exceptions\AccessibilityNotInstalledException;
+use Pest\Browser\Support\AccessibilityFormatter;
 
 /**
  * @mixin Webpage
+ *
+ * @phpstan-import-type Violations from AccessibilityFormatter
  */
 trait MakesConsoleAssertions
 {
@@ -50,6 +55,38 @@ trait MakesConsoleAssertions
             count($javaScriptErrors),
             implode(', ', array_map(fn (array $log) => $log['message'], $javaScriptErrors)),
         ));
+
+        return $this;
+    }
+
+    /**
+     * Asserts the accessibility of the page.
+     */
+    public function assertAccessibility(Impact $impact = Impact::Minor): Webpage
+    {
+        /** @var bool $hasAccessibility */
+        $hasAccessibility = $this->page->evaluate("window.hasOwnProperty('axe')");
+
+        if (! $hasAccessibility) {
+            throw new AccessibilityNotInstalledException();
+        }
+
+        /** @var Violations|null $violations */
+        $violations = $this->page->evaluate('async () => ((await window.axe.run()).violations)');
+        if (! is_array($violations)) {
+            $violations = [];
+        }
+
+        $violations = array_filter($violations, function (array $violation) use ($impact): bool {
+            $violationImpact = $violation['impact'] ?? null;
+            $violationRank = is_string($violationImpact) ? Impact::from($violationImpact)->rank() : -1;
+
+            return $violationRank >= $impact->rank();
+        });
+
+        $report = AccessibilityFormatter::format($violations);
+
+        expect($violations)->toBeEmpty($report);
 
         return $this;
     }
