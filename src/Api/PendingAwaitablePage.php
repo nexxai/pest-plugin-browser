@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Api;
 
-use ErrorException;
 use Pest\Browser\Enums\BrowserType;
 use Pest\Browser\Enums\ColorScheme;
 use Pest\Browser\Enums\Device;
@@ -134,13 +133,6 @@ final class PendingAwaitablePage
         ]);
 
         $context->addInitScript(InitScript::get());
-        try {
-            $accessibility = file_get_contents(dirname(__DIR__, 5).'/node_modules/axe-core/axe.js');
-            if ($accessibility !== false) {
-                $context->addInitScript($accessibility);
-            }
-        } catch (ErrorException) {
-        }
 
         $url = ComputeUrl::from($this->url);
 

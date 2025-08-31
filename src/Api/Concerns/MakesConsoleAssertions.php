@@ -6,7 +6,6 @@ namespace Pest\Browser\Api\Concerns;
 
 use Pest\Browser\Api\Webpage;
 use Pest\Browser\Enums\Impact;
-use Pest\Browser\Exceptions\AccessibilityNotInstalledException;
 use Pest\Browser\Support\AccessibilityFormatter;
 
 /**
@@ -62,15 +61,8 @@ trait MakesConsoleAssertions
     /**
      * Asserts the accessibility of the page.
      */
-    public function assertAccessibility(Impact $impact = Impact::Minor): Webpage
+    public function assertNoAccessibilityIssues(Impact $impact = Impact::Critical): Webpage
     {
-        /** @var bool $hasAccessibility */
-        $hasAccessibility = $this->page->evaluate("window.hasOwnProperty('axe')");
-
-        if (! $hasAccessibility) {
-            throw new AccessibilityNotInstalledException();
-        }
-
         /** @var Violations|null $violations */
         $violations = $this->page->evaluate('async () => ((await window.axe.run()).violations)');
         if (! is_array($violations)) {

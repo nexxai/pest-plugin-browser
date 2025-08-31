@@ -14,7 +14,7 @@ test('example', function (): void {
         BLADE,
     ));
 
-    $response = visit('/');
+    $response = visit('https://laravel.com');
 
-    $response->assertSee('hi nuno');
+    $response->assertNoAccessibilityIssues();
 });
