@@ -426,6 +426,20 @@ final class Page
     }
 
     /**
+     * Get the broken images from the page, if any.
+     *
+     * @return array<int, string>
+     */
+    public function brokenImages(): array
+    {
+        $brokenImages = $this->evaluate('window.__pestBrowser.brokenImages || []');
+
+        /** @var array<int, string> $brokenImages */
+        return $brokenImages;
+
+    }
+
+    /**
      * Get the JavaScript errors from the page, if any.
      *
      * @return array<int, array{message: string}>
