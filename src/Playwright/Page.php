@@ -426,6 +426,26 @@ final class Page
     }
 
     /**
+     * Get the broken images from the page, if any.
+     *
+     * @return array<int, string>
+     */
+    public function brokenImages(): array
+    {
+        $brokenImages = $this->evaluate(<<<'JS'
+            () => {
+                return Array.from(document.images)
+                    .filter(img => img.complete && img.naturalWidth === 0)
+                    .map(img => img.src);
+            }
+            JS);
+
+        /** @var array<int, string> $brokenImages */
+        return $brokenImages;
+
+    }
+
+    /**
      * Get the JavaScript errors from the page, if any.
      *
      * @return array<int, array{message: string}>
