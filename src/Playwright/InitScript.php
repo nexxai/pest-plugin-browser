@@ -23,8 +23,7 @@ final class InitScript
 
             window.__pestBrowser = {
                 jsErrors: [],
-                consoleLogs: [],
-                brokenImages: []
+                consoleLogs: []
             };
 
             const originalConsoleLog = console.log;
@@ -43,11 +42,6 @@ final class InitScript
                     lineno: e.lineno,
                     colno: e.colno
                 });
-            });
-
-            document.addEventListener('DOMContentLoaded', () => {
-                const images = Array.from(document.images);
-                window.__pestBrowser.brokenImages = images.filter(img => !img.complete || img.naturalWidth === 0).map(img => img.src);
             });
             JS;
     }

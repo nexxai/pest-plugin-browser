@@ -29,22 +29,6 @@ trait MakesConsoleAssertions
     }
 
     /**
-     * Asserts there are no broken images on the page.
-     */
-    public function assertNoBrokenImages(): Webpage
-    {
-        $brokenImages = $this->page->brokenImages();
-
-        expect($brokenImages)->toBeEmpty(sprintf(
-            "Expected no broken images on the page initially with the url [{$this->initialUrl}], but found %s: %s",
-            count($brokenImages),
-            implode(', ', $brokenImages),
-        ));
-
-        return $this;
-    }
-
-    /**
      * Asserts there are no console logs on the page.
      */
     public function assertNoConsoleLogs(): Webpage
