@@ -15,7 +15,6 @@ it('asserts that there are broken images', function (): void {
 
 })->throws(ExpectationFailedException::class, 'assets/not-an-image.png');
 
-
 it('asserts that there are no broken images', function (): void {
 
     $image = file_get_contents(__DIR__.'/../../Fixtures/v4.jpg');
