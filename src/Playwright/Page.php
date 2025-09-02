@@ -20,7 +20,8 @@ use RuntimeException;
  */
 final class Page
 {
-    use Concerns\InteractsWithPlaywright;
+    use Concerns\InteractsWithKeyboard,
+        Concerns\InteractsWithPlaywright;
 
     /**
      * Whether the page has been closed.
@@ -581,6 +582,8 @@ final class Page
             'screenshot',
             'waitForLoadState',
             'waitForURL',
+            'keyboardDown',
+            'keyboardUp',
         ];
 
         return in_array($method, $pageLevelOperations, true);
