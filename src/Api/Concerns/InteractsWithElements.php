@@ -197,10 +197,7 @@ trait InteractsWithElements
      */
     public function pressAndWaitFor(string $button, int|float $seconds = 1): Webpage
     {
-        $locator = $this->guessLocator($button);
-        $locator->click();
-
-        return $this->wait($seconds);
+        return $this->press($button)->wait($seconds);
     }
 
     /**
