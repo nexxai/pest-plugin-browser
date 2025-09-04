@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Api;
 
+use InvalidArgumentException;
 use Pest\Browser\Enums\BrowserType;
+use Pest\Browser\Enums\Cities;
 use Pest\Browser\Enums\ColorScheme;
 use Pest\Browser\Enums\Device;
 use Pest\Browser\Playwright\InitScript;
@@ -120,11 +122,24 @@ final class PendingAwaitablePage
 
     /**
      * Sets the geolocation for the page.
+     *
+     * @param  float|Cities  $latitudeOrCity  The latitude or a Cities enum value
+     * @param  float|null  $longitude  The longitude (not required when using Cities enum)
      */
-    public function geolocation(float $latitude, float $longitude): self
+    public function geolocation(float|Cities $latitudeOrCity, ?float $longitude = null): self
     {
+        if ($latitudeOrCity instanceof Cities) {
+            $geolocation = $latitudeOrCity->geolocation();
+        } else {
+            if ($longitude === null) {
+                throw new InvalidArgumentException('Longitude must be provided when latitude is specified');
+            }
+
+            $geolocation = ['latitude' => $latitudeOrCity, 'longitude' => $longitude];
+        }
+
         return new self($this->browserType, $this->device, $this->url, [
-            'geolocation' => ['latitude' => $latitude, 'longitude' => $longitude],
+            'geolocation' => $geolocation,
             'permissions' => ['geolocation'],
             ...$this->options,
         ]);
