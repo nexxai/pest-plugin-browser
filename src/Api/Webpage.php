@@ -11,7 +11,8 @@ use Pest\Browser\Support\GuessLocator;
 
 final readonly class Webpage
 {
-    use Concerns\HasWaitCapabilities,
+    use Concerns\CanTakeScreenshots,
+        Concerns\HasWaitCapabilities,
         Concerns\InteractsWithElements,
         Concerns\InteractsWithFrames,
         Concerns\InteractsWithTab,
@@ -66,18 +67,6 @@ final readonly class Webpage
     public function url(): string
     {
         return $this->page->url();
-    }
-
-    /**
-     * Performs a screenshot of the current page and saves it to the given path.
-     */
-    public function screenshot(bool $fullPage = true, ?string $filename = null): self
-    {
-        $filename = is_string($filename) ? $filename : date('Y_m_d_H_i_s_u');
-
-        $this->page->screenshot($fullPage, $filename);
-
-        return $this;
     }
 
     /**
