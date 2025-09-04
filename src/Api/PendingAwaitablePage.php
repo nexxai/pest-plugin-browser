@@ -123,19 +123,22 @@ final class PendingAwaitablePage
     /**
      * Sets the geolocation for the page.
      *
-     * @param  float|Cities  $latitudeOrCity  The latitude or a Cities enum value
-     * @param  float|null  $longitude  The longitude (not required when using Cities enum)
+     * @param  float|Cities  $location  The latitude or a Cities enum value
+     * @param  float|null  $longitude  The longitude (required with latitude, ignored when using Cities enum)
+     *
+     * @example geolocation(Cities::NEW_YORK)
+     * @example geolocation(40.7128, -74.0060)
      */
-    public function geolocation(float|Cities $latitudeOrCity, ?float $longitude = null): self
+    public function geolocation(float|Cities $location, ?float $longitude = null): self
     {
-        if ($latitudeOrCity instanceof Cities) {
-            $geolocation = $latitudeOrCity->geolocation();
+        if ($location instanceof Cities) {
+            $geolocation = $location->geolocation();
         } else {
             if ($longitude === null) {
                 throw new InvalidArgumentException('Longitude must be provided when latitude is specified');
             }
 
-            $geolocation = ['latitude' => $latitudeOrCity, 'longitude' => $longitude];
+            $geolocation = ['latitude' => $location, 'longitude' => $longitude];
         }
 
         return new self($this->browserType, $this->device, $this->url, [
