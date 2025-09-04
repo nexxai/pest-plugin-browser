@@ -13,10 +13,12 @@ trait InteractsWithElements
 {
     /**
      * Click the link with the given text.
+     *
+     * @param  array<string, mixed>|null  $options
      */
-    public function click(string $text): Webpage
+    public function click(string $text, ?array $options = null): Webpage
     {
-        $this->guessLocator($text)->click();
+        $this->guessLocator($text)->click($options);
 
         return $this;
     }
