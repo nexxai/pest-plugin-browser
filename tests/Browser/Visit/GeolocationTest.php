@@ -69,4 +69,4 @@ test('can set geolocation using Cities enum', function (): void {
 test('throws an error if latitude is provided without longitude', function (): void {
     visit('/')
         ->geolocation(0.0);
-})->throws(InvalidArgumentException::class, 'Longitude must be provided when latitude is specified')->only();
+})->throws(InvalidArgumentException::class, 'Longitude must be provided when latitude is specified');
