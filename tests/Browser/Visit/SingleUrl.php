@@ -96,8 +96,7 @@ it('may visit a page with custom locale and timezone', function (): void {
 });
 
 it('may visit external URLs', function (): void {
-    $page = visit('https://laravel.com');
+    $page = visit('https://example.com');
 
-    $page->assertSee('Laravel')
-        ->assertDontSee('Symfony');
+    $page->assertSee('Example Domain');
 });
