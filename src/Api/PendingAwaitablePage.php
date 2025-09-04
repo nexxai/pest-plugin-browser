@@ -133,11 +133,9 @@ final class PendingAwaitablePage
     {
         if ($location instanceof Cities) {
             $geolocation = $location->geolocation();
+        } elseif ($longitude === null) {
+            throw new InvalidArgumentException('Longitude must be provided when latitude is specified');
         } else {
-            if ($longitude === null) {
-                throw new InvalidArgumentException('Longitude must be provided when latitude is specified');
-            }
-
             $geolocation = ['latitude' => $location, 'longitude' => $longitude];
         }
 
