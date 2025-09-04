@@ -73,6 +73,17 @@ final class PendingAwaitablePage
     }
 
     /**
+     * Allows you to run all tests in both color modes.
+     */
+    public function inLightAndDarkMode(): ArrayablePendingAwaitablePage
+    {
+        return new ArrayablePendingAwaitablePage([
+            $this->inLightMode(),
+            $this->inDarkMode(),
+        ]);
+    }
+
+    /**
      * Allows you to set a different physical location for the browser.
      */
     public function from(): From
