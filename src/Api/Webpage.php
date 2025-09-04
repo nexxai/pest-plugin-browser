@@ -16,6 +16,7 @@ final readonly class Webpage
         Concerns\InteractsWithFrames,
         Concerns\InteractsWithTab,
         Concerns\InteractsWithToolbar,
+        Concerns\InteractsWithViewPort,
         Concerns\MakesConsoleAssertions,
         Concerns\MakesElementAssertions,
         Concerns\MakesScreenshotAssertions,
