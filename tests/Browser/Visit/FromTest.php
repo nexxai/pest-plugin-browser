@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Pest\Browser\Enums\Cities;
 
-it('can emulate being from New York', function (): void {
+it('can emulate being from another location', function (): void {
     Route::get('/', fn (): string => '
         <html>
         <head></head>
