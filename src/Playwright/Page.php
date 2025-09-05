@@ -628,6 +628,8 @@ final class Page
             'screenshot',
             'waitForLoadState',
             'waitForURL',
+            'keyboardDown',
+            'keyboardUp',
             'setViewportSize',
             'viewportSize',
         ];

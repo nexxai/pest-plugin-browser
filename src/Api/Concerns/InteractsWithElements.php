@@ -13,10 +13,12 @@ trait InteractsWithElements
 {
     /**
      * Click the link with the given text.
+     *
+     * @param  array<string, mixed>  $options
      */
-    public function click(string $text): Webpage
+    public function click(string $text, array $options = []): Webpage
     {
-        $this->guessLocator($text)->click();
+        $this->guessLocator($text)->click($options);
 
         return $this;
     }
@@ -202,6 +204,22 @@ trait InteractsWithElements
         $toLocator = $this->guessLocator($to);
 
         $fromLocator->dragTo($toLocator);
+
+        return $this;
+    }
+
+    /**
+     * Hold down key while running callback
+     */
+    public function withKeyDown(string $key, callable $callback): static
+    {
+        $this->page->keyDown($key);
+
+        try {
+            $callback($this);
+        } finally {
+            $this->page->keyUp($key);
+        }
 
         return $this;
     }
