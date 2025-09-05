@@ -205,4 +205,20 @@ trait InteractsWithElements
 
         return $this;
     }
+
+    /**
+     * Hold down key while running callback
+     */
+    public function withKeyDown(string $key, callable $callback): static
+    {
+        $this->page->keyDown($key);
+
+        try {
+            $callback($this);
+        } finally {
+            $this->page->keyUp($key);
+        }
+
+        return $this;
+    }
 }
