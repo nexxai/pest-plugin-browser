@@ -573,6 +573,7 @@ trait MakesElementAssertions
 
         if ($scope !== null) {
             $scopedLocator = $this->page->locator($scope);
+
             return $this->page->unstrict(fn () => $scopedLocator->getByText($text));
         }
 

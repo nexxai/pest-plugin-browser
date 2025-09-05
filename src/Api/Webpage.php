@@ -111,7 +111,7 @@ final readonly class Webpage
     {
         $previousScope = WithinContext::getScope();
 
-        $scope = $previousScope ? $previousScope . '>>' . $selector : $selector;
+        $scope = $previousScope ? $previousScope.'>>'.$selector : $selector;
 
         WithinContext::setScope($scope);
 
