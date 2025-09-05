@@ -131,18 +131,4 @@ final readonly class Webpage
     {
         return (new GuessLocator($this->page, WithinContext::getScope()))->for($selector, $value);
     }
-
-
-    /** Gets a text locator respecting the current scope when set. */
-    private function getScopedTextLocator(string $text): Locator
-    {
-        $scope = WithinContext::getScope();
-
-        if ($scope !== null) {
-            $scopedLocator = $this->page->locator($scope);
-            return $this->page->unstrict(fn () => $scopedLocator->getByText($text));
-        }
-
-        return $this->page->unstrict(fn () => $this->page->getByText($text));
-    }
 }
