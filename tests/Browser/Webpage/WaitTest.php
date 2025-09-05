@@ -56,3 +56,26 @@ it('may wait for selector', function (): void {
 
     $page->assertSeeIn('#child', 'Child Element Added');
 });
+
+it('may wait for selector with options', function (): void {
+    Route::get('/', fn (): string => '
+        <div id="container">
+            <div id="child">Child Element</div>
+        </div>
+        <script>
+            setTimeout(() => {
+                const container = document.getElementById("container");
+                const childElement = document.getElementById("child");
+                container.removeChild(childElement);
+            }, 100);
+        </script>
+    ');
+
+    $page = visit('/');
+
+    $page->waitForSelector('#child', [
+        'state' => 'detached',
+    ]);
+
+    $page->assertSourceMissing('<div id="child">Child Element</div>');
+});
