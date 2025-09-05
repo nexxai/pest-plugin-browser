@@ -57,7 +57,7 @@ it('may wait for selector', function (): void {
     $page->assertSeeIn('#child', 'Child Element Added');
 });
 
-it('may wait for selector with options', function (): void {
+it('may wait for selector with options', function (string $state): void {
     Route::get('/', fn (): string => '
         <div id="container">
             <div id="child">Child Element</div>
@@ -74,8 +74,13 @@ it('may wait for selector with options', function (): void {
     $page = visit('/');
 
     $page->waitForSelector('#child', [
-        'state' => 'detached',
+        'state' => $state,
     ]);
 
     $page->assertSourceMissing('<div id="child">Child Element</div>');
-});
+})->with([
+    'attached' => 'attached',
+    'detached' => 'detached',
+    'visible' => 'visible',
+    'hidden' => 'hidden',
+]);
