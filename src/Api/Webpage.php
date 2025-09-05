@@ -113,7 +113,7 @@ final class Webpage
     {
         $previousScope = $this->currentScope;
 
-        $this->currentScope = $previousScope ? $previousScope.' >> '.$selector : $selector;
+        $this->currentScope = $previousScope !== null ? $previousScope.' >> '.$selector : $selector;
 
         try {
             call_user_func($callback, $this);
