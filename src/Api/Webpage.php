@@ -11,10 +11,10 @@ use Pest\Browser\Support\GuessLocator;
 
 final readonly class Webpage
 {
-    use Concerns\CanTakeScreenshots,
-        Concerns\HasWaitCapabilities,
+    use Concerns\HasWaitCapabilities,
         Concerns\InteractsWithElements,
         Concerns\InteractsWithFrames,
+        Concerns\InteractsWithScreen,
         Concerns\InteractsWithTab,
         Concerns\InteractsWithToolbar,
         Concerns\InteractsWithViewPort,

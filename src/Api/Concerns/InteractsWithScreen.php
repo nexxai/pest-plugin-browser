@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Api\Concerns;
 
-trait CanTakeScreenshots
+trait InteractsWithScreen
 {
     /**
      * Performs a screenshot of the current page and saves it to the given path.
