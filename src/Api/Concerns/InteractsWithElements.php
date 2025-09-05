@@ -179,7 +179,17 @@ trait InteractsWithElements
      */
     public function press(string $button): Webpage
     {
-        $this->guessLocator($button)->click();
+        if (str_starts_with($button, '@')) {
+            $locator = $this->page->locator('button[data-test="'.mb_substr($button, 1).'"], input[type="button"][data-test="'.mb_substr($button, 1).'"]');
+        } else {
+            $locator = $this->page->getByRole('button', ['name' => $button]);
+
+            if ($locator->count() === 0) {
+                $locator = $this->page->locator('button[name="'.$button.'"], input[name="'.$button.'"]:is([type="button"], [type="submit"])');
+            }
+        }
+
+        $locator->click();
 
         return $this;
     }
@@ -189,10 +199,7 @@ trait InteractsWithElements
      */
     public function pressAndWaitFor(string $button, int|float $seconds = 1): Webpage
     {
-        $locator = $this->guessLocator($button);
-        $locator->click();
-
-        return $this->wait($seconds);
+        return $this->press($button)->wait($seconds);
     }
 
     /**
