@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Api;
 
+use InvalidArgumentException;
 use Pest\Browser\Enums\BrowserType;
+use Pest\Browser\Enums\Cities;
 use Pest\Browser\Enums\ColorScheme;
 use Pest\Browser\Enums\Device;
 use Pest\Browser\Playwright\InitScript;
@@ -71,6 +73,19 @@ final class PendingAwaitablePage
     }
 
     /**
+     * Allows you to set a different physical location for the browser.
+     */
+    public function from(): From
+    {
+        return new From(
+            $this->browserType,
+            $this->device,
+            $this->url,
+            $this->options,
+        );
+    }
+
+    /**
      * Allows you to set a different device for the page.
      */
     public function on(): On
@@ -95,6 +110,17 @@ final class PendingAwaitablePage
     }
 
     /**
+     * Sets the userAgent for the page.
+     */
+    public function withUserAgent(string $userAgent): self
+    {
+        return new self($this->browserType, $this->device, $this->url, [
+            'userAgent' => $userAgent,
+            ...$this->options,
+        ]);
+    }
+
+    /**
      * Sets the timezone for the page.
      */
     public function withTimezone(string $timezone): self
@@ -107,11 +133,25 @@ final class PendingAwaitablePage
 
     /**
      * Sets the geolocation for the page.
+     *
+     * @param  float|Cities  $location  The latitude or a Cities enum value
+     * @param  float|null  $longitude  The longitude (required with latitude, ignored when using Cities enum)
+     *
+     * @example geolocation(Cities::NEW_YORK)
+     * @example geolocation(40.7128, -74.0060)
      */
-    public function geolocation(float $latitude, float $longitude): self
+    public function geolocation(float|Cities $location, ?float $longitude = null): self
     {
+        if ($location instanceof Cities) {
+            $geolocation = $location->geolocation();
+        } elseif ($longitude === null) {
+            throw new InvalidArgumentException('Longitude must be provided when latitude is specified');
+        } else {
+            $geolocation = ['latitude' => $location, 'longitude' => $longitude];
+        }
+
         return new self($this->browserType, $this->device, $this->url, [
-            'geolocation' => ['latitude' => $latitude, 'longitude' => $longitude],
+            'geolocation' => $geolocation,
             'permissions' => ['geolocation'],
             ...$this->options,
         ]);
