@@ -57,7 +57,32 @@ it('may wait for selector', function (): void {
     $page->assertSeeIn('#child', 'Child Element Added');
 });
 
-it('may wait for selector with options', function (string $state): void {
+it('may wait for selector to be attached', function (): void {
+    Route::get('/', fn (): string => '
+        <div id="container"></div>
+        <script>
+            setTimeout(() => {
+                const container = document.getElementById("container");
+                const childElement = document.createElement("div");
+                childElement.id = "child";
+                childElement.textContent = "Child Element Added";
+                container.appendChild(childElement);
+            }, 100);
+        </script>
+    ');
+
+    $page = visit('/');
+
+    $page->assertSourceMissing('<div id="child">Child Element Added</div>');
+
+    $page->waitForSelector('#child', [
+        'state' => 'attached',
+    ]);
+
+    $page->assertSeeIn('#child', 'Child Element Added');
+});
+
+it('may wait for selector to be detached', function (): void {
     Route::get('/', fn (): string => '
         <div id="container">
             <div id="child">Child Element</div>
@@ -73,14 +98,59 @@ it('may wait for selector with options', function (string $state): void {
 
     $page = visit('/');
 
+    $page->assertSeeIn('#child', 'Child Element');
+
     $page->waitForSelector('#child', [
-        'state' => $state,
+        'state' => 'detached',
     ]);
 
     $page->assertSourceMissing('<div id="child">Child Element</div>');
-})->with([
-    'attached' => 'attached',
-    'detached' => 'detached',
-    'visible' => 'visible',
-    'hidden' => 'hidden',
-]);
+});
+
+it('may wait for selector to be hidden', function (): void {
+    Route::get('/', fn (): string => '
+        <div id="container">
+            <div id="child">Child Element</div>
+        </div>
+        <script>
+            setTimeout(() => {
+                const childElement = document.getElementById("child");
+                childElement.style.display = "none";
+            }, 1000);
+        </script>
+    ');
+
+    $page = visit('/');
+
+    $page->assertSeeIn('#child', 'Child Element');
+
+    $page->waitForSelector('#child', [
+        'state' => 'hidden',
+    ]);
+
+    $page->assertDontSee('Child Element');
+});
+
+it('may wait for selector to be visible', function (): void {
+    Route::get('/', fn (): string => '
+        <div id="container">
+            <div id="child" style="display: none;">Child Element</div>
+        </div>
+        <script>
+            setTimeout(() => {
+                const childElement = document.getElementById("child");
+                childElement.style.display = "block";
+            }, 100);
+        </script>
+    ');
+
+    $page = visit('/');
+
+    $page->assertMissing('#child');
+
+    $page->waitForSelector('#child', [
+        'state' => 'visible',
+    ]);
+
+    $page->assertSee('Child Element');
+});
