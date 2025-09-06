@@ -6,7 +6,6 @@ namespace Pest\Browser\Api;
 
 use InvalidArgumentException;
 use Pest\Browser\Enums\BrowserType;
-use Pest\Browser\Enums\Cities;
 use Pest\Browser\Enums\City;
 use Pest\Browser\Enums\ColorScheme;
 use Pest\Browser\Enums\Device;
