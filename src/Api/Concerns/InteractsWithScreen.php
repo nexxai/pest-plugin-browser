@@ -32,6 +32,11 @@ trait InteractsWithScreen
 
     private function getFilename(?string $filename = null): string
     {
-        return is_string($filename) ? $filename : 'screenshot-'.date('Y_m_d_H_i_s_u').'.png';
+        if ($filename === null) {
+            // @phpstan-ignore-next-line
+            return str_replace('__pest_evaluable_', '', test()->name());
+        }
+
+        return $filename;
     }
 }

@@ -23,7 +23,9 @@ it('captures a full-page screenshot with default filename', function (): void {
 
     $page->screenshot();
 
-    expect(file_exists(Screenshot::path('screenshot-'.date('Y_m_d_H_i_s_u').'.png')))
+    $defaultFilename = str_replace('__pest_evaluable_', '', test()->name());
+
+    expect(file_exists(Screenshot::path($defaultFilename)))
         ->toBeTrue();
 });
 
