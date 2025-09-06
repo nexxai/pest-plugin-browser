@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Enums;
 
-enum Cities: string
+enum City: string
 {
     case AMSTERDAM = 'amsterdam';
     case BERLIN = 'berlin';
