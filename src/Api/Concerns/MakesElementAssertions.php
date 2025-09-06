@@ -6,6 +6,7 @@ namespace Pest\Browser\Api\Concerns;
 
 use Illuminate\Support\Str;
 use Pest\Browser\Api\Webpage;
+use Pest\Browser\Playwright\Locator;
 use PHPUnit\Framework\ExpectationFailedException;
 
 /**
@@ -46,9 +47,7 @@ trait MakesElementAssertions
     {
         $text = (string) $text;
 
-        $locator = $this->page->unstrict(
-            fn () => $this->page->getByText($text),
-        );
+        $locator = $this->getScopedTextLocator($text);
 
         foreach ($locator->all() as $element) {
             if ($element->isVisible()) {
@@ -70,9 +69,7 @@ trait MakesElementAssertions
     {
         $text = (string) $text;
 
-        $locator = $this->page->unstrict(
-            fn () => $this->page->getByText($text),
-        );
+        $locator = $this->getScopedTextLocator($text);
 
         foreach ($locator->all() as $element) {
             if ($element->isVisible()) {
@@ -566,5 +563,17 @@ trait MakesElementAssertions
         $text = (string) $text;
 
         return $this->assertSee($text);
+    }
+
+    /** Gets a text locator respecting the current scope when set. */
+    private function getScopedTextLocator(string $text): Locator
+    {
+        if ($this->currentScope !== null) {
+            $scopedLocator = $this->page->locator($this->currentScope);
+
+            return $this->page->unstrict(fn () => $scopedLocator->getByText($text));
+        }
+
+        return $this->page->unstrict(fn () => $this->page->getByText($text));
     }
 }

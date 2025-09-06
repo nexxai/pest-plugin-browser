@@ -9,7 +9,7 @@ use Pest\Browser\Playwright\Locator;
 use Pest\Browser\Playwright\Page;
 use Pest\Browser\Support\GuessLocator;
 
-final readonly class Webpage
+final class Webpage
 {
     use Concerns\HasWaitCapabilities,
         Concerns\InteractsWithElements,
@@ -23,12 +23,15 @@ final readonly class Webpage
         Concerns\MakesScreenshotAssertions,
         Concerns\MakesUrlAssertions;
 
+    /** The current scope selector for within contexts. */
+    private ?string $currentScope = null;
+
     /**
      * The page instance.
      */
     public function __construct(
-        private Page $page,
-        private string $initialUrl,
+        private readonly Page $page,
+        private readonly string $initialUrl,
     ) {
         //
     }
@@ -95,11 +98,26 @@ final readonly class Webpage
         return $this->guessLocator($selector)->inputValue();
     }
 
+    public function within(string $selector, callable $callback): self
+    {
+        $previousScope = $this->currentScope;
+
+        $this->currentScope = $previousScope !== null ? $previousScope.' >> '.$selector : $selector;
+
+        try {
+            call_user_func($callback, $this);
+        } finally {
+            $this->currentScope = $previousScope;
+        }
+
+        return $this;
+    }
+
     /**
      * Gets the locator for the given selector.
      */
     private function guessLocator(string $selector, ?string $value = null): Locator
     {
-        return (new GuessLocator($this->page))->for($selector, $value);
+        return (new GuessLocator($this->page, $this->currentScope))->for($selector, $value);
     }
 }
