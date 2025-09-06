@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Pest\Browser\Enums\Cities;
+use Pest\Browser\Enums\City;
 
 test('can set geolocation', function (): void {
     Route::get('/', fn (): string => '
@@ -55,7 +55,7 @@ test('can set geolocation using Cities enum', function (): void {
             </html>
         ');
 
-    $city = Cities::LONDON;
+    $city = City::LONDON;
     $expectedLatitude = $city->geolocation()['latitude'];
     $expectedLongitude = $city->geolocation()['longitude'];
 

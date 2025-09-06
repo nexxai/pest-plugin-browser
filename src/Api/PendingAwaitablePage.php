@@ -7,6 +7,7 @@ namespace Pest\Browser\Api;
 use InvalidArgumentException;
 use Pest\Browser\Enums\BrowserType;
 use Pest\Browser\Enums\Cities;
+use Pest\Browser\Enums\City;
 use Pest\Browser\Enums\ColorScheme;
 use Pest\Browser\Enums\Device;
 use Pest\Browser\Playwright\InitScript;
@@ -134,15 +135,15 @@ final class PendingAwaitablePage
     /**
      * Sets the geolocation for the page.
      *
-     * @param  float|Cities  $location  The latitude or a Cities enum value
+     * @param  float|City  $location  The latitude or a Cities enum value
      * @param  float|null  $longitude  The longitude (required with latitude, ignored when using Cities enum)
      *
      * @example geolocation(Cities::NEW_YORK)
      * @example geolocation(40.7128, -74.0060)
      */
-    public function geolocation(float|Cities $location, ?float $longitude = null): self
+    public function geolocation(float|City $location, ?float $longitude = null): self
     {
-        if ($location instanceof Cities) {
+        if ($location instanceof City) {
             $geolocation = $location->geolocation();
         } elseif ($longitude === null) {
             throw new InvalidArgumentException('Longitude must be provided when latitude is specified');
