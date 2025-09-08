@@ -98,6 +98,14 @@ trait InteractsWithElements
         return $this;
     }
 
+    /** Right-click the element matching the given selector. */
+    public function rightClick(string $selector, array $options = []): Webpage
+    {
+        $this->guessLocator($selector)->rightClick($options);
+
+        return $this;
+    }
+
     /**
      * Select the given value in the given field.
      *

@@ -149,6 +149,15 @@ final readonly class Locator
         $this->processVoidResponse($response);
     }
 
+    /** Right-click on the element matching the locator. */
+    public function rightClick(?array $options = null): void
+    {
+        $rightClickOptions = array_merge(['button' => 'right'], $options ?? []);
+        $response = $this->sendMessage('click', $rightClickOptions);
+
+        $this->processVoidResponse($response);
+    }
+
     /**
      * Fill the element matching the locator with text.
      *
