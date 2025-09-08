@@ -152,7 +152,7 @@ final readonly class Locator
     /**
      * Right-click on the element matching the locator.
      *
-     * @param  array<string, mixed>  $options
+     * @param  array<string, mixed>|null  $options
      */
     public function rightClick(?array $options = null): void
     {
