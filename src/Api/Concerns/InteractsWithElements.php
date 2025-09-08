@@ -98,7 +98,11 @@ trait InteractsWithElements
         return $this;
     }
 
-    /** Right-click the element matching the given selector. */
+    /**
+     * Right-click the element matching the given selector.
+     *
+     * @param  array<string, mixed>  $options
+     */
     public function rightClick(string $selector, array $options = []): Webpage
     {
         $this->guessLocator($selector)->rightClick($options);

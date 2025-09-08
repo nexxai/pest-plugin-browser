@@ -149,7 +149,11 @@ final readonly class Locator
         $this->processVoidResponse($response);
     }
 
-    /** Right-click on the element matching the locator. */
+    /**
+     * Right-click on the element matching the locator.
+     *
+     * @param  array<string, mixed>  $options
+     */
     public function rightClick(?array $options = null): void
     {
         $rightClickOptions = array_merge(['button' => 'right'], $options ?? []);
