@@ -8,7 +8,6 @@ use Pest\Browser\Execution;
 use Pest\Browser\Playwright\Locator;
 use Pest\Browser\Playwright\Page;
 use Pest\Browser\Support\GuessLocator;
-use Pest\Browser\Support\WithinContext;
 
 final readonly class Webpage
 {
@@ -96,42 +95,11 @@ final readonly class Webpage
         return $this->guessLocator($selector)->inputValue();
     }
 
-    public function within(string $selector, callable $callback): self
-    {
-        $previousScope = WithinContext::getScope();
-
-        $scope = $previousScope ? $previousScope . '>>' . $selector : $selector;
-
-        WithinContext::setScope($scope);
-
-        try {
-            call_user_func($callback, $this);
-        } finally {
-            WithinContext::setScope($previousScope);
-        }
-
-        return $this;
-    }
-
     /**
      * Gets the locator for the given selector.
      */
     private function guessLocator(string $selector, ?string $value = null): Locator
     {
-        return (new GuessLocator($this->page, WithinContext::getScope()))->for($selector, $value);
-    }
-
-
-    /** Gets a text locator respecting the current scope when set. */
-    private function getScopedTextLocator(string $text): Locator
-    {
-        $scope = WithinContext::getScope();
-
-        if ($scope !== null) {
-            $scopedLocator = $this->page->locator($scope);
-            return $this->page->unstrict(fn () => $scopedLocator->getByText($text));
-        }
-
-        return $this->page->unstrict(fn () => $this->page->getByText($text));
+        return (new GuessLocator($this->page))->for($selector, $value);
     }
 }
