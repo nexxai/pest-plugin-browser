@@ -18,7 +18,6 @@ final readonly class GuessLocator
      */
     public function __construct(
         private Page $page,
-        private ?string $scopeSelector = null,
     ) {
         //
     }
@@ -33,7 +32,7 @@ final readonly class GuessLocator
                 $selector .= sprintf('[value=%s]', Selector::escapeForAttributeSelectorOrRegex($value, true));
             }
 
-            return $this->page->locator($this->scopeSelector($selector));
+            return $this->page->locator($selector);
         }
 
         if (Selector::isDataTest($selector)) {
@@ -41,7 +40,7 @@ final readonly class GuessLocator
 
             return $this->page->unstrict(
                 fn (): Locator => $this->page->locator(
-                    $this->scopeSelector("[data-testid=$id], [data-test=$id]"),
+                    "[data-testid=$id], [data-test=$id]",
                 ),
             );
         }
@@ -54,7 +53,7 @@ final readonly class GuessLocator
             }
 
             $locator = $this->page->unstrict(
-                fn (): Locator => $this->page->locator($this->scopeSelector($formattedSelector)),
+                fn (): Locator => $this->page->locator($formattedSelector),
             );
 
             if ($locator->count() > 0) {
@@ -68,25 +67,8 @@ final readonly class GuessLocator
             );
         }
 
-        if ($this->scopeSelector !== null) {
-            $scopedLocator = $this->page->locator($this->scopeSelector);
-
-            return $this->page->unstrict(
-                fn (): Locator => $scopedLocator->getByText($selector, true),
-            );
-        }
-
         return $this->page->unstrict(
             fn (): Locator => $this->page->getByText($selector, true),
         );
-    }
-
-    private function scopeSelector(string $selector): string
-    {
-        if ($this->scopeSelector === null) {
-            return $selector;
-        }
-
-        return $this->scopeSelector.' >> '.$selector;
     }
 }
