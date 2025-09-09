@@ -125,8 +125,18 @@ it('can assert context menu has specific options', function (): void {
     $page = visit('/');
 
     $page->assertMissing('#context-menu');
+    $page->assertDontSee('Copy');
+    $page->assertDontSee('Paste');
+    $page->assertDontSee('Delete');
+    $page->assertDontSee('Properties');
+
     $page->rightClick('#target');
     $page->assertVisible('#context-menu');
+
+    $page->assertSee('Copy');
+    $page->assertSee('Paste');
+    $page->assertSee('Delete');
+    $page->assertSee('Properties');
 });
 
 it('can handle right click with custom event handlers', function (): void {
