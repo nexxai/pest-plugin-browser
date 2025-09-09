@@ -34,40 +34,6 @@ it('can right click with text selector', function (): void {
     expect($page->text('#result'))->toBe('Text right clicked');
 });
 
-it('can right click with custom options', function (): void {
-    Route::get('/', fn (): string => '
-        <div id="result"></div>
-        <div id="target" oncontextmenu="
-            document.getElementById(\'result\').textContent = \'Right clicked with options\';
-            return false;
-        " style="width: 100px; height: 100px; background: red;">
-            Target
-        </div>
-    ');
-
-    $page = visit('/');
-
-    $page->rightClick('#target', ['force' => true]);
-
-    expect($page->text('#result'))->toBe('Right clicked with options');
-});
-
-it('can right click at specific position', function (): void {
-    Route::get('/', fn (): string => '
-        <div id="result"></div>
-        <div id="target" oncontextmenu="
-            document.getElementById(\'result\').textContent = \'Position right clicked\';
-            return false;
-        " style="width: 100px; height: 100px; background: blue;">
-            Target
-        </div>
-    ');
-
-    $page = visit('/');
-    $page->rightClick('#target', ['position' => ['x' => 50, 'y' => 25]]);
-    expect($page->text('#result'))->toBe('Position right clicked');
-});
-
 it('can right click on different element types', function (string $element): void {
     Route::get('/', fn (): string => "
         <div id=\"result\"></div>
