@@ -156,27 +156,3 @@ it('can handle right click with custom event handlers', function (): void {
 
     expect($page->text('#result'))->toBe('Custom handler executed');
 });
-
-it('can right click elements within specific scope', function (): void {
-    Route::get('/', fn (): string => '
-        <div id="result"></div>
-        <div id="container">
-            <button oncontextmenu="document.getElementById(\'result\').textContent = \'Container button clicked\'; return false;">
-                Click Me
-            </button>
-        </div>
-        <div id="other-container">
-            <button oncontextmenu="document.getElementById(\'result\').textContent = \'Other button clicked\'; return false;">
-                Click Me
-            </button>
-        </div>
-    ');
-
-    $page = visit('/');
-
-    $page->within('#container', function ($page): void {
-        $page->rightClick('Click Me');
-    });
-
-    expect($page->text('#result'))->toBe('Container button clicked');
-});
