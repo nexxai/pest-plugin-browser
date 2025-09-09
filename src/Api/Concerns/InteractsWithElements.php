@@ -13,15 +13,10 @@ trait InteractsWithElements
 {
     /**
      * Click the link with the given text.
-     *
-     * @param  array{
-     *   button?: 'left'|'right'|'middle',
-     *   clickCount?: int,
-     * }  $options
      */
-    public function click(string $text, array $options = []): self
+    public function click(string $text): self
     {
-        $this->guessLocator($text)->click($options);
+        $this->guessLocator($text)->click();
 
         return $this;
     }
@@ -104,15 +99,14 @@ trait InteractsWithElements
 
     /**
      * Right-click the element matching the given selector.
-     *
-     * @param  array{'clickCount'?: int}  $options
      */
-    public function rightClick(string $selector, array $options = []): Webpage
+    public function rightClick(string $text): Webpage
     {
-        return $this->click($selector, [
+        $this->guessLocator($text)->click([
             'button' => 'right',
-            ...$options,
         ]);
+
+        return $this;
     }
 
     /**

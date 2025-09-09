@@ -73,23 +73,3 @@ it('can click elements via exact match css selectors', function (string $selecto
     '[name$="test"]',
     'button[name="test"]',
 ]);
-
-test('click may accept options', function (): void {
-    Route::get('/', fn (): string => '
-    <p id="result"></p>
-    <button
-        id="button"
-        ondblclick="document.getElementById(\'result\').textContent = \'Option-2 clicked\'"
-    >
-        Click Me
-    </button>');
-
-    $page = visit('/');
-
-    $page->click('#button');
-    $page->assertDontSeeIn('#result', 'Option-2 clicked');
-
-    // clickCount => 2 is considered as double click
-    $page->click('#button', options: ['clickCount' => 2]);
-    $page->assertSeeIn('#result', 'Option-2 clicked');
-});
