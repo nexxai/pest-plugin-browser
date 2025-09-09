@@ -7,6 +7,7 @@ namespace Pest\Browser\Api\Concerns;
 use Illuminate\Support\Str;
 use Pest\Browser\Api\Webpage;
 use Pest\Browser\Playwright\Locator;
+use Pest\Browser\Support\WithinContext;
 use PHPUnit\Framework\ExpectationFailedException;
 
 /**
@@ -568,8 +569,10 @@ trait MakesElementAssertions
     /** Gets a text locator respecting the current scope when set. */
     private function getScopedTextLocator(string $text): Locator
     {
-        if ($this->currentScope !== null) {
-            $scopedLocator = $this->page->locator($this->currentScope);
+        $scope = WithinContext::getScope();
+
+        if ($scope !== null) {
+            $scopedLocator = $this->page->locator($scope);
 
             return $this->page->unstrict(fn () => $scopedLocator->getByText($text));
         }

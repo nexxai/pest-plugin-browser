@@ -8,8 +8,9 @@ use Pest\Browser\Execution;
 use Pest\Browser\Playwright\Locator;
 use Pest\Browser\Playwright\Page;
 use Pest\Browser\Support\GuessLocator;
+use Pest\Browser\Support\WithinContext;
 
-final class Webpage
+final readonly class Webpage
 {
     use Concerns\HasWaitCapabilities,
         Concerns\InteractsWithElements,
@@ -23,15 +24,12 @@ final class Webpage
         Concerns\MakesScreenshotAssertions,
         Concerns\MakesUrlAssertions;
 
-    /** The current scope selector for within contexts. */
-    private ?string $currentScope = null;
-
     /**
      * The page instance.
      */
     public function __construct(
-        private readonly Page $page,
-        private readonly string $initialUrl,
+        private Page $page,
+        private string $initialUrl,
     ) {
         //
     }
@@ -100,14 +98,16 @@ final class Webpage
 
     public function within(string $selector, callable $callback): self
     {
-        $previousScope = $this->currentScope;
+        $previousScope = WithinContext::getScope();
 
-        $this->currentScope = $previousScope ? $previousScope.' >> '.$selector : $selector;
+        $scope = $previousScope ? $previousScope.'>>'.$selector : $selector;
+
+        WithinContext::setScope($scope);
 
         try {
             call_user_func($callback, $this);
         } finally {
-            $this->currentScope = $previousScope;
+            WithinContext::setScope($previousScope);
         }
 
         return $this;
@@ -118,6 +118,6 @@ final class Webpage
      */
     private function guessLocator(string $selector, ?string $value = null): Locator
     {
-        return (new GuessLocator($this->page, $this->currentScope))->for($selector, $value);
+        return (new GuessLocator($this->page, WithinContext::getScope()))->for($selector, $value);
     }
 }
