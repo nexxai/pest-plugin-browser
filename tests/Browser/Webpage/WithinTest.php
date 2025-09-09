@@ -21,13 +21,13 @@ it('can click element within a scoped selector', function (): void {
 
     $page = visit('/');
 
-    $page->within('#sidebar', function ($page): void {
+    $page->within('#sidebar', function ($page) {
         $page->click('Sidebar Button');
     })
-        ->within('#sidebar', function ($page): void {
+        ->within('#sidebar', function ($page) {
             $page->click('Sidebar Link');
         })
-        ->within('#content', function ($page): void {
+        ->within('#content', function ($page) {
             $page->assertDontSee('Sidebar Link');
         })
         ->assertUrlIs(url('/sidebar'))
@@ -48,11 +48,11 @@ it('can type in input within a scoped selector', function (): void {
 
     $page = visit('/');
 
-    $page->within('#form1', function ($page): void {
+    $page->within('#form1', function ($page) {
         $page->type('username', 'john_doe');
     });
 
-    $page->within('#form2', function ($page): void {
+    $page->within('#form2', function ($page) {
         $page->type('username', 'john@example.com');
     });
 
@@ -74,13 +74,13 @@ it('can assert text within a scoped selector', function (): void {
 
     $page = visit('/');
 
-    $page->within('#header', function ($page): void {
+    $page->within('#header', function ($page) {
         $page->assertSee('Welcome');
         $page->assertSee('Header content');
         $page->assertDontSee('Footer content');
     });
 
-    $page->within('#footer', function ($page): void {
+    $page->within('#footer', function ($page) {
         $page->assertSee('Contact');
         $page->assertSee('Footer content');
         $page->assertDontSee('Header content');
@@ -104,11 +104,11 @@ it('can use css selectors within scope', function (): void {
 
     $page = visit('/');
 
-    $page->within('.container', function ($page): void {
+    $page->within('.container', function ($page) {
         $page->click('.item:first-child .btn');
     });
 
-    $page->within('.container .item:first-child', function ($page): void {
+    $page->within('.container .item:first-child', function ($page) {
         $page->assertSee('Clicked');
     });
 });
@@ -125,10 +125,10 @@ it('works with data-test selectors within scope', function (): void {
 
     $page = visit('/');
 
-    $page->within('[data-testid="sidebar"]', function ($page): void {
+    $page->within('[data-testid="sidebar"]', function ($page) {
         $page->click('@action-btn')->assertSee('Sidebar Clicked');
     });
-    $page->within('[data-testid="content"]', function ($page): void {
+    $page->within('[data-testid="content"]', function ($page) {
         $page->assertSee('Content Action')->assertDontSee('Content Clicked');
         $page->click('@action-btn')->assertSee('Content Clicked');
     });
@@ -146,8 +146,8 @@ it('works with nested scopes', function (): void {
 
     $page = visit('/');
 
-    $page->within('#outer', function ($page): void {
-        $page->within('.inner', function ($innerBrowser): void {
+    $page->within('#outer', function ($page) {
+        $page->within('.inner', function ($innerBrowser) {
             $innerBrowser->assertSee('Nested Text');
             $innerBrowser->click('#inner-button')->assertSee('Inner button clicked');
         });
@@ -172,7 +172,7 @@ it('handles form interactions within scope', function (): void {
 
     $page = visit('/');
 
-    $page->within('#login-form', function ($page): void {
+    $page->within('#login-form', function ($page) {
         $page->type('email', 'user@example.com')
             ->type('password', 'secret')
             ->select('role', 'admin')
