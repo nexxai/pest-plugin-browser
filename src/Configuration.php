@@ -13,7 +13,7 @@ use Pest\Browser\Playwright\Playwright;
  *
  * @codeCoverageIgnore
  */
-final class Configuration
+final readonly class Configuration
 {
     /**
      * Defaults the browser to Chrome.
