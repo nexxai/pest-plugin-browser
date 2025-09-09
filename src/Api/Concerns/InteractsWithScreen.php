@@ -30,6 +30,9 @@ trait InteractsWithScreen
         return $this;
     }
 
+    /**
+     * Get the filename for the screenshot.
+     */
     private function getFilename(?string $filename = null): string
     {
         if ($filename === null) {
