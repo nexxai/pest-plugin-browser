@@ -256,10 +256,6 @@ final class LaravelHttpServer implements HttpServer
 
         $symfonyRequest->headers->add($request->getHeaders());
 
-        if (isset(Configuration::$hostname)) {
-            $symfonyRequest->headers->set('Host', sprintf('%s:%d', Configuration::$hostname, $this->port));
-        }
-
         $debug = config('app.debug');
 
         try {

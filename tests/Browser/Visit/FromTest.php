@@ -41,9 +41,3 @@ it('can emulate being from another location', function (): void {
             ->assertDontSee('Waiting...');
     }
 });
-
-it('throws an exception if the city being requested does not exist', function (): void {
-    visit('/')
-        ->from()
-        ->winnipeg();
-})->throws(InvalidArgumentException::class, "City 'winnipeg' is not supported.");

@@ -15,8 +15,6 @@ use Pest\Browser\Playwright\Playwright;
  */
 final class Configuration
 {
-    public static ?string $hostname = null;
-
     /**
      * Defaults the browser to Chrome.
      */
@@ -83,13 +81,6 @@ final class Configuration
     public function headed(): self
     {
         Playwright::headed();
-
-        return $this;
-    }
-
-    public function withHostname(string $hostname): self
-    {
-        self::$hostname = $hostname;
 
         return $this;
     }
