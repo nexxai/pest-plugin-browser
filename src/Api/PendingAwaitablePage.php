@@ -71,7 +71,7 @@ final class PendingAwaitablePage
     }
 
     /**
-     * Allows you to set a different physical location for the browser.
+     * Allows you to set a different locale, timezone, and location for the page.
      */
     public function from(): From
     {

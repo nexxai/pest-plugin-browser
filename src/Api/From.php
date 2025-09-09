@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Api;
 
-use InvalidArgumentException;
 use Pest\Browser\Enums\BrowserType;
 use Pest\Browser\Enums\City;
 use Pest\Browser\Enums\Device;
@@ -26,22 +25,6 @@ final readonly class From
         private array $options,
     ) {
         //
-    }
-
-    /**
-     * Creates the actual visit page instance, and calls the given method on it.
-     *
-     * @param  array<int, mixed>  $arguments
-     */
-    public function __call(string $name, array $arguments): PendingAwaitablePage
-    {
-        foreach (City::cases() as $case) {
-            if ($case->value === $name) {
-                return $this->city($case);
-            }
-        }
-
-        throw new InvalidArgumentException("City '{$name}' is not supported.");
     }
 
     /**
