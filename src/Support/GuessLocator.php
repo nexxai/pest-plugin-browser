@@ -70,6 +70,7 @@ final readonly class GuessLocator
 
         if ($this->scopeSelector !== null) {
             $scopedLocator = $this->page->locator($this->scopeSelector);
+
             return $this->page->unstrict(
                 fn (): Locator => $scopedLocator->getByText($selector, true),
             );
@@ -86,6 +87,6 @@ final readonly class GuessLocator
             return $selector;
         }
 
-        return $this->scopeSelector . ' >> ' . $selector;
+        return $this->scopeSelector.' >> '.$selector;
     }
 }
