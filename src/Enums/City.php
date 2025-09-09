@@ -20,6 +20,9 @@ enum City: string
     case SAN_FRANCISCO = 'sanFrancisco';
     case SYDNEY = 'sydney';
 
+    /**
+     * Get the timezone for the city.
+     */
     public function timezone(): string
     {
         return match ($this) {
@@ -39,6 +42,9 @@ enum City: string
         };
     }
 
+    /**
+     * Get the locale for the city.
+     */
     public function locale(): string
     {
         return match ($this) {
