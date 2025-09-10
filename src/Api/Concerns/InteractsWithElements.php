@@ -190,19 +190,7 @@ trait InteractsWithElements
      */
     public function press(string $button): self
     {
-        if (str_starts_with($button, '@')) {
-            $locator = $this->page->locator('button[data-test="'.mb_substr($button, 1).'"], input[type="button"][data-test="'.mb_substr($button, 1).'"]');
-        } else {
-            $locator = $this->page->getByRole('button', ['name' => $button]);
-
-            if ($locator->count() === 0) {
-                $locator = $this->page->locator('button[name="'.$button.'"], input[name="'.$button.'"]:is([type="button"], [type="submit"])');
-            }
-        }
-
-        $locator->click();
-
-        return $this;
+        return $this->click($button);
     }
 
     /**
