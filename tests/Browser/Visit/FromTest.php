@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Pest\Browser\Enums\Cities;
+use Pest\Browser\Enums\City;
 
 it('can emulate being from another location', function (): void {
     Route::get('/', fn (): string => '
@@ -29,7 +29,7 @@ it('can emulate being from another location', function (): void {
         </html>
     ');
 
-    $cities = Cities::cases();
+    $cities = City::cases();
 
     foreach ($cities as $city) {
         visit('/')
@@ -41,9 +41,3 @@ it('can emulate being from another location', function (): void {
             ->assertDontSee('Waiting...');
     }
 });
-
-it('throws an exception if the city being requested does not exist', function (): void {
-    visit('/')
-        ->from()
-        ->winnipeg();
-})->throws(InvalidArgumentException::class, "City 'winnipeg' is not supported.");

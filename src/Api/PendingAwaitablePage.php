@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Api;
 
-use InvalidArgumentException;
 use Pest\Browser\Enums\BrowserType;
-use Pest\Browser\Enums\Cities;
 use Pest\Browser\Enums\ColorScheme;
 use Pest\Browser\Enums\Device;
 use Pest\Browser\Playwright\InitScript;
@@ -84,7 +82,7 @@ final class PendingAwaitablePage
     }
 
     /**
-     * Allows you to set a different physical location for the browser.
+     * Allows you to set a different locale, timezone, and location for the page.
      */
     public function from(): From
     {
@@ -144,22 +142,10 @@ final class PendingAwaitablePage
 
     /**
      * Sets the geolocation for the page.
-     *
-     * @param  float|Cities  $location  The latitude or a Cities enum value
-     * @param  float|null  $longitude  The longitude (required with latitude, ignored when using Cities enum)
-     *
-     * @example geolocation(Cities::NEW_YORK)
-     * @example geolocation(40.7128, -74.0060)
      */
-    public function geolocation(float|Cities $location, ?float $longitude = null): self
+    public function geolocation(float $latitude, float $longitude): self
     {
-        if ($location instanceof Cities) {
-            $geolocation = $location->geolocation();
-        } elseif ($longitude === null) {
-            throw new InvalidArgumentException('Longitude must be provided when latitude is specified');
-        } else {
-            $geolocation = ['latitude' => $location, 'longitude' => $longitude];
-        }
+        $geolocation = ['latitude' => $latitude, 'longitude' => $longitude];
 
         return new self($this->browserType, $this->device, $this->url, [
             'geolocation' => $geolocation,

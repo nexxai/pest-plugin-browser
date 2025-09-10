@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Pest\Browser\Enums;
 
-enum Cities: string
+enum City: string
 {
     case AMSTERDAM = 'amsterdam';
     case BERLIN = 'berlin';
@@ -20,6 +20,9 @@ enum Cities: string
     case SAN_FRANCISCO = 'sanFrancisco';
     case SYDNEY = 'sydney';
 
+    /**
+     * Get the timezone for the city.
+     */
     public function timezone(): string
     {
         return match ($this) {
@@ -39,6 +42,9 @@ enum Cities: string
         };
     }
 
+    /**
+     * Get the locale for the city.
+     */
     public function locale(): string
     {
         return match ($this) {
