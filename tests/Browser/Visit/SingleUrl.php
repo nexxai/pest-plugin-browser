@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Route;
 use Pest\Browser\Api\On;
 use Pest\Browser\Api\Webpage;
 use Pest\Browser\Enums\ColorScheme;
@@ -44,6 +45,7 @@ it('may visit a page in light/dark mode', function (ColorScheme $scheme): void {
                         background-color: #121212;
                         color: #f1f1f1;
                     }
+                        .light { display: none; }
                 }
 
                 @media (prefers-color-scheme: light) {
@@ -51,13 +53,18 @@ it('may visit a page in light/dark mode', function (ColorScheme $scheme): void {
                         background-color: #ffffff;
                         color: #000000;
                     }
+                        .dark { display: none; }
                 }
             </style>
         </head>
         <body>
-            <div>
+            <div class="dark">
                 <h1>Dark Mode Test</h1>
                 <p>This is a test for dark mode.</p>
+            </div>
+            <div class="light">
+                <h1>Light Mode Test</h1>
+                <p>This is a test for light mode.</p>
             </div>
         </body>
         </html>
@@ -65,9 +72,13 @@ it('may visit a page in light/dark mode', function (ColorScheme $scheme): void {
 
     $page = visit('/');
 
-    match ($scheme) {
-        ColorScheme::DARK => $page->inDarkMode(),
-        ColorScheme::LIGHT => $page->inLightMode(),
+    $page = match ($scheme) {
+        ColorScheme::DARK => $page->inDarkMode()
+            ->assertSee('Dark Mode Test')
+            ->assertDontSee('Light Mode Test'),
+        ColorScheme::LIGHT => $page->inLightMode()
+            ->assertSee('Light Mode Test')
+            ->assertDontSee('Dark Mode Test'),
     };
 
     $page->assertScreenshotMatches();
