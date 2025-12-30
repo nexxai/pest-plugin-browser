@@ -38,6 +38,9 @@ jobs:
     - name: Install PHP dependencies
       run: composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-progress --ansi
 
+    - name: Dump optimized autoloader
+      run: composer dump-autoload --optimize --ansi
+
     - name: Install dependencies
       run: npm ci
 
