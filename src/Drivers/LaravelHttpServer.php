@@ -23,6 +23,7 @@ use Pest\Browser\Contracts\HttpServer;
 use Pest\Browser\Exceptions\ServerNotFoundException;
 use Pest\Browser\Execution;
 use Pest\Browser\GlobalState;
+use Pest\Browser\Playwright\Playwright;
 use Psr\Log\NullLogger;
 use Symfony\Component\Mime\MimeTypes;
 use Throwable;
@@ -259,6 +260,16 @@ final class LaravelHttpServer implements HttpServer
         );
 
         $symfonyRequest->headers->add($request->getHeaders());
+
+        // Set the Host header to match the configured host for subdomain routing
+        $configuredHost = Playwright::host();
+        if ($configuredHost !== null) {
+            $hostHeader = sprintf('%s:%d', $configuredHost, $this->port);
+            $symfonyRequest->headers->set('Host', $hostHeader);
+            // Also set SERVER_NAME for Laravel routing
+            $symfonyRequest->server->set('SERVER_NAME', $configuredHost);
+            $symfonyRequest->server->set('HTTP_HOST', $hostHeader);
+        }
 
         $debug = config('app.debug');
 
