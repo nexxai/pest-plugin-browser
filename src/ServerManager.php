@@ -85,7 +85,7 @@ final class ServerManager
     {
         return $this->http ??= match (function_exists('app_path')) {
             true => new LaravelHttpServer(
-                Playwright::host() ?? self::DEFAULT_HOST,
+                self::DEFAULT_HOST, // Always bind to 127.0.0.1 for server
                 Port::find(),
             ),
             default => new NullableHttpServer(),
