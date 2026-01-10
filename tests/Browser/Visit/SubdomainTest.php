@@ -15,7 +15,7 @@ it('can visit non-subdomain routes with subdomain host browser testing', functio
         </html>
     ');
 
-    pest()->browser()->withHost('api.localhost');
+    pest()->browser()->withHost('app.localhost');
 
     visit('/app-test')
         ->assertSee('Welcome to NON Subdomain')
