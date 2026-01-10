@@ -45,7 +45,7 @@ final class Browser
             throw new BrowserAlreadyClosedException('The browser is already closed.');
         }
 
-        $response = Client::instance()->execute($this->guid, 'newContext', $options);
+        $response = Client::instance()->execute(guid: $this->guid, method: 'newContext', params: $options);
 
         /** @var array{result: array{context: array{guid: string|null}}} $message */
         foreach ($response as $message) {

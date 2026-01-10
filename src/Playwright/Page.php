@@ -581,6 +581,8 @@ final class Page
         $this->processVoidResponse($response);
 
         $this->closed = true;
+
+        Playwright::setHost(null);
     }
 
     /**
