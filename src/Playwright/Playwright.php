@@ -6,6 +6,7 @@ namespace Pest\Browser\Playwright;
 
 use Pest\Browser\Enums\BrowserType;
 use Pest\Browser\Enums\ColorScheme;
+use Pest\Browser\ServerManager;
 
 /**
  * @internal
@@ -79,6 +80,29 @@ final class Playwright
         }
 
         self::$browserTypes = [];
+
+        Client::instance()->disconnect();
+    }
+
+    /**
+     * Close all browsers except the specified type and reconnect.
+     */
+    public static function closeOthers(BrowserType $exceptBrowserType): void
+    {
+        $exceptName = $exceptBrowserType->toPlaywrightName();
+
+        foreach (self::$browserTypes as $name => $browserType) {
+            if ($name !== $exceptName) {
+                $browserType->close();
+            }
+        }
+
+        self::$browserTypes = [];
+
+        Client::instance()->disconnect();
+
+        $url = ServerManager::instance()->playwright()->url();
+        Client::instance()->connectTo($url, $exceptName);
     }
 
     /**

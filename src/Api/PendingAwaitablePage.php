@@ -49,6 +49,14 @@ final class PendingAwaitablePage
     }
 
     /**
+     * Get the browser type for this pending page.
+     */
+    public function getBrowserType(): BrowserType
+    {
+        return $this->browserType;
+    }
+
+    /**
      * Sets the color scheme to dark mode.
      */
     public function inDarkMode(): self
@@ -152,6 +160,26 @@ final class PendingAwaitablePage
             'permissions' => ['geolocation'],
             ...$this->options,
         ]);
+    }
+
+    /**
+     * Sets the browsers to run the test on.
+     *
+     * @param  array<int, BrowserType>  $browserTypes
+     */
+    public function browser(array $browserTypes): MultiBrowserPendingPage
+    {
+        $pendingPages = array_map(
+            fn (BrowserType $browserType): PendingAwaitablePage => new self(
+                $browserType,
+                $this->device,
+                $this->url,
+                $this->options,
+            ),
+            $browserTypes,
+        );
+
+        return new MultiBrowserPendingPage($pendingPages);
     }
 
     /**

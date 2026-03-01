@@ -8,6 +8,7 @@ use Amp\Websocket\Client\WebsocketConnection;
 use Generator;
 use Pest\Browser\Exceptions\PlaywrightOutdatedException;
 use PHPUnit\Framework\ExpectationFailedException;
+use Throwable;
 
 use function Amp\Websocket\Client\connect;
 
@@ -46,10 +47,10 @@ final class Client
     /**
      * Connects to the Playwright server.
      */
-    public function connectTo(string $url): void
+    public function connectTo(string $url, ?string $browser = null): void
     {
         if (! $this->websocketConnection instanceof WebsocketConnection) {
-            $browser = Playwright::defaultBrowserType()->toPlaywrightName();
+            $browser ??= Playwright::defaultBrowserType()->toPlaywrightName();
 
             $launchOptions = json_encode([
                 'headless' => Playwright::isHeadless(),
@@ -126,6 +127,22 @@ final class Client
     public function timeout(): int
     {
         return $this->timeout;
+    }
+
+    /**
+     * Disconnects from the Playwright server.
+     */
+    public function disconnect(): void
+    {
+        if ($this->websocketConnection instanceof WebsocketConnection) {
+            try {
+                $this->websocketConnection->close();
+            } catch (Throwable) {
+                // Ignore close errors
+            }
+        }
+
+        $this->websocketConnection = null;
     }
 
     /**
