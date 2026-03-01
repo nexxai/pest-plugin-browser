@@ -51,7 +51,7 @@ it('executes callback for each browser', function (): void {
     $pages = $page->browser([BrowserType::CHROME, BrowserType::FIREFOX]);
 
     $browsers = [];
-    $pages->each(function (PendingAwaitablePage $p) use (&$browsers) {
+    $pages->each(function (PendingAwaitablePage $p) use (&$browsers): void {
         $browsers[] = $p->getBrowserType();
     });
 

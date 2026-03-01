@@ -9,7 +9,7 @@ it('throws exception when browser assertion fails', function (): void {
 
     visit('/error-test')
         ->browser([BrowserType::CHROME, BrowserType::FIREFOX])
-        ->each(function ($page) {
+        ->each(function ($page): void {
             $page->assertSee('Non-existent text');
         });
 })->throws(PHPUnit\Framework\ExpectationFailedException::class);

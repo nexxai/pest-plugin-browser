@@ -15,7 +15,7 @@ use Traversable;
  *
  * @implements IteratorAggregate<int, PendingAwaitablePage>
  */
-final class MultiBrowserPendingPage implements Countable, IteratorAggregate
+final readonly class MultiBrowserPendingPage implements Countable, IteratorAggregate
 {
     /**
      * @param  array<int, PendingAwaitablePage>  $pendingPages

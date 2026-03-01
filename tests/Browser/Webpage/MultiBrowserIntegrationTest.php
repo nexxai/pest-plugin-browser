@@ -8,7 +8,7 @@ it('may run assertions on multiple browsers using visit()', function (): void {
     Route::get('/multi', fn (): string => '<h1>Multi Browser</h1>');
 
     visit('/multi')->browser([BrowserType::CHROME, BrowserType::FIREFOX])
-        ->each(function ($page) {
+        ->each(function ($page): void {
             $page->assertSee('Multi Browser');
         });
 });
@@ -19,7 +19,7 @@ it('may run assertions on multiple browsers with visit() and chaining', function
     visit('/multi-dark')
         ->browser([BrowserType::CHROME, BrowserType::FIREFOX])
         ->inDarkMode()
-        ->each(function ($page) {
+        ->each(function ($page): void {
             $page->assertSee('Dark Mode Test');
         });
 });
@@ -31,7 +31,7 @@ it('may chain configuration options before each()', function (): void {
         ->browser([BrowserType::CHROME, BrowserType::FIREFOX])
         ->inDarkMode()
         ->withLocale('en-US')
-        ->each(function ($page) {
+        ->each(function ($page): void {
             $page->assertSee('Chain Test');
         });
 });
@@ -41,9 +41,7 @@ it('may use eachResult() to get results from each browser', function (): void {
 
     $results = visit('/each-result')
         ->browser([BrowserType::CHROME, BrowserType::FIREFOX])
-        ->eachResult(function ($page) {
-            return $page->url();
-        });
+        ->eachResult(fn($page): string => $page->url());
 
     expect($results)->toHaveCount(2);
 });
