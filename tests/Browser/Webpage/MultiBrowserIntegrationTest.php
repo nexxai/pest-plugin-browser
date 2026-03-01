@@ -41,7 +41,7 @@ it('may use eachResult() to get results from each browser', function (): void {
 
     $results = visit('/each-result')
         ->browser([BrowserType::CHROME, BrowserType::FIREFOX])
-        ->eachResult(fn($page): string => $page->url());
+        ->eachResult(fn ($page): string => $page->url());
 
     expect($results)->toHaveCount(2);
 });
