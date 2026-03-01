@@ -7,6 +7,7 @@ namespace Pest\Browser\Playwright;
 use Pest\Browser\Enums\BrowserType;
 use Pest\Browser\Enums\ColorScheme;
 use Pest\Browser\ServerManager;
+use Throwable;
 
 /**
  * @internal
@@ -218,6 +219,15 @@ final class Playwright
     {
         foreach (self::$browserTypes as $browserType) {
             $browserType->reset();
+        }
+
+        if (! Client::instance()->isConnected()) {
+            try {
+                $url = ServerManager::instance()->playwright()->url();
+                Client::instance()->connectTo($url, self::defaultBrowserType()->toPlaywrightName());
+            } catch (Throwable) {
+                // Ignore - ServerManager may not be initialized yet
+            }
         }
     }
 

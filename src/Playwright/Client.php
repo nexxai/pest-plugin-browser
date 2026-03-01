@@ -146,6 +146,14 @@ final class Client
     }
 
     /**
+     * Check if the client is connected.
+     */
+    public function isConnected(): bool
+    {
+        return $this->websocketConnection instanceof WebsocketConnection;
+    }
+
+    /**
      * Fetches the response from the Playwright server.
      */
     private function fetch(WebsocketConnection $client): string
